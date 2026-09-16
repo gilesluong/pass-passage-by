@@ -1,8 +1,8 @@
 # Pass Passage By! releases
 
-The stable release-only repository is https://github.com/gilesluong/pass-passage-by-releases.
+The source and release repository is https://github.com/gilesluong/pass-passage-by.
 Sparkle 2.10.0 is embedded. The installed app reads:
-https://github.com/gilesluong/pass-passage-by-releases/releases/latest/download/appcast.xml
+https://github.com/gilesluong/pass-passage-by/releases/latest/download/appcast.xml
 
 ## Stable identity
 - Display/bundle name: Pass Passage By!.app

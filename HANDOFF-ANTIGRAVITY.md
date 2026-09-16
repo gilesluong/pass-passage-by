@@ -1,3 +1,35 @@
+# Current: Pass Passage By! 1.7.0 (11) — 17 September 2026
+
+Release candidate built and tested; publication and installed Sparkle upgrade pending. Canonical repository: https://github.com/gilesluong/pass-passage-by. This section supersedes all historical release and installation instructions below.
+
+## Product direction and implementation
+- Native AppKit remains the editor. Antigravity changes from a32c0dc and its uncommitted Home/Passage work were preserved.
+- Apple TV-style Home: fixed sidebar, large photographic carousel, horizontal shelves, functional category/search filtering, compact-window wrapping. Cards use actual document titles and notes. No invented teachers, institutions, scores or studies. Pin saved library writing to Home; future paid placements are not implemented.
+- Hover highlight defaults to holding Option. Option-H switches persistent highlight on/off. The pointer still selects the zoom target. Selection reveals a floating Comment action; Option-Command-M adds a comment.
+- Settings: 760×540 sidebar, theme previews, appearance, typography, zoom, dictionary, tags, updates and intelligence controls. Zoom chips move between active path and available steps; Essay and Word are required. Reduce Motion respected.
+- AgentConnection.swift and AgentKit/mcp_server.py expose explicit shared snapshots via stdio MCP and place newly generated JSON in Inbox. No library-wide access, API account, model download, or silent document replacement. Copy MCP setup, share current writing, then review/import Inbox. File skill/prompt exchange remains available for hosts without local MCP. Third-party host end-to-end setup is not yet verified; subscription support varies by host.
+- Research creation now uses an honest blank notes template. Model.swift, Markup.swift, all 20 samples and existing user documents were preserved.
+
+## Build and release invariants
+- Bundle ID com.passage.editor, name Pass Passage By!.app, Application Support/Passage data path remain stable.
+- bash build.sh builds only dist and /tmp/PPBPreview. NEVER overwrite ~/Applications manually: installed updates must go through Sparkle.
+- Sparkle 2.10.0, Ed25519 signing key stays in Keychain account com.passage.editor. Canonical feed: https://github.com/gilesluong/pass-passage-by/releases/latest/download/appcast.xml.
+- bash release/prepare-update.sh verifies the archive and signature; bash release/publish.sh publishes a new immutable version. Never replace an existing release tag/archive.
+- Development ad-hoc signing only. Developer ID/notarization still pending user account. Do not present as notarized production software.
+- User is on hotspot: do not install/download Llama or Apple Intelligence model packages.
+
+## Verification and follow-up
+- bash test.sh PASS: model/Unicode edits, markup and routes, all 20 samples, PDF, stdio MCP handshake/scoped context/quote validation/non-overwrite.
+- bash test-layout.sh PASS outside sandbox: native OCR/dictionary, task/annotation geometry, all settings, compact Home, pointer policy/search restoration/tap zoom/student navigation.
+- Native UI: Home, Settings Appearance and Zoom visually inspected in the running preview. Zoom chip interaction checked via accessibility and mouse. Agent connection controls verified through accessibility; its screenshot was a Stage Manager thumbnail.
+- Agent kit uses Python 3 standard library; a compatible MCP host plus Python 3 is needed. No host configuration is silently modified.
+- Next polish: per-document showcase cover management, real host MCP session validation, dense annotation and Stage Manager visual QA. Current carousel deliberately reuses one original illustration.
+
+## Asset provenance
+Assets/reading-cover.png was generated with imagegen on 16 September 2026 for this app: an open book and lamp in a forest-toned reading room, with negative space for the carousel title. Existing user-approved logo unchanged.
+
+---
+
 # Current: Pass Passage By! 1.5.0 (8) — 16 September 2026
 
 ## Summary of Changes

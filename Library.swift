@@ -8,10 +8,11 @@ enum LibraryStore {
         try JSONEncoder().encode(document).write(to:folder.appendingPathComponent(name+".json"),options:.atomic)
     }
     static func records(in folder:URL)->[WritingRecord] {
-        ((try? FileManager.default.contentsOfDirectory(at:folder,includingPropertiesForKeys:[.contentModificationDateKey])) ?? []).compactMap {url in
+        var seen=Set<String>()
+        return ((try? FileManager.default.contentsOfDirectory(at:folder,includingPropertiesForKeys:[.contentModificationDateKey])) ?? []).compactMap {url in
             guard url.pathExtension=="json",let bytes=try? Data(contentsOf:url),let document=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil}
             return WritingRecord(url:url,document:document,modified:(try? url.resourceValues(forKeys:[.contentModificationDateKey]).contentModificationDate) ?? .distantPast)
-        }.sorted{$0.modified>$1.modified}
+        }.sorted{$0.modified>$1.modified}.filter{seen.insert($0.document.document.id).inserted}
     }
 }
 final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewDelegate,NSSearchFieldDelegate {
@@ -20,11 +21,12 @@ final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewD
     var allRecords:[WritingRecord]=[]
     let table=NSTableView(),preview=NSTextView()
     let searchField=NSSearchField()
+    let pin=NSButton()
     init(passage:Passage){
         self.passage=passage
         allRecords=LibraryStore.records(in:passage.saveURL.deletingLastPathComponent().appendingPathComponent("Library"))
         records=allRecords
-        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:900,height:620),styleMask:[.titled,.closable,.resizable],backing:.buffered,defer:false);panel.title="My writing (Notes)";panel.minSize=NSSize(width:680,height:460)
+        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:900,height:620),styleMask:[.titled,.closable,.resizable],backing:.buffered,defer:false);panel.title="My writing (Notes)";panel.minSize=NSSize(width:860,height:460)
         super.init(window:panel)
         let root=NSView();panel.contentView=root
         let split=NSSplitView(frame:NSRect(x:0,y:0,width:900,height:550));split.isVertical=true;split.dividerStyle = .thin
@@ -34,11 +36,12 @@ final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewD
         split.addArrangedSubview(list);split.addArrangedSubview(content)
         searchField.placeholderString="Search notes…"
         searchField.delegate=self
-        searchField.widthAnchor.constraint(equalToConstant:200).isActive=true
+        searchField.widthAnchor.constraint(equalToConstant:150).isActive=true
         let open=NSButton(title:"Open writing",target:self,action:#selector(openSelected));open.bezelStyle = .rounded
         let del=NSButton(title:"Delete",target:self,action:#selector(deleteSelected));del.bezelStyle = .rounded
         let new=passage.button("New essay",#selector(Passage.newEssay)),scan=passage.button("Scan document…",#selector(Passage.captureDocument))
-        let bar=passage.stack([new,scan,del,open,searchField]);root.addSubview(bar);root.addSubview(split);bar.translatesAutoresizingMaskIntoConstraints=false;split.translatesAutoresizingMaskIntoConstraints=false
+        pin.title="Pin to Home";pin.target=self;pin.action=#selector(pinSelected(_:));pin.bezelStyle = .rounded
+        let bar=passage.stack([new,scan,del,open,pin,searchField]);root.addSubview(bar);root.addSubview(split);bar.translatesAutoresizingMaskIntoConstraints=false;split.translatesAutoresizingMaskIntoConstraints=false
         NSLayoutConstraint.activate([bar.leadingAnchor.constraint(equalTo:root.leadingAnchor,constant:16),bar.topAnchor.constraint(equalTo:root.topAnchor,constant:12),bar.trailingAnchor.constraint(lessThanOrEqualTo:root.trailingAnchor,constant:-16),split.topAnchor.constraint(equalTo:bar.bottomAnchor,constant:12),split.leadingAnchor.constraint(equalTo:root.leadingAnchor),split.trailingAnchor.constraint(equalTo:root.trailingAnchor),split.bottomAnchor.constraint(equalTo:root.bottomAnchor)])
         split.setPosition(300,ofDividerAt:0);table.reloadData()
         if records.isEmpty {preview.string="Your writing lives here.\n\nCreate an essay or scan a page to begin. Changes are saved automatically on this Mac."}else{table.selectRowIndexes(IndexSet(integer:0),byExtendingSelection:false);updatePreview()}
@@ -80,22 +83,31 @@ final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewD
     }
     func tableViewSelectionDidChange(_ notification:Notification){updatePreview()}
     func updatePreview(){
+        pin.isEnabled=records.indices.contains(table.selectedRow)
         guard records.indices.contains(table.selectedRow) else{
             preview.string = allRecords.isEmpty ? "Your writing lives here.\n\nCreate an essay or scan a page to begin. Changes are saved automatically on this Mac." : "No note selected."
             return
         }
         let d=records[table.selectedRow].document
+        pin.title=(passage?.prefs.stringArray(forKey:"showcaseIDs") ?? []).contains(d.document.id) ? "Unpin from Home" : "Pin to Home"
         preview.string=d.document.title+"\n\n"+d.document.text
     }
     @objc func deleteSelected(){
         guard records.indices.contains(table.selectedRow) else{return}
         let url=records[table.selectedRow].url
-        try? FileManager.default.removeItem(at:url)
+        do {try FileManager.default.trashItem(at:url,resultingItemURL:nil)}catch{passage?.showAlert(error.localizedDescription);return}
         allRecords.removeAll{$0.url==url}
         records.removeAll{$0.url==url}
         table.reloadData()
         if !records.isEmpty {table.selectRowIndexes(IndexSet(integer:0),byExtendingSelection:false)}
         updatePreview()
+    }
+    @objc func pinSelected(_ sender:NSButton){
+        guard let passage=passage,records.indices.contains(table.selectedRow) else{return}
+        let id=records[table.selectedRow].document.document.id
+        var ids=passage.prefs.stringArray(forKey:"showcaseIDs") ?? []
+        if ids.contains(id){ids.removeAll{$0==id};sender.title="Pin to Home"}else{ids.append(id);sender.title="Unpin from Home"}
+        passage.prefs.set(ids,forKey:"showcaseIDs")
     }
     @objc func openSelected(){guard let passage=passage,records.indices.contains(table.selectedRow) else{return};do{if passage.opened {passage.saveDraft()};try passage.loadJSON(Data(contentsOf:records[table.selectedRow].url));passage.openWorkspace();close()}catch{passage.showAlert(error.localizedDescription)}}
 }

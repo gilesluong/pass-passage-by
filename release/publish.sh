@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PPB_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' Info.plist)
-PPB_REPO=gilesluong/pass-passage-by-releases
+PPB_REPO=gilesluong/pass-passage-by
 PPB_DIR="dist/updates/$PPB_VERSION"
 python3 release/verify-update.py "$PPB_DIR/appcast.xml" "$PPB_DIR/Pass-Passage-By-$PPB_VERSION.zip"
 # Never replace an existing release asset; a new build must have a new version.

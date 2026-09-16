@@ -20,8 +20,10 @@ t=Path(sys.argv[1]);t.mkdir(parents=True,exist_ok=True)
 for p in Path("AgentKit").iterdir():
  if p.is_file():(t/p.name).write_bytes(p.read_bytes())
 PYKIT
+mkdir -p "$PPB_APP/Contents/Resources/Assets"
+cp Assets/reading-cover.png "$PPB_APP/Contents/Resources/Assets/"
 cp example.breakdown.json ABOUT.txt PRIVACY.txt TERMS.txt "$PPB_APP/Contents/Resources/"
-swiftc -module-cache-path /tmp/passage-swift-cache -target arm64-apple-macosx13.0 -swift-version 5 -O -parse-as-library Passage.swift Model.swift Markup.swift Home.swift Capture.swift Library.swift Brand.swift Updater.swift Share.swift -F "$PPB_SPARKLE" -framework Sparkle -Xlinker -rpath -Xlinker @executable_path/../Frameworks -o "$PPB_APP/Contents/MacOS/Passage" -framework Vision -Xlinker -weak_framework -Xlinker FoundationModels -framework Cocoa -framework CoreServices -framework PDFKit
+swiftc -module-cache-path /tmp/passage-swift-cache -target arm64-apple-macosx13.0 -swift-version 5 -O -parse-as-library Passage.swift Model.swift Markup.swift Home.swift Capture.swift Library.swift ReadingControls.swift AgentConnection.swift Brand.swift Updater.swift Share.swift -F "$PPB_SPARKLE" -framework Sparkle -Xlinker -rpath -Xlinker @executable_path/../Frameworks -o "$PPB_APP/Contents/MacOS/Passage" -framework Vision -Xlinker -weak_framework -Xlinker FoundationModels -framework Cocoa -framework CoreServices -framework PDFKit
 swift -module-cache-path /tmp/passage-swift-cache Icon.swift /tmp/Passage.iconset
 python3 package-icon.py "$PPB_APP/Contents/Resources/Passage.icns"
 cp Info.plist "$PPB_APP/Contents/Info.plist"
@@ -31,7 +33,6 @@ codesign --verify --deep --strict "$PPB_APP"
 mkdir -p /tmp/PPBPreview
 ditto --norsrc --noextattr "$PPB_APP" '/tmp/PPBPreview/Pass Passage By!.app'
 ditto --norsrc --noextattr "$PPB_APP" 'dist/Pass Passage By!.app'
-test -d "$HOME/Applications" && ditto --norsrc --noextattr "$PPB_APP" "$HOME/Applications/Pass Passage By!.app"
 ditto -c -k --norsrc --noextattr --keepParent "$PPB_APP" dist/PPB-macOS.zip
 python3 - "$PPB_STAGE" <<'PY'
 import pathlib,shutil,sys

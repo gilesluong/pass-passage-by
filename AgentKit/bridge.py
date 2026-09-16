@@ -1,4 +1,4 @@
-import argparse, json, uuid, base64, sys
+import argparse, json, uuid, base64, sys, hashlib
 from pathlib import Path
 
 def validate(d):
@@ -84,10 +84,10 @@ def main():
 
         out_path = args.output
         if args.to_library or not out_path:
-            out_file = library_dir() / f"{doc_id}.json"
+            out_file = library_dir() / (hashlib.sha256(doc_id.encode()).hexdigest()+".json")
             out_file.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
             print(f"SUCCESS: Saved to Pass Passage By! Library: {out_file}")
-            print(f"To open: open -a \"/Applications/Pass Passage By!.app\" \"{out_file}\"")
+            print(f"To open: open -a \"{Path.home()}/Applications/Pass Passage By!.app\" \"{out_file}\"")
         else:
             p_out = Path(out_path)
             p_out.parent.mkdir(parents=True, exist_ok=True)

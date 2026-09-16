@@ -180,6 +180,54 @@ final class AppleDictionaryPaneView: NSView {
     }
 }
 
+final class FloatingCommentPill: NSButton {
+    override var isFlipped: Bool { true }
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false { didSet { needsDisplay = true } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        bezelStyle = .regularSquare
+        isBordered = false
+        wantsLayer = true
+        if let l = layer { LiquidGlass.configureLayer(l) }
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let area = trackingArea { removeTrackingArea(area) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let isDark = LiquidGlass.isDark(for: self)
+        let radius: CGFloat = bounds.height / 2
+        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
+
+        let bg = isHovered 
+            ? (isDark ? NSColor(white: 0.28, alpha: 0.96) : NSColor(white: 0.98, alpha: 0.98))
+            : (isDark ? NSColor(white: 0.16, alpha: 0.92) : NSColor(white: 0.92, alpha: 0.95))
+        bg.setFill()
+        path.fill()
+
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: radius)
+        super.draw(dirtyRect)
+    }
+}
+
 // MARK: - Writing View with Semantic Zoom & Point Focus
 class WritingView: NSTextView {
     var receiveScan:((NSPasteboard)->Bool)?
@@ -208,6 +256,8 @@ class WritingView: NSTextView {
     var hoverRange: ((Int) -> NSRange)?
     var editAnnotation: ((Int, NSPoint) -> Bool)?
     var onHoverIndex: ((Int?, NSPoint) -> Void)?
+    var pointerMode: () -> String = { UserDefaults.standard.string(forKey:"pointerMode") ?? "Hold Option" }
+    var showsPointerHighlight: Bool { PointerPolicy.isActive(mode:pointerMode(),option:NSEvent.modifierFlags.contains(.option)) }
     private var hover: NSRange?
     var pointerIndex: Int?
     private var hoverTimer: Timer?
@@ -232,9 +282,10 @@ class WritingView: NSTextView {
         guard visibleRect.contains(point), !string.isEmpty else { return }
         let index = min(characterIndexForInsertion(at: point), (string as NSString).length - 1)
         pointerIndex = index
-        hover = hoverRange?(index)
-        onHoverIndex?(index, point)
-        if hoverTimer == nil && UserDefaults.standard.string(forKey: "hoverStyle") == "Stardust" && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+        hover = showsPointerHighlight ? hoverRange?(index) : nil
+        if !showsPointerHighlight {hoverTimer?.invalidate();hoverTimer=nil}
+        onHoverIndex?(nil, point)
+        if showsPointerHighlight && hoverTimer == nil && UserDefaults.standard.string(forKey: "hoverStyle") == "Stardust" && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             hoverTimer = Timer.scheduledTimer(withTimeInterval: 1.0/30, repeats: true) { [weak self] _ in self?.needsDisplay = true }
         }
         needsDisplay = true
@@ -426,6 +477,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var lastZoom = Date.distantPast
     let dictionaries = DictionaryCatalog()
     var zoomMonitor: Any?
+    var pointerMonitor: Any?
+    var floatingCommentButton: NSButton?
+    var zoomPathPicker: ZoomPathPicker?
     var gestureDelta: CGFloat = 0
 
     // Settings & Comment Popovers
@@ -485,6 +539,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         prefs.register(defaults: [
+            "pointerMode": "Hold Option",
             "font": "Georgia",
             "size": 22,
             "spacing": 1.65,
@@ -512,6 +567,11 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                 self.changeLevel(self.gestureDelta > 0 ? 1 : -1); self.gestureDelta = 0
             }
             return nil
+        }
+        pointerMonitor = NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { [weak self] event in
+            guard let self=self,self.opened,self.window?.isKeyWindow == true else {return event}
+            self.editor.updatePointer(at:self.editor.convert(self.window.mouseLocationOutsideOfEventStream,from:nil))
+            return event
         }
         appUpdates.startIfConfigured()
         buildMenu()
@@ -623,7 +683,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         editMenu.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
         editMenu.addItem(withTitle: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
         editMenu.addItem(.separator())
-        let noteItem=editMenu.addItem(withTitle:"Add Margin Note…",action:#selector(comment),keyEquivalent:"m");noteItem.target=self
+        let noteItem=editMenu.addItem(withTitle:"Comment on Selection…",action:#selector(comment),keyEquivalent:"m");noteItem.target=self;noteItem.keyEquivalentModifierMask=[.option,.command]
         editMenu.addItem(withTitle: "Bold", action: #selector(bold), keyEquivalent: "b").target = self
         editMenu.addItem(withTitle: "Italic", action: #selector(italic), keyEquivalent: "i").target = self
         editMenu.addItem(withTitle: "Underline", action: #selector(underline), keyEquivalent: "u").target = self
@@ -654,11 +714,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         viewMenu.addItem(withTitle:"Reset Text Size",action:#selector(fontReset),keyEquivalent:"0").target=self
         viewMenu.addItem(withTitle:"Hide Interface / Present",action:#selector(togglePresentation),keyEquivalent:".").target=self
         viewMenu.addItem(withTitle:"Focus Editor",action:#selector(focusEditor),keyEquivalent:"3").target=self
+        viewMenu.addItem(withTitle:"Pin / Unpin Current Writing on Home",action:#selector(toggleShowcasePin),keyEquivalent:"").target=self
         viewMenu.addItem(withTitle:"Margin Annotations",action:#selector(toggleNotes),keyEquivalent:"4").target=self
         viewMenu.addItem(withTitle:"Quick Export…",action:#selector(exportFile),keyEquivalent:"6").target=self
         for (title,action,key) in [("Semantic Zoom In",#selector(zoomIn),"="),("Semantic Zoom Out",#selector(zoomOut),"-"),("Dark Theme",#selector(toggleDark),"l")] {
             let item=viewMenu.addItem(withTitle:title,action:action,keyEquivalent:key);item.target=self;item.keyEquivalentModifierMask=[.option,.command]
         }
+        let pointer=viewMenu.addItem(withTitle:"Toggle Pointer Highlight",action:#selector(togglePointerHighlight),keyEquivalent:"h")
+        pointer.target=self;pointer.keyEquivalentModifierMask=[.option]
         viewItem.submenu = viewMenu
         m.addItem(viewItem)
 
@@ -768,24 +831,27 @@ In conclusion, although the demands of academic life are undeniably heavy, integ
 
     @objc func newResearchPaper() {
         if opened { saveDraft() }; writingLibrary?.close()
-        let prompt = "Investigation into Attention Mechanisms and Cognitive Load in Academic Reading Interfaces."
+        let prompt = "Add a research question and the source material you want to review."
         let starterText = """
-Abstract
-Digital annotation environments have transformed scholarly reading workflows, yet their effects on cognitive load remain inadequately characterized. This investigation examines how bidirectional margin anchors and contextual previews influence reading comprehension and citation retention among academic researchers.
+# Research notes
 
-1. Introduction & Related Work
-Prior research by Vaswani et al. (2017) demonstrated that sparse visual anchors reduce navigational latency across multi-modal textual representations (doi:10.48550/arXiv.1706.03762). Traditional split-view interfaces often introduce split-attention effects (Sweller, 2011), forcing readers to continually remap working memory between disjoint panels.
+## Question
+State the question and scope of your investigation.
 
-2. Methodology
-We conducted a within-subject evaluation with 48 university researchers analyzing complex peer-reviewed literature. Participants completed comparative reading tasks across two experimental conditions: traditional inline footnotes versus dynamic margin anchor connectors with DOI source popovers (doi:10.1038/s41586-020-2649-2).
+## Evidence
+Paste a source passage here. Keep its wording and distinguish evidence from interpretation.
 
-3. Results & Discussion
-Participants using continuous margin anchor connections achieved 27% faster citation verification times (p < 0.01) while reporting lower subjective cognitive burden. Dynamic source previews allowed readers to verify contextual methodology without breaking reading momentum.
+## Source record
+Author, title, year:
+Verified URL / doi:
 
-4. Conclusion
-Integrating persistent bidirectional margin anchors and DOI preview popovers into scholarly writing tools significantly reduces task-switching overhead, offering a robust foundation for modern academic reading interfaces.
+## Method and limitations
+Describe the actual study design and what the evidence cannot establish.
+
+## Your interpretation
+Explain how the source supports or challenges your argument.
 """
-        var b = Breakdown.plain(starterText, title: "Research: Cognitive Load in Reading Tools")
+        var b = Breakdown.plain(starterText, title: "Research notes")
         b.document.prompt = prompt
         b.document.taskType = "research"
         data = b
@@ -908,6 +974,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         editor.textContainer?.widthTracksTextView = true
         editor.textContainerInset = NSSize(width: 28, height: 64)
 
+        editor.pointerMode = { [weak self] in self?.prefs.string(forKey:"pointerMode") ?? "Hold Option" }
         editor.hoverRange = { [weak self] index in
             guard let self = self else { return NSRange(location: 0, length: 0) }
             let r = self.data.range(level: self.nextZoomLevel(1), offset: self.visible.location + index)
@@ -1080,7 +1147,10 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     }
 
     func textViewDidChangeSelection(_ notification: Notification) {
-        if notification.object as? NSTextView === editor, !updating { focus = selectedRangeInDocument().location }
+        if notification.object as? NSTextView === editor, !updating {
+            focus = selectedRangeInDocument().location
+            updateSelectionAction()
+        }
     }
 
     @objc func undoEdit() { guard opened, let prev = past.popLast() else { return }; future.append(data); data = prev; render(); saveDraft() }
@@ -1946,27 +2016,8 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     }
 
     func handleTextHover(index: Int?, point: NSPoint) {
-        guard let idx = index else {
-            if hoverSourcePopover?.isShown == true {
-                hoverSourcePopover?.close()
-                lastHoverNoteId = nil
-            }
-            return
-        }
-
-        let absIndex = visible.location + idx
-        if let note = displayedNotes.first(where: { NSLocationInRange(absIndex, NSRange(location: $0.start, length: $0.end - $0.start)) }) {
-            if lastHoverNoteId == note.id && hoverSourcePopover?.isShown == true {
-                return
-            }
-            lastHoverNoteId = note.id
-            showHoverPreview(for: note, at: point)
-        } else {
-            if hoverSourcePopover?.isShown == true {
-                hoverSourcePopover?.close()
-                lastHoverNoteId = nil
-            }
-        }
+        // Margin annotations never cover the source while the pointer passes over it.
+        hoverSourcePopover?.close();lastHoverNoteId=nil
     }
 
     func showHoverPreview(for note: Note, at point: NSPoint) {
@@ -2073,7 +2124,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     }
 
     func openCommentPopover(existing: Note?, targetRect: NSRect, view: NSView) {
-        commentPopover?.close()
+        commentPopover?.close();floatingCommentButton?.isHidden=true
         let p = NSPopover()
         p.behavior = .transient
         p.delegate=self
@@ -2086,7 +2137,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         targetRange = existing.map { NSRange(location: $0.start, length: $0.end - $0.start) } ?? selectedRangeInDocument()
 
         let vc = NSViewController()
-        let popView = NSView(frame: NSRect(x: 0, y: 0, width: 380, height: 320))
+        let popView = NSView(frame: NSRect(x: 0, y: 0, width: 320, height: 360))
 
         let titleLabel = NSTextField(labelWithString: existing == nil ? "New Annotation" : "Edit Annotation")
         commentLabel=NSTextField(string:existing?.label ?? "Annotation");commentLabel.placeholderString="Title"
@@ -2120,21 +2171,17 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         let actions = stack([delBtn])
 
         let pills = stack([
-            button("Task", #selector(quickPillTask)),
-            button("Coherence", #selector(quickPillCoherence)),
-            button("Vocab", #selector(quickPillVocab)),
-            button("Source", #selector(quickPillSource)),
-            button("Argument", #selector(quickPillArgument)),
-            button("Correction", #selector(quickPillCorrection))
-        ])
-        pills.spacing = 6
+            stack([button("Task",#selector(quickPillTask)),button("Cohesion",#selector(quickPillCoherence)),button("Vocabulary",#selector(quickPillVocab))]),
+            stack([button("Source",#selector(quickPillSource)),button("Argument",#selector(quickPillArgument)),button("Correction",#selector(quickPillCorrection))])
+        ],vertical:true)
+        pills.spacing=6
 
         let all = stack([titleLabel, commentLabel, stack([commentKind,commentTag]), pills, s, actions], vertical: true)
         all.alignment = .width
         all.spacing = 8
         attach(all, to: popView, inset: 12)
 
-        popView.setFrameSize(NSSize(width:380,height:all.fittingSize.height+24))
+        popView.setFrameSize(NSSize(width:320,height:all.fittingSize.height+24))
         vc.view = popView
         p.contentViewController = vc
         commentPopover = p
@@ -2145,7 +2192,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     @objc func quickPillTask(){commentLabel.stringValue="Task Response";commentKind.selectItem(withTitle:"comment");commentTag.selectItem(at:tagColors.firstIndex(of:"blue") ?? 0);annotationChanged()}
     @objc func quickPillCoherence(){commentLabel.stringValue="Coherence & Flow";commentKind.selectItem(withTitle:"structure");commentTag.selectItem(at:tagColors.firstIndex(of:"purple") ?? 0);annotationChanged()}
     @objc func quickPillVocab(){commentLabel.stringValue="Vocabulary Choice";commentKind.selectItem(withTitle:"vocabulary");commentTag.selectItem(at:tagColors.firstIndex(of:"green") ?? 0);annotationChanged()}
-    @objc func quickPillSource(){commentLabel.stringValue="Source Preview";commentKind.selectItem(withTitle:"comment");commentTag.selectItem(at:tagColors.firstIndex(of:"orange") ?? 1);if commentField.string.isEmpty{commentField.string="Author et al. (2024) · Journal Name\nDOI: 10.1016/j.example.2024.01\nKey evidence: "};annotationChanged()}
+    @objc func quickPillSource(){commentLabel.stringValue="Source Preview";commentKind.selectItem(withTitle:"comment");commentTag.selectItem(at:tagColors.firstIndex(of:"orange") ?? 1);if commentField.string.isEmpty{commentField.string="Source title / author:\nVerified source URL or DOI:\nEvidence and limitation: "};annotationChanged()}
     @objc func quickPillArgument(){commentLabel.stringValue="Thesis & Argument Flow";commentKind.selectItem(withTitle:"structure");commentTag.selectItem(at:tagColors.firstIndex(of:"purple") ?? 3);annotationChanged()}
     @objc func quickPillGrammar(){commentLabel.stringValue="Grammar & Accuracy";commentKind.selectItem(withTitle:"structure");commentTag.selectItem(at:tagColors.firstIndex(of:"yellow") ?? 0);annotationChanged()}
     @objc func quickPillCorrection(){commentLabel.stringValue="Correction";commentKind.selectItem(withTitle:"correction");commentTag.selectItem(at:tagColors.firstIndex(of:"orange") ?? 0);annotationChanged()}
@@ -2470,14 +2517,14 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     // MARK: - Settings (Requirement 5: Themes)
     @objc func showSettings(_ sender: Any?) {
         let panel=preferencesWindow ?? makePreferencesWindow()
-        panel.center();panel.makeKeyAndOrderFront(nil)
+        panel.center();panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
     }
     func makePreferencesWindow()->NSWindow {
-        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:700,height:480),styleMask:[.titled,.closable],backing:.buffered,defer:false)
-        panel.title="Settings";panel.isReleasedWhenClosed=false
-        let content=MarginCanvas(frame:NSRect(x:0,y:0,width:700,height:480));content.autoresizesSubviews=false
+        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:760,height:540),styleMask:[.titled,.closable],backing:.buffered,defer:false)
+        panel.title="Settings";panel.isReleasedWhenClosed=false;panel.collectionBehavior=[.fullScreenAuxiliary,.moveToActiveSpace]
+        let content=MarginCanvas(frame:NSRect(x:0,y:0,width:760,height:540));content.autoresizesSubviews=false
         let sidebarTitle=NSTextField(labelWithString:"Preferences");sidebarTitle.font = .systemFont(ofSize:16,weight:.semibold);sidebarTitle.frame=NSRect(x:20,y:24,width:150,height:26);content.addSubview(sidebarTitle)
-        let tabs=NSTabView(frame:NSRect(x:180,y:0,width:520,height:480));tabs.tabViewType = .noTabsNoBorder;content.addSubview(tabs);preferencesTabs=tabs;preferencesNavigation=[]
+        let tabs=NSTabView(frame:NSRect(x:190,y:0,width:570,height:540));tabs.tabViewType = .noTabsNoBorder;content.addSubview(tabs);preferencesTabs=tabs;preferencesNavigation=[]
         func popup(_ key:String,_ values:[String])->NSPopUpButton {
             let control=NSPopUpButton();control.addItems(withTitles:values);control.selectItem(withTitle:prefs.string(forKey:key) ?? values[0]);control.identifier = .init(key);control.target=self;control.action=#selector(settingChanged);return control
         }
@@ -2490,8 +2537,21 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
             let control=NSButton(checkboxWithTitle:label,target:self,action:#selector(settingChanged));control.identifier = .init(key);control.state=prefs.bool(forKey:key) ? .on:.off;return control
         }
         let dark=check("dark","Dark appearance");appearanceToggle=dark
+        let themePicker=ThemePicker(selected:prefs.string(forKey:"theme") ?? "Paper")
+        themePicker.onChange = { [weak self] title in
+            let control=NSPopUpButton();control.addItem(withTitle:title);control.identifier = .init("theme");self?.settingChanged(control)
+        }
         let preset=popup("zoomPreset",["Teacher","Student","Custom"]);zoomPresetControl=preset
         let path=NSTextField(wrappingLabelWithString:zoomPathDescription());path.textColor = .secondaryLabelColor;zoomRouteLabel=path
+        let picker=ZoomPathPicker();zoomPathPicker=picker
+        picker.configure(route:PassageMarkup.route(prefs.string(forKey:"zoomPreset") ?? "Teacher",paragraph:prefs.bool(forKey:"zoomParagraph"),sentence:prefs.bool(forKey:"zoomSentence")))
+        picker.onChange = { [weak self] route in
+            guard let self=self else{return}
+            self.prefs.set(route.contains(1),forKey:"zoomParagraph");self.prefs.set(route.contains(2),forKey:"zoomSentence")
+            self.prefs.set("Custom",forKey:"zoomPreset");self.zoomPresetControl?.selectItem(withTitle:"Custom")
+            self.zoomRouteLabel?.stringValue=self.zoomPathDescription()
+            if self.opened {self.level=0;self.editor.clearPointer();self.render()}
+        }
         let dict=popup("dictionary",["System default"]+dictionaries.entries.map{$0.0})
         let tagRows=tagColors.map {color -> NSView in
             let field=NSTextField(string:tagName(color));field.identifier = .init("tag."+color);field.target=self;field.action=#selector(renameTag(_:))
@@ -2499,22 +2559,24 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
             return stack([label,field])
         }
         let sections:[(String,String,[NSView])]=[
-            ("Appearance","Choose the page and pointer colors you read comfortably.",[dark,row("Page theme",popup("theme",["Paper","Sepia","Forest","Midnight"])),row("Hover effect",popup("hoverStyle",["Solid","Gradient","Stardust"])),check("notes","Show margin annotations")]),
+            ("Appearance","Choose the page and pointer colors you read comfortably.",[dark,row("Pointer highlight",popup("pointerMode",["Hold Option","Always","Off"])),themePicker,row("Hover effect",popup("hoverStyle",["Solid","Gradient","Stardust"])),check("notes","Show margin annotations")]),
             ("Typography","Essay and task text have separate reading sizes.",[row("Writing font",popup("font",["Georgia","Baskerville","Helvetica Neue","Menlo"])),numericSetting("size",label:"Essay size (pt)",minimum:16,maximum:32),numericSetting("briefSize",label:"Task size (pt)",minimum:17,maximum:28),numericSetting("spacing",label:"Line spacing",minimum:1.2,maximum:2.2),numericSetting("paragraphSpacing",label:"Paragraph gap",minimum:0,maximum:60),numericSetting("lineWidth",label:"Writing width",minimum:400,maximum:1100),numericSetting("indent",label:"First line indent",minimum:0,maximum:60)]),
-            ("Zoom","Student moves directly between essay and word.",[row("Reading path",preset),check("zoomParagraph","Include paragraph"),check("zoomSentence","Include sentence"),path]),
+            ("Zoom","Click a step to add it to your path. Click again to put it back.",[row("Reading path",preset),picker,path]),
             ("Dictionary","Only dictionaries installed on this Mac are listed.",[row("Dictionary",dict)]),
             ("Tags","Rename each color to match your feedback categories.",tagRows),
             ("Updates","Signed updates are delivered through Sparkle.",updateSettingsControls()),
             ("Intelligence","OCR uses Apple Vision and works without model downloads.",[NSTextField(wrappingLabelWithString:LocalFeedback.appleStatus),NSTextField(wrappingLabelWithString:"AI feedback runs locally when Apple Intelligence is available. No automatic model downloads. Review suggestions before teaching.")])
         ]
         for (index,section) in sections.enumerated(){
-            let nav=button(section.0,#selector(selectPreferencesSection(_:)));nav.isBordered=false;nav.alignment = .left;nav.tag=index;nav.frame=NSRect(x:16,y:72+index*42,width:150,height:34);content.addSubview(nav);preferencesNavigation.append(nav)
-            let page=MarginCanvas(frame:NSRect(x:0,y:0,width:520,height:480));page.autoresizesSubviews=false
-            let title=NSTextField(labelWithString:section.0);title.font = .systemFont(ofSize:22,weight:.semibold);title.frame=NSRect(x:24,y:24,width:460,height:30);page.addSubview(title)
-            let subtitle=NSTextField(wrappingLabelWithString:section.1);subtitle.font = .systemFont(ofSize:12);subtitle.textColor = .secondaryLabelColor;subtitle.frame=NSRect(x:24,y:60,width:460,height:34);page.addSubview(subtitle)
-            for (i,control) in section.2.enumerated(){
+            let nav=button(section.0,#selector(selectPreferencesSection(_:)));nav.image=NSImage(systemSymbolName:["paintpalette","textformat","plus.magnifyingglass","character.book.closed","tag","arrow.triangle.2.circlepath","sparkles"][index],accessibilityDescription:section.0);nav.imagePosition = .imageLeading;nav.isBordered=false;nav.alignment = .left;nav.tag=index;nav.frame=NSRect(x:16,y:72+index*42,width:162,height:36);content.addSubview(nav);preferencesNavigation.append(nav)
+            let page=MarginCanvas(frame:NSRect(x:0,y:0,width:570,height:540));page.autoresizesSubviews=false
+            let title=NSTextField(labelWithString:section.0);title.font = .systemFont(ofSize:22,weight:.semibold);title.frame=NSRect(x:24,y:24,width:510,height:30);page.addSubview(title)
+            let subtitle=NSTextField(wrappingLabelWithString:section.1);subtitle.font = .systemFont(ofSize:12);subtitle.textColor = .secondaryLabelColor;subtitle.frame=NSRect(x:24,y:60,width:510,height:34);page.addSubview(subtitle)
+            var y:CGFloat=112
+            for control in section.2 {
                 if let row=control as? NSStackView,let title=row.arrangedSubviews.first as? NSTextField {title.widthAnchor.constraint(equalToConstant:150).isActive=true}
-                control.frame=NSRect(x:24,y:110+i*42,width:460,height:32);page.addSubview(control)
+                let height:CGFloat = control is ZoomPathPicker ? 150 : (control is ThemePicker ? 104:36)
+                control.frame=NSRect(x:24,y:y,width:510,height:height);page.addSubview(control);y += height+14
             }
             let item=NSTabViewItem(identifier:section.0);item.view=page;tabs.addTabViewItem(item)
         }
@@ -2531,7 +2593,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     @objc func changeUpdateChecks(_ sender:NSButton){appUpdates.automaticallyChecks=sender.state == .on}
     @objc func selectPreferencesSection(_ sender:NSButton){
         preferencesTabs?.selectTabViewItem(at:sender.tag)
-        for button in preferencesNavigation {button.contentTintColor=button === sender ? .controlAccentColor:.labelColor;button.font = .systemFont(ofSize:13,weight:button === sender ? .semibold:.regular)}
+        for button in preferencesNavigation {button.contentTintColor=button === sender ? .controlAccentColor:.labelColor;button.font = .systemFont(ofSize:13,weight:button === sender ? .semibold:.regular);button.wantsLayer=true;button.layer?.cornerRadius=8;button.layer?.backgroundColor=(button === sender ? NSColor.controlAccentColor.withAlphaComponent(0.13):NSColor.clear).cgColor}
     }
 
     @objc func renameTag(_ sender:NSTextField){guard let key=sender.identifier?.rawValue else{return};prefs.set(sender.stringValue,forKey:key);if opened {renderNotes()}}
@@ -2583,7 +2645,9 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         if key == "zoomParagraph" || key == "zoomSentence" {
             prefs.set("Custom",forKey:"zoomPreset");zoomPresetControl?.selectItem(withTitle:"Custom")
         }
+        if key == "pointerMode" {editor.clearPointer()}
         if key.hasPrefix("zoom") {
+            zoomPathPicker?.configure(route:PassageMarkup.route(prefs.string(forKey:"zoomPreset") ?? "Teacher",paragraph:prefs.bool(forKey:"zoomParagraph"),sentence:prefs.bool(forKey:"zoomSentence")))
             zoomRouteLabel?.stringValue=zoomPathDescription()
             if opened {level=0;editor.clearPointer();gestureDelta=0;render()}
         }

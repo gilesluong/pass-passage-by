@@ -17,3 +17,5 @@ print('PASS: 20 sample documents and annotation anchors')
 PY
 swiftc -module-cache-path /tmp/passage-swift-cache Model.swift Markup.swift /tmp/PPBPDFCore.swift PDFTests.swift -framework Cocoa -framework PDFKit -o /tmp/ppb-pdf-tests
 /tmp/ppb-pdf-tests example.breakdown.json
+
+python3 AgentKit/test_mcp.py

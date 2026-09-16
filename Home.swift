@@ -344,6 +344,7 @@ struct PartnerSlide {
 final class PartnerShowcaseCarousel: NSView {
     override var isFlipped: Bool { true }
 
+    var coverImage: NSImage?
     var slides: [PartnerSlide] = []
     var currentIndex: Int = 0 { didSet { updateContent() } }
 
@@ -514,17 +515,13 @@ final class PartnerShowcaseCarousel: NSView {
         guard currentIndex >= 0 && currentIndex < slides.count else { return }
         let slide = slides[currentIndex]
         do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: slide.path))
-            let folder = (openTarget as? Passage)?.saveURL.deletingLastPathComponent().appendingPathComponent("Library")
-            if let f = folder {
-                try FileManager.default.createDirectory(at: f, withIntermediateDirectories: true)
-                let dest = f.appendingPathComponent(URL(fileURLWithPath: slide.path).lastPathComponent)
-                try data.write(to: dest)
-                (openTarget as? Passage)?.showAlert("Saved '\(slide.title)' to Writing Library!")
+            let bytes=try Data(contentsOf:URL(fileURLWithPath:slide.path))
+            let doc=try JSONDecoder().decode(Breakdown.self,from:bytes)
+            if let passage=openTarget as? Passage {
+                try LibraryStore.save(doc,to:passage.saveURL.deletingLastPathComponent().appendingPathComponent("Library"))
+                bookmarkButton.toolTip="Saved to My writing";bookmarkButton.title="✓"
             }
-        } catch {
-            (openTarget as? Passage)?.showAlert("Saved to Library.")
-        }
+        } catch {(openTarget as? Passage)?.showAlert(error.localizedDescription)}
     }
 
     func updateContent() {
@@ -535,11 +532,11 @@ final class PartnerShowcaseCarousel: NSView {
         partnerBadge.textColor = slide.accentColor
 
         titleLabel.stringValue = slide.title
-        appleMetaLabel.stringValue = "ppb  Writing Studio • " + (slide.isResearch ? "Empirical Analysis • DOI Sources" : "Cohesion & Flow • Lexical Upgrades") + "  [Band 8.5]"
+        appleMetaLabel.stringValue = slide.tags.prefix(3).joined(separator:"  ·  ")
         excerptLabel.stringValue = "“" + slide.excerpt + "”"
-        pedagogyLabel.stringValue = slide.educator + " — " + slide.pedagogyHighlight
-        laurelLabel.stringValue = "𐂷 2026 WINNER 𐂷\nAcademic Writing Awards"
-        ctaSubtitle.stringValue = "Full semantic annotations · 4 zoom levels included"
+        pedagogyLabel.stringValue = slide.pedagogyHighlight
+        laurelLabel.stringValue = ""
+        ctaSubtitle.stringValue = "Read, annotate, and make it your own."
 
         for v in tagsStack.arrangedSubviews { tagsStack.removeArrangedSubview(v); v.removeFromSuperview() }
         for t in slide.tags {
@@ -551,7 +548,7 @@ final class PartnerShowcaseCarousel: NSView {
 
         let pStyle = NSMutableParagraphStyle()
         pStyle.alignment = .center
-        let btnTitle = slide.isResearch ? "▶  Read Research Paper" : "▶  Read Model Essay"
+        let btnTitle = "Read annotated writing"
         actionButton.attributedTitle = NSAttributedString(
             string: btnTitle,
             attributes: [
@@ -571,31 +568,20 @@ final class PartnerShowcaseCarousel: NSView {
 
     override func layout() {
         super.layout()
-        let pad: CGFloat = 22
-        let w = bounds.width - pad * 2
-
-        partnerBadge.frame = NSRect(x: pad, y: 16, width: min(340, w - 210), height: 18)
-        laurelLabel.frame = NSRect(x: bounds.width - pad - 200, y: 16, width: 200, height: 32)
-
-        titleLabel.frame = NSRect(x: pad, y: 36, width: w - 210, height: 28)
-        appleMetaLabel.frame = NSRect(x: pad, y: 66, width: w, height: 18)
-        excerptLabel.frame = NSRect(x: pad, y: 86, width: w - 60, height: 38)
-        pedagogyLabel.frame = NSRect(x: pad, y: 126, width: w - 60, height: 24)
-
-        // Apple TV CTA cluster
-        actionButton.frame = NSRect(x: pad, y: 158, width: 195, height: 34)
-        bookmarkButton.frame = NSRect(x: pad + 203, y: 158, width: 34, height: 34)
-        tagsStack.frame = NSRect(x: pad + 248, y: 163, width: max(80, w - 360), height: 24)
-
-        ctaSubtitle.frame = NSRect(x: pad, y: 198, width: 340, height: 16)
-
-        let dotW: CGFloat = CGFloat(dotButtons.count) * 16
-        dotsContainer.frame = NSRect(x: (bounds.width - dotW) / 2, y: bounds.height - 24, width: dotW, height: 16)
-
-        let navBtnW: CGFloat = 28
-        let navBtnH: CGFloat = 28
-        prevButton.frame = NSRect(x: 10, y: 95, width: navBtnW, height: navBtnH)
-        nextButton.frame = NSRect(x: bounds.width - 10 - navBtnW, y: 95, width: navBtnW, height: navBtnH)
+        let pad:CGFloat=42,w=max(230,bounds.width-pad*2),textWidth=min(470,w)
+        let bottom=bounds.height-62
+        partnerBadge.frame=NSRect(x:pad,y:bottom-224,width:textWidth,height:20)
+        titleLabel.font=NSFont(name:"Georgia-Bold",size:bounds.width<600 ? 27:34)
+        titleLabel.frame=NSRect(x:pad,y:bottom-196,width:textWidth,height:88)
+        appleMetaLabel.frame=NSRect(x:pad,y:bottom-104,width:textWidth,height:20)
+        excerptLabel.frame=NSRect(x:pad,y:bottom-78,width:textWidth,height:44)
+        pedagogyLabel.isHidden=true;laurelLabel.isHidden=true;tagsStack.isHidden=true;ctaSubtitle.isHidden=true
+        actionButton.frame=NSRect(x:pad,y:bottom-16,width:214,height:38)
+        bookmarkButton.frame=NSRect(x:pad+226,y:bottom-16,width:38,height:38)
+        let dotW=CGFloat(dotButtons.count)*16
+        dotsContainer.frame=NSRect(x:(bounds.width-dotW)/2,y:bounds.height-25,width:dotW,height:16)
+        prevButton.frame=NSRect(x:7,y:bounds.height/2-14,width:28,height:28)
+        nextButton.frame=NSRect(x:bounds.width-35,y:bounds.height/2-14,width:28,height:28)
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -610,6 +596,12 @@ final class PartnerShowcaseCarousel: NSView {
         ])
         grad?.draw(in: bounds, angle: -45)
 
+        if let image=coverImage {
+            let scale=max(bounds.width/image.size.width,bounds.height/image.size.height)
+            let dest=NSRect(x:(bounds.width-image.size.width*scale)/2,y:(bounds.height-image.size.height*scale)/2,width:image.size.width*scale,height:image.size.height*scale)
+            image.draw(in:dest,from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)
+            NSColor.black.withAlphaComponent(0.30).setFill();bounds.fill()
+        }
         LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: radius)
     }
 }
@@ -667,13 +659,14 @@ final class WritingCategoryBar: NSView {
 
     override func layout() {
         super.layout()
-        titleLabel.frame = NSRect(x: 4, y: 8, width: 85, height: 20)
-        var curX: CGFloat = 95
-        let btnH: CGFloat = 28
+        titleLabel.isHidden=bounds.width<700
+        titleLabel.frame=NSRect(x:4,y:8,width:85,height:20)
+        var curX:CGFloat=titleLabel.isHidden ? 0:95
+        var y:CGFloat=4
         for btn in pillButtons {
-            let btnW = (btn.title as NSString).size(withAttributes: [.font: btn.font ?? NSFont.systemFont(ofSize: 12)]).width + 24
-            btn.frame = NSRect(x: curX, y: 4, width: btnW, height: btnH)
-            curX += btnW + 8
+            let btnW=min(bounds.width,(btn.title as NSString).size(withAttributes:[.font:btn.font ?? NSFont.systemFont(ofSize:12)]).width+24)
+            if curX+btnW>bounds.width {curX=0;y+=34}
+            btn.frame=NSRect(x:curX,y:y,width:btnW,height:28);curX+=btnW+8
         }
     }
 }
@@ -899,9 +892,12 @@ final class HomeDashboardSection {
     let key: String
     let header: HomeSectionHeader
     var cards: [HomeCard]
+    let shelf=NSScrollView()
+    let strip=MarginCanvas()
     var isHidden: Bool = false {
         didSet {
             header.isHidden = isHidden
+            shelf.isHidden = isHidden
             for c in cards { c.isHidden = isHidden }
         }
     }
@@ -910,6 +906,8 @@ final class HomeDashboardSection {
         self.key = key
         self.header = header
         self.cards = cards
+        shelf.drawsBackground=false;shelf.hasHorizontalScroller=true;shelf.autohidesScrollers=true;shelf.documentView=strip
+        for card in cards {strip.addSubview(card)}
     }
 }
 
@@ -920,6 +918,7 @@ final class HomeDashboard: NSView {
     var carousel: PartnerShowcaseCarousel?
     var categoryBar: WritingCategoryBar?
     let searchField = NSSearchField()
+    let emptyResults = NSTextField(wrappingLabelWithString:"No matching writing. Import a document or send one from your agent to start a collection.")
     var allCards: [(card: HomeCard, category: String)] = []
     var sections: [HomeDashboardSection] = []
     var selectedCategoryIndex: Int = 0
@@ -976,6 +975,10 @@ final class HomeDashboard: NSView {
         for sec in sections {
             let secMatches = sec.cards.filter { !($0.isHidden) }
             sec.header.isHidden = secMatches.isEmpty
+            sec.shelf.isHidden = secMatches.isEmpty
+            sec.isHidden = false
+            for card in sec.cards {card.isHidden = !matches.contains(where:{$0.card === card})}
+            sec.header.isHidden = secMatches.isEmpty;sec.shelf.isHidden=secMatches.isEmpty
         }
         cards = matches.map { $0.card }
         needsLayout = true
@@ -1026,6 +1029,41 @@ final class HomeDashboard: NSView {
         needsLayout = true
     }
 
+    private var clipObserver: Any?
+    var lastSidebarContentY: CGFloat = 400
+
+    override func viewDidMoveToSuperview() {
+        super.viewDidMoveToSuperview()
+        if let clip = superview as? NSClipView {
+            clip.postsBoundsChangedNotifications = true
+            if let obs = clipObserver { NotificationCenter.default.removeObserver(obs) }
+            clipObserver = NotificationCenter.default.addObserver(
+                forName: NSView.boundsDidChangeNotification,
+                object: clip,
+                queue: .main
+            ) { [weak self] _ in
+                self?.repositionStickySidebar()
+            }
+        }
+    }
+
+    deinit {
+        if let obs = clipObserver { NotificationCenter.default.removeObserver(obs) }
+    }
+
+    func repositionStickySidebar() {
+        guard let clip = superview else { return }
+        let compact = max(600, clip.bounds.width) < 960
+        let side: CGFloat = compact ? 200 : 240
+        let sideW = side - 16
+        let sideH = max(400, clip.bounds.height - 40)
+        sidebar.frame = NSRect(x: 20, y: clip.bounds.minY + 20, width: sideW, height: sideH)
+
+        let profileHeight: CGFloat = 42
+        let profileY = sideH - profileHeight - 6
+        sidebarProfile?.frame = NSRect(x: 2, y: profileY, width: sideW - 4, height: profileHeight)
+    }
+
     override func layout() {
         super.layout()
         guard let clip = superview else { return }
@@ -1034,17 +1072,11 @@ final class HomeDashboard: NSView {
         let side: CGFloat = compact ? 200 : 240
         let contentWidth = width - side - 56
 
-        sidebar.frame = NSRect(x: 20, y: 20, width: side - 16, height: max(680, bounds.height - 40))
-        main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: 1200)
-
-        // Apple TV Sidebar subviews layout
-        let sideW = sidebar.bounds.width
+        let sideW = side - 16
         var curY: CGFloat = 4
 
-        if let search = sidebarSearch {
-            search.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
-            curY += 36
-        }
+        searchField.frame = NSRect(x: 4, y: curY, width: sideW - 8, height: 28)
+        curY += 34
 
         for item in sidebarNavItems {
             item.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
@@ -1077,6 +1109,8 @@ final class HomeDashboard: NSView {
         }
 
         for b in sidebarRecentButtons {
+            b.isHidden=curY+28 > clip.bounds.height-120
+            if b.isHidden {continue}
             b.frame = NSRect(x: 0, y: curY, width: sideW, height: 26)
             curY += 28
         }
@@ -1085,28 +1119,23 @@ final class HomeDashboard: NSView {
             curY += 34
         }
 
-        // Pin user profile Casper Ryou at the bottom of the sidebar
-        let profileHeight: CGFloat = 42
-        let minProfileY = curY + 20
-        let visibleBottomY = clip.bounds.height - profileHeight - 44
-        let profileY = max(minProfileY, visibleBottomY)
-        sidebar.frame = NSRect(x: 20, y: 20, width: side - 16, height: max(profileY + profileHeight + 10, clip.bounds.height - 40))
-        sidebarProfile?.frame = NSRect(x: 2, y: profileY, width: sideW - 4, height: profileHeight)
+        lastSidebarContentY = curY
+        repositionStickySidebar()
 
-        // Main content layout (tidy and neat)
+        // Main content layout (tidy and neat, starting right under header)
         header[0].frame = NSRect(x: 0, y: 0, width: contentWidth, height: 34)
         if header.count > 1 { header[1].frame = NSRect(x: 0, y: 36, width: contentWidth, height: 22) }
-        searchField.frame = NSRect(x: 0, y: 64, width: min(440, contentWidth), height: 28)
 
-        var curMainY: CGFloat = 104
+        var curMainY: CGFloat = 68
         if let carousel = carousel, !carousel.isHidden {
-            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 240)
-            curMainY += 240 + 20
+            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: max(340,min(480,contentWidth*0.56)))
+            curMainY += carousel.frame.height + 20
         }
 
         if let categoryBar = categoryBar, !categoryBar.isHidden {
-            categoryBar.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 36)
-            curMainY += 36 + 24
+            let height:CGFloat=contentWidth<700 ? 72:36
+            categoryBar.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: height)
+            curMainY += height + 24
         }
 
         let columns = compact ? 1 : 2
@@ -1127,22 +1156,21 @@ final class HomeDashboard: NSView {
             curMainY = bottom
         } else {
             for sec in sections {
-                guard !sec.isHidden else { continue }
-                sec.header.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 68)
-                curMainY += 68 + 16
-                for (i, card) in sec.cards.enumerated() {
-                    card.frame = NSRect(
-                        x: CGFloat(i % columns) * (cardWidth + gap),
-                        y: curMainY + CGFloat(i / columns) * (cardHeight + 20),
-                        width: cardWidth,
-                        height: cardHeight
-                    )
-                }
-                let rowCount = (sec.cards.count + columns - 1) / columns
-                curMainY += CGFloat(rowCount) * (cardHeight + 20) + 32
+                let visibleCards=sec.cards.filter{!$0.isHidden}
+                guard !sec.isHidden,!visibleCards.isEmpty else {sec.shelf.isHidden=true;continue}
+                sec.shelf.isHidden=false
+                sec.header.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:68);curMainY+=76
+                sec.shelf.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:294)
+                let tileWidth=min(330,contentWidth-12)
+                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i)*(tileWidth+16),y:0,width:tileWidth,height:276)}
+                sec.strip.frame=NSRect(x:0,y:0,width:max(contentWidth,CGFloat(visibleCards.count)*(tileWidth+16)-16),height:280)
+                curMainY+=324
             }
         }
 
+        emptyResults.isHidden = !cards.filter{!$0.isHidden}.isEmpty
+        emptyResults.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:50)
+        if !emptyResults.isHidden {curMainY+=70}
         let bottom = curMainY + 10
         if !footer.isEmpty {
             let btnW = min(300, contentWidth)
@@ -1152,18 +1180,19 @@ final class HomeDashboard: NSView {
             footer[1].frame = NSRect(x: 0, y: bottom + 52, width: contentWidth, height: 22)
         }
 
-        let totalH = max(bounds.height, curMainY + 120)
+        let totalH = max(clip.bounds.height-40, curMainY + 120)
         main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: totalH)
         frame.size.height = totalH + 40
     }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        searchField.placeholderString = "Search practice essays, research papers, topics, DOIs..."
-        searchField.font = .systemFont(ofSize: 13)
+        main.addSubview(emptyResults);emptyResults.font = .systemFont(ofSize:15);emptyResults.textColor = .secondaryLabelColor
+        searchField.placeholderString = "Search writing..."
+        searchField.font = .systemFont(ofSize: 12)
         searchField.target = self
         searchField.action = #selector(searchTextChanged(_:))
-        main.addSubview(searchField)
+        sidebar.addSubview(searchField)
         addSubview(sidebar)
         addSubview(main)
     }
@@ -1203,12 +1232,8 @@ extension Passage {
             return prefix + "…"
         }
 
-        // Apple TV Search item
+        // Apple TV Search item reference
         let searchItem = AppleTVSidebarItem(title: "", target: self, action: #selector(focusSearchOrFilter))
-        searchItem.isSearch = true
-        searchItem.itemTitle = "Search"
-        searchItem.sfSymbol = "magnifyingglass"
-        dashboard.sidebar.addSubview(searchItem)
         dashboard.sidebarSearch = searchItem
 
         // Apple TV Primary Navigation Items
@@ -1241,14 +1266,14 @@ extension Passage {
             ("New document…", #selector(showNewDocumentMenu(_:)), "square.and.pencil"),
             ("Writing library", #selector(showWritingLibrary), "folder"),
             ("Scanned texts", #selector(captureDocument), "doc.viewfinder"),
-            ("Agent Studio (@PPB!)", #selector(showAgentTools), "sparkles"),
+            ("Connect your agent", #selector(showAgentTools), "sparkles"),
             ("Continue draft", #selector(resumeDraft), "clock.arrow.circlepath")
         ]
 
         var libButtons: [AppleTVSidebarItem] = []
         for (i, a) in libActions.enumerated() {
             let item = AppleTVSidebarItem(title: "", target: self, action: a.1)
-            item.itemTitle = a.0
+            item.itemTitle = a.0;item.setAccessibilityLabel(a.0)
             item.sfSymbol = a.2
             if i == 4 { // Continue draft
                 item.isEnabled = FileManager.default.fileExists(atPath: saveURL.path)
@@ -1328,7 +1353,7 @@ extension Passage {
         let terms = button("Terms", #selector(showTerms))
         dashboard.sidebarTerms = terms
 
-        let verLabel = label("v1.6.0 · Liquid Glass", 10)
+        let verLabel = label("Pass Passage By!", 10)
         verLabel.textColor = .tertiaryLabelColor
         dashboard.sidebarVersionLabel = verLabel
 
@@ -1349,44 +1374,14 @@ extension Passage {
         let p2Path = resourceDirectory.appendingPathComponent("Samples/000-task2-1.json").path
         let p3Path = resourceDirectory.appendingPathComponent("Samples/013.json").path
 
-        let slides = [
-            PartnerSlide(
-                partnerName: "IELTS Master Studio",
-                educator: "Cô Mai Phương · British Council Certified",
-                badgeText: "★ PARTNER SHOWCASE · BAND 8.5+ MENTOR",
-                title: "Task 2 · Food waste & circular economy",
-                excerpt: "Household food waste is a pervasive modern failure that squanders agricultural energy and arable land.",
-                pedagogyHighlight: "Cô Mai Phương: Breakdowns of cohesive discourse markers, lexical collocation upgrades, and task response development.",
-                tags: ["Band 8.5 Model", "IELTS Task 2", "Cohesion & Flow", "Lexical Upgrades"],
-                path: p1Path,
-                isResearch: false,
-                accentColor: NSColor(calibratedRed: 0.2, green: 0.78, blue: 0.45, alpha: 1.0)
-            ),
-            PartnerSlide(
-                partnerName: "The Writing Academy",
-                educator: "Thầy Alex Thorne · Oxford Applied Linguistics",
-                badgeText: "✦ VERIFIED EDUCATOR · ADVANCED COMPOSITION",
-                title: "Task 2 · Public transport infrastructure",
-                excerpt: "Urban transport budgets are often caught between visible mega-projects and reliable maintenance.",
-                pedagogyHighlight: "Thầy Alex Thorne: Master-class demonstration of balanced counter-argumentation and formal academic register.",
-                tags: ["Band 9 Model", "Argument Flow", "Counter-claims", "Lexical Resource"],
-                path: p2Path,
-                isResearch: false,
-                accentColor: NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0)
-            ),
-            PartnerSlide(
-                partnerName: "Oxford Academic Research Hub",
-                educator: "Dr. Minh Tuấn · Senior Research Fellow",
-                badgeText: "🔬 ACADEMIC RESEARCH · SOURCE PREVIEWS",
-                title: "Research & Policy · Sustainable Urban Mobility",
-                excerpt: "Empirical transit evaluations across European metropolitan regions demonstrate a 27% reduction in personal vehicle trips (Chen et al., 2023).",
-                pedagogyHighlight: "Dr. Minh Tuấn: Integrates interactive Source Previews, peer-reviewed DOI links, and empirical methodology notes.",
-                tags: ["Research & Academic", "DOI Source Previews", "Empirical Evidence", "Methodology"],
-                path: p3Path,
-                isResearch: true,
-                accentColor: NSColor(calibratedRed: 1.0, green: 0.65, blue: 0.2, alpha: 1.0)
-            )
-        ]
+        let pinned=showcaseDocuments()
+        let defaults=[p1Path,p2Path,p3Path].compactMap {path -> (Breakdown,String)? in
+            guard let bytes=try? Data(contentsOf:URL(fileURLWithPath:path)),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,path)
+        }
+        let slides=(pinned.isEmpty ? defaults:pinned).map {doc,path in
+            PartnerSlide(partnerName:"",educator:"",badgeText:pinned.isEmpty ? "FEATURED READING":"PINNED TO YOUR SHOWCASE",title:doc.document.title,excerpt:truncateWords(doc.document.text,maxChars:150),pedagogyHighlight:"",tags:[doc.document.taskType,"\(doc.annotations.count) margin notes"],path:path,isResearch:doc.document.taskType=="research",accentColor:NSColor(calibratedRed:0.80,green:0.89,blue:0.76,alpha:1))
+        }
+        carousel.coverImage=NSImage(contentsOf:resourceDirectory.appendingPathComponent("Assets/reading-cover.png"))
         carousel.setupSlides(slides)
         dashboard.carousel = carousel
         dashboard.main.addSubview(carousel)
@@ -1399,99 +1394,26 @@ extension Passage {
         dashboard.categoryBar = categoryBar
         dashboard.main.addSubview(categoryBar)
 
-        // Categorized Sections & Cards
-        let isDark = LiquidGlass.isDark(for: dashboard)
-
-        // Section Headers (Apple TV Shelves)
-        let researchHeader = HomeSectionHeader(
-            badge: "🔬 RESEARCH & ACADEMIC · 4 PAPERS",
-            title: "Top Academic Research & DOI Papers",
-            subtitle: "Peer-reviewed studies with empirical methodologies, DOI links and hover source previews.",
-            accentColor: LiquidGlass.researchAccent(isDark: isDark)
-        )
-        dashboard.main.addSubview(researchHeader)
-
-        let essayHeader = HomeSectionHeader(
-            badge: "✍️ ESSAYS & COMPOSITION · 4 ESSAYS",
-            title: "Top Discursive Essays & Arguments",
-            subtitle: "Annotated with thesis statements, concession defense, and dialectical synthesis.",
-            accentColor: LiquidGlass.essayAccent(isDark: isDark)
-        )
-        dashboard.main.addSubview(essayHeader)
-
-        let ieltsHeader = HomeSectionHeader(
-            badge: "🎓 IELTS EXAM PREPARATION · 4 TASKS",
-            title: "IELTS Band 8.5+ Practice Papers",
-            subtitle: "Curated Task 1 data syntheses and Task 2 essays evaluated on official public band criteria.",
-            accentColor: LiquidGlass.accent(isDark: isDark)
-        )
-        dashboard.main.addSubview(ieltsHeader)
-
-        var researchCards: [HomeCard] = []
-        var essayCards: [HomeCard] = []
-        var ieltsCards: [HomeCard] = []
-        var allCardItems: [(card: HomeCard, category: String)] = []
-
-        // 1. Research & Academic Cards (with Source Previews & DOIs)
-        let researchSpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
-            ("000-task2-3.json", "Research · Food Supply Logistics & Waste", "Empirical supply chain audits demonstrate 33% systemic losses before commercial retail distribution networks.", "Research · Source Preview & DOI", "Source Preview: Chen et al. (2023) · DOI: 10.1016/j.jclepro.2023.138902 · Empirical circular economy metrics."),
-            ("000-task2-1.json", "Research · Urban Transit Infrastructure Elasticity", "Econometric models across European metropolitan areas show substantial carbon abatement following multimodal transit expansion.", "Research · Source Preview & Citations", "Source Preview: Thorne & Martinez (2022) · DOI: 10.1080/transit.2022.091 · Elasticity models in urban mobility."),
-            ("013.json", "Research · Higher Education Enrollment Cohort Dynamics", "Demographic cohort analysis reveals non-linear growth in vocational enrollments between 2000 and 2020.", "Research · Statistical Analysis", "Source Preview: UNESCO Statistics (2021) · Comparative tertiary access dataset across 12 countries."),
-            ("000-task2-6.json", "Research · Higher Education Subsidies & Fiscal Returns", "Fiscal return evaluations indicate public university tuition subsidies generate 2.4x long-term tax yields.", "Research · Policy Evidence", "Source Preview: OECD Education (2022) · DOI: 10.1787/19991487 · Public investment and social mobility indicators.")
-        ]
-        for (i, spec) in researchSpecs.enumerated() {
-            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
-            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "research", target: self, action: #selector(loadExample(_:)), path: url.path)
-            card.rankNumber = i + 1
-            researchCards.append(card)
-            allCardItems.append((card: card, category: "research"))
-            dashboard.main.addSubview(card)
+        // Shelves always describe the document they open.
+        let sampleURLs=((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Samples"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension=="json"}.sorted{$0.lastPathComponent<$1.lastPathComponent}
+        let sampleDocs=sampleURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes=try? Data(contentsOf:url),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
+        let localDocs=LibraryStore.records(in:saveURL.deletingLastPathComponent().appendingPathComponent("Library")).map{($0.document,$0.url)}
+        let groups:[(String,String,String,[(Breakdown,URL)])]=[
+            ("ielts","IELTS Writing","Original practice · Task 1 and Task 2",sampleDocs),
+            ("research","Research & academic reading","Your imported papers and source notes",localDocs.filter{$0.0.document.taskType=="research"}),
+            ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research"})]
+        for (key,title,subtitle,documents) in groups where !documents.isEmpty {
+            let header=HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
+            dashboard.main.addSubview(header)
+            var cards:[HomeCard]=[]
+            for (doc,url) in documents {
+                let card=HomeCard(title:doc.document.title,excerpt:truncateWords(doc.document.text,maxChars:140),annotation:doc.annotations.first.map{$0.label+" · "+$0.body} ?? "Open to add your perspective.",categoryTag:doc.document.taskType,categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
+                cards.append(card);dashboard.allCards.append((card:card,category:key))
+            }
+            let section=HomeDashboardSection(key:key,header:header,cards:cards)
+            dashboard.main.addSubview(section.shelf);dashboard.sections.append(section)
         }
-
-        // 2. Essays & Composition Cards
-        let essaySpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
-            ("000-task2-6.json", "Discursive Essay · University Tuition & Social Equity", "Higher education represents both an individual career investment and a shared public good, justifying shared state funding.", "Essay · Argument Flow & Thesis", "Argument Flow · Thesis & Concession: Nuanced thesis concession followed by robust counter-argument refutation."),
-            ("000-task2-2.json", "Argumentative Essay · Digital Pedagogy & Mentorship", "While digital platforms offer unprecedented accessibility, cognitive depth requires human guidance and deliberate mentorship.", "Essay · Thesis Defense", "Argument Flow · Dialectical Synthesis: Balanced dialectical synthesis comparing automated tools and human mentorship."),
-            ("000-task2-5.json", "Persuasive Essay · Commercial Advertising & Children", "Targeting impressionable young minds with aggressive marketing creates early consumerist pressure and ethical dilemmas.", "Essay · Rhetorical Devices", "Rhetorical Strategy · Ethical Framing: Cause-and-effect transitions and emotional appeals framed ethically."),
-            ("000-task2-8.json", "Analytical Essay · Practical Skills in School Curricula", "Secondary education must balance foundational intellectual rigor with pragmatic real-world competencies.", "Essay · Comparative Synthesis", "Structure · Comparative Synthesis: Point-by-point comparative synthesis and actionable policy proposal.")
-        ]
-        for (i, spec) in essaySpecs.enumerated() {
-            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
-            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "essays", target: self, action: #selector(loadExample(_:)), path: url.path)
-            card.rankNumber = i + 1
-            essayCards.append(card)
-            allCardItems.append((card: card, category: "essays"))
-            dashboard.main.addSubview(card)
-        }
-
-        // 3. IELTS Writing Cards
-        let ieltsSpecs: [(file: String, tag: String, note: String)] = [
-            ("000-task2-3.json", "IELTS · Task Response & Band 8.5", "Task Response: Identifies structural waste causes and consumer behavioral shifts."),
-            ("000-task2-1.json", "IELTS · Cohesion & Lexical Resource", "Cohesion: Examines topic sentences and discourse transitions across paragraphs."),
-            ("013.json", "IELTS Task 1 · Data Trends & Overview", "Overview Structure: Captures peak trajectory and subsequent plateau accurately."),
-            ("000-task2-6.json", "IELTS · Task Achievement & Grammar", "Grammar: Complex condition clauses and modal structures supporting nuanced stance.")
-        ]
-        for (i, spec) in ieltsSpecs.enumerated() {
-            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
-            guard let bytes = try? Data(contentsOf: url), let sample = try? JSONDecoder().decode(Breakdown.self, from: bytes) else { continue }
-            let excerpt = truncateWords(sample.document.text, maxChars: 140)
-            let note = "\(sample.annotations.count) margin notes · PPB! practice\n\(spec.note)"
-            let card = HomeCard(title: sample.document.title, excerpt: excerpt, annotation: note, categoryTag: spec.tag, categoryType: "ielts", target: self, action: #selector(loadExample(_:)), path: url.path)
-            card.rankNumber = i + 1
-            ieltsCards.append(card)
-            allCardItems.append((card: card, category: "ielts"))
-            dashboard.main.addSubview(card)
-        }
-
-        let rSec = HomeDashboardSection(key: "research", header: researchHeader, cards: researchCards)
-        let eSec = HomeDashboardSection(key: "essays", header: essayHeader, cards: essayCards)
-        let iSec = HomeDashboardSection(key: "ielts", header: ieltsHeader, cards: ieltsCards)
-
-        dashboard.sections = [rSec, eSec, iSec]
-        dashboard.allCards = allCardItems
-        dashboard.filterCards(categoryIndex: 0)
-
-        // Footer Action
+        dashboard.cards=dashboard.allCards.map{$0.card}
         let exploreBtn = GlassPillButton(title: "", target: self, action: #selector(showExampleLibrary))
         exploreBtn.bezelStyle = .regularSquare
         exploreBtn.isBordered = false
@@ -1536,26 +1458,29 @@ extension Passage {
     }
     @objc func showAgentTools(){let panel=makeAgentWindow();infoWindow=panel;panel.center();panel.makeKeyAndOrderFront(nil)}
     func makeAgentWindow()->NSWindow {
-        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:600,height:600),styleMask:[.titled,.closable],backing:.buffered,defer:false);panel.title="Create with an agent";panel.isReleasedWhenClosed=false
-        let page=MarginCanvas(frame:NSRect(x:0,y:0,width:600,height:600));panel.contentView=page
-        func label(_ text:String,_ y:CGFloat,_ size:CGFloat=13){let v=NSTextField(wrappingLabelWithString:text);v.font = .systemFont(ofSize:size);v.textColor = .labelColor;v.frame=NSRect(x:24,y:y,width:552,height:38);page.addSubview(v)}
-        label("A brief for your agent. A lesson for your reader.",20,22)
-        label("1  Describe the writing and feedback you want",70)
-        let topic=NSTextView(frame:NSRect(x:0,y:0,width:536,height:100));topic.isRichText=false;topic.font = .systemFont(ofSize:15);topic.string=prefs.string(forKey:"agentBrief") ?? "Write about public transport. Explain the argument structure and annotate useful vocabulary in Vietnamese.";agentBrief=topic
-        let scroll=NSScrollView(frame:NSRect(x:24,y:110,width:552,height:110));scroll.borderType = .bezelBorder;scroll.hasVerticalScroller=true;topic.isVerticallyResizable=true;topic.autoresizingMask=[.width];topic.textContainer?.widthTracksTextView=true;scroll.documentView=topic;page.addSubview(scroll)
-        let task=NSPopUpButton(frame:NSRect(x:24,y:234,width:236,height:30))
-        task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Research & Academic Paper","Discursive Essay","Other writing"])
-        agentTask=task;page.addSubview(task)
-        let context=NSButton(checkboxWithTitle:"Include current essay",target:nil,action:nil);context.frame=NSRect(x:276,y:234,width:260,height:30);context.isEnabled=opened;agentContext=context;page.addSubview(context)
-        label("Feedback skill",280)
-        let skills=NSPopUpButton(frame:NSRect(x:24,y:310,width:400,height:30));agentSkills=skills;page.addSubview(skills);reloadAgentSkills()
-        let add=button("Add skill…",#selector(addSkill));add.frame=NSRect(x:440,y:310,width:136,height:30);page.addSubview(add)
-        label("2  Copy your brief into Antigravity or another agent",366)
-        let copy=button("Copy agent brief",#selector(copyAgentBrief));copy.frame=NSRect(x:24,y:402,width:182,height:34);page.addSubview(copy)
-        let kit=button("Export skill kit…",#selector(exportAgentKit));kit.frame=NSRect(x:218,y:402,width:170,height:34);page.addSubview(kit)
-        label("3  Bring the annotated result back",462)
-        let result=button("Import result JSON…",#selector(importAgentResult));result.frame=NSRect(x:24,y:498,width:200,height:34);page.addSubview(result)
-        let status=NSTextField(wrappingLabelWithString:"Uses your own agent. No account or API key is needed in this app.");status.font = .systemFont(ofSize:12);status.textColor = .secondaryLabelColor;status.frame=NSRect(x:24,y:550,width:552,height:38);agentStatus=status;page.addSubview(status)
+        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:720,height:650),styleMask:[.titled,.closable],backing:.buffered,defer:false);panel.title="Connect your agent";panel.isReleasedWhenClosed=false
+        let page=MarginCanvas(frame:NSRect(x:0,y:0,width:720,height:650));panel.contentView=page
+        func label(_ text:String,_ y:CGFloat,_ size:CGFloat=13){let v=NSTextField(wrappingLabelWithString:text);v.font = .systemFont(ofSize:size);v.frame=NSRect(x:28,y:y,width:664,height:40);page.addSubview(v)}
+        func action(_ title:String,_ selector:Selector,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat){let b=button(title,selector);b.frame=NSRect(x:x,y:y,width:w,height:32);page.addSubview(b)}
+        label("Your agent. Your documents.",22,25)
+        label("Connect an MCP-capable agent, or exchange files with the AI app you already use.",64)
+        label("CONNECTION",114,11)
+        action("Copy MCP setup",#selector(copyMCPSetup),28,144,174)
+        action("Export skill kit…",#selector(exportAgentKit),218,144,174)
+        action("Add skill…",#selector(addSkill),408,144,132)
+        label("DOCUMENT CONTEXT",198,11)
+        action("Share current writing",#selector(shareAgentContext),28,224,192)
+        action("Clear shared context",#selector(clearAgentContext),232,224,190)
+        label("REQUEST",278,11)
+        let topic=NSTextView(frame:NSRect(x:0,y:0,width:640,height:86));topic.isRichText=false;topic.font = .systemFont(ofSize:15);topic.textContainerInset=NSSize(width:10,height:10);topic.string=prefs.string(forKey:"agentBrief") ?? "Explain the argument and annotate useful vocabulary in Vietnamese. Preserve the original writing.";agentBrief=topic
+        let scroll=NSScrollView(frame:NSRect(x:28,y:304,width:664,height:94));scroll.hasVerticalScroller=true;scroll.wantsLayer=true;scroll.layer?.cornerRadius=8;topic.isVerticallyResizable=true;topic.autoresizingMask=[.width];topic.textContainer?.widthTracksTextView=true;scroll.documentView=topic;page.addSubview(scroll)
+        let task=NSPopUpButton(frame:NSRect(x:28,y:412,width:200,height:28));task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Research & Academic Paper","Discursive Essay","Other writing"]);agentTask=task;page.addSubview(task)
+        let skills=NSPopUpButton(frame:NSRect(x:244,y:412,width:448,height:28));agentSkills=skills;page.addSubview(skills);reloadAgentSkills()
+        let context=NSButton(checkboxWithTitle:"Include current writing in copied brief",target:nil,action:nil);context.frame=NSRect(x:28,y:450,width:390,height:24);context.isEnabled=opened;agentContext=context;page.addSubview(context)
+        action("Copy brief",#selector(copyAgentBrief),28,496,150)
+        action("Open Inbox",#selector(openAgentInbox),194,496,150)
+        action("Import result…",#selector(importAgentResult),360,496,160)
+        let status=NSTextField(wrappingLabelWithString:"Only explicitly shared snapshots are available through MCP. The agent uses its own account; subscription support depends on the agent app. No API key or model download in PPB.");status.font = .systemFont(ofSize:12);status.textColor = .secondaryLabelColor;status.frame=NSRect(x:28,y:552,width:664,height:68);agentStatus=status;page.addSubview(status)
         return panel
     }
     func reloadAgentSkills(){

@@ -4,3 +4,6 @@
 .build/
 dist/
 /tmp/ppb-*
+
+__pycache__/
+*.pyc

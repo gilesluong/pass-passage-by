@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 PPB_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' Info.plist)
 PPB_BUILD=$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' Info.plist)
-PPB_REPO=gilesluong/pass-passage-by-releases
+PPB_REPO=gilesluong/pass-passage-by
 PPB_DIR="dist/updates/$PPB_VERSION"
 mkdir -p "$PPB_DIR"
 python3 - <<'PY'

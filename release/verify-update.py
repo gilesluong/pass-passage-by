@@ -10,7 +10,7 @@ enclosure=item.find('enclosure')
 version=item.findtext('s:version',namespaces=ns) or enclosure.get('{'+ns['s']+'}version')
 assert version==info['CFBundleVersion']
 assert int(enclosure.get('length'))==archive.stat().st_size
-assert enclosure.get('url')==f"https://github.com/gilesluong/pass-passage-by-releases/releases/download/v{info['CFBundleShortVersionString']}/{archive.name}"
+assert enclosure.get('url')==f"https://github.com/gilesluong/pass-passage-by/releases/download/v{info['CFBundleShortVersionString']}/{archive.name}"
 signature=enclosure.get('{'+ns['s']+'}edSignature');assert signature
 swift='''import Foundation
 import CryptoKit
