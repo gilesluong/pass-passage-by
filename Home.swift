@@ -78,12 +78,26 @@ final class AppleTVSidebarItem: NSButton {
     var sfSymbol: String = "" { didSet { updateItemStyle() } }
     var isSearch: Bool = false { didSet { updateItemStyle() } }
 
+    private let iconImageView = NSImageView()
+    private let titleLabelView = NSTextField(labelWithString: "")
+
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         bezelStyle = .regularSquare
         isBordered = false
-        wantsLayer = true
-        layer?.cornerRadius = 8
+        title = ""
+        attributedTitle = NSAttributedString(string: "")
+        image = nil
+
+        iconImageView.imageScaling = .scaleProportionallyDown
+        titleLabelView.isEditable = false
+        titleLabelView.isSelectable = false
+        titleLabelView.drawsBackground = false
+        titleLabelView.isBordered = false
+        titleLabelView.lineBreakMode = .byTruncatingTail
+
+        addSubview(iconImageView)
+        addSubview(titleLabelView)
     }
     required init?(coder: NSCoder) { fatalError() }
 
@@ -107,29 +121,34 @@ final class AppleTVSidebarItem: NSButton {
 
     func updateItemStyle() {
         let fgColor: NSColor = isSelected ? .white : (isSearch ? .secondaryLabelColor : .labelColor)
-        let pStyle = NSMutableParagraphStyle()
-        pStyle.alignment = .left
-        pStyle.lineBreakMode = .byTruncatingTail
-        attributedTitle = NSAttributedString(
-            string: "  " + itemTitle,
-            attributes: [
-                .foregroundColor: fgColor,
-                .font: NSFont.systemFont(ofSize: 13, weight: isSelected ? .semibold : .medium),
-                .paragraphStyle: pStyle
-            ]
-        )
+        titleLabelView.stringValue = itemTitle
+        titleLabelView.font = .systemFont(ofSize: 13, weight: isSelected ? .semibold : .medium)
+        titleLabelView.textColor = fgColor
+
         if let img = NSImage(systemSymbolName: sfSymbol, accessibilityDescription: itemTitle) {
             let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: isSelected ? .semibold : .medium)
-            image = img.withSymbolConfiguration(conf)
-            imagePosition = .imageLeading
+            iconImageView.image = img.withSymbolConfiguration(conf)
+            iconImageView.contentTintColor = fgColor
         }
-        contentTintColor = fgColor
         needsDisplay = true
     }
 
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        if bounds.contains(point) { return self }
+        return super.hitTest(point)
+    }
+
+    override func layout() {
+        super.layout()
+        let iconSize: CGFloat = 16
+        iconImageView.frame = NSRect(x: 14, y: (bounds.height - iconSize) / 2, width: iconSize, height: iconSize)
+        titleLabelView.frame = NSRect(x: 38, y: (bounds.height - 18) / 2, width: max(40, bounds.width - 46), height: 18)
+    }
+
     override func draw(_ dirtyRect: NSRect) {
-        let radius: CGFloat = 8
-        let path = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
+        let radius: CGFloat = 7
+        let pillBounds = bounds.insetBy(dx: 4, dy: 1)
+        let path = NSBezierPath(roundedRect: pillBounds, xRadius: radius, yRadius: radius)
         if isSelected {
             // Apple TV Active Blue Pill
             NSColor(red: 0.04, green: 0.52, blue: 1.0, alpha: 1.0).setFill()
@@ -138,7 +157,6 @@ final class AppleTVSidebarItem: NSButton {
             LiquidGlass.hoverFill(isDark: LiquidGlass.isDark(for: self)).setFill()
             path.fill()
         }
-        super.draw(dirtyRect)
     }
 }
 
@@ -174,10 +192,12 @@ final class AppleTVProfileView: NSView {
         settingsButton.bezelStyle = .regularSquare
         settingsButton.isBordered = false
         if let img = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings") {
-            let conf = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
+            let conf = NSImage.SymbolConfiguration(pointSize: 12, weight: .medium)
             settingsButton.image = img.withSymbolConfiguration(conf)
         }
         settingsButton.contentTintColor = .secondaryLabelColor
+        settingsButton.target = self
+        settingsButton.action = #selector(showProfileMenu(_:))
 
         addSubview(avatarCircle)
         addSubview(nameLabel)
@@ -187,17 +207,48 @@ final class AppleTVProfileView: NSView {
 
     required init?(coder: NSCoder) { fatalError() }
 
+    @objc func showProfileMenu(_ sender: NSButton) {
+        let app = NSApp.delegate as? Passage
+        let menu = NSMenu()
+        let settingsItem = NSMenuItem(title: "Settings…", action: #selector(Passage.showSettings), keyEquivalent: ",")
+        settingsItem.target = app
+        menu.addItem(settingsItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let aboutItem = NSMenuItem(title: "About Pass Passage By!…", action: #selector(Passage.showAbout), keyEquivalent: "")
+        aboutItem.target = app
+        menu.addItem(aboutItem)
+
+        let setupItem = NSMenuItem(title: "Quick Setup Guide…", action: #selector(Passage.showOnboarding), keyEquivalent: "")
+        setupItem.target = app
+        menu.addItem(setupItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let privItem = NSMenuItem(title: "Privacy Policy…", action: #selector(Passage.showPrivacy), keyEquivalent: "")
+        privItem.target = app
+        menu.addItem(privItem)
+
+        let termsItem = NSMenuItem(title: "Terms of Service…", action: #selector(Passage.showTerms), keyEquivalent: "")
+        termsItem.target = app
+        menu.addItem(termsItem)
+
+        let point = NSPoint(x: sender.bounds.minX, y: sender.bounds.maxY + 4)
+        menu.popUp(positioning: nil, at: point, in: sender)
+    }
+
     override func layout() {
         super.layout()
-        avatarCircle.frame = NSRect(x: 4, y: 4, width: 28, height: 28)
+        avatarCircle.frame = NSRect(x: 6, y: (bounds.height - 28) / 2, width: 28, height: 28)
         initialsLabel.frame = NSRect(x: 0, y: 6, width: 28, height: 16)
 
-        let textX: CGFloat = 38
-        let textW: CGFloat = max(40, bounds.width - textX - 26)
-        nameLabel.frame = NSRect(x: textX, y: 2, width: textW, height: 16)
-        roleLabel.frame = NSRect(x: textX, y: 17, width: textW, height: 14)
+        let textX: CGFloat = 42
+        let textW: CGFloat = max(40, bounds.width - textX - 32)
+        nameLabel.frame = NSRect(x: textX, y: 3, width: textW, height: 16)
+        roleLabel.frame = NSRect(x: textX, y: 19, width: textW, height: 14)
 
-        settingsButton.frame = NSRect(x: bounds.width - 24, y: 8, width: 20, height: 20)
+        settingsButton.frame = NSRect(x: bounds.width - 28, y: (bounds.height - 22) / 2, width: 22, height: 22)
     }
 }
 
@@ -411,6 +462,43 @@ final class PartnerShowcaseCarousel: NSView {
     @objc private func nextClicked() {
         guard !slides.isEmpty else { return }
         currentIndex = (currentIndex + 1) % slides.count
+    }
+
+    private var accumulatedDeltaX: CGFloat = 0
+    private var lastSwipeTime: TimeInterval = 0
+
+    override var acceptsFirstResponder: Bool { true }
+
+    override func scrollWheel(with event: NSEvent) {
+        if event.phase == .began {
+            accumulatedDeltaX = 0
+        }
+        accumulatedDeltaX += event.scrollingDeltaX
+        let now = Date().timeIntervalSinceReferenceDate
+        if abs(accumulatedDeltaX) > 20 && (now - lastSwipeTime > 0.35) {
+            lastSwipeTime = now
+            if accumulatedDeltaX < 0 {
+                nextClicked()
+            } else {
+                prevClicked()
+            }
+            accumulatedDeltaX = 0
+            return
+        }
+        if event.phase == .ended || event.phase == .cancelled {
+            accumulatedDeltaX = 0
+        }
+        super.scrollWheel(with: event)
+    }
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 123 {
+            prevClicked()
+        } else if event.keyCode == 124 {
+            nextClicked()
+        } else {
+            super.keyDown(with: event)
+        }
     }
 
     @objc private func actionClicked() {
@@ -647,19 +735,22 @@ final class HomeCard: NSView {
         categoryBadge.font = .systemFont(ofSize: 10, weight: .bold)
 
         heading.stringValue = title
-        heading.font = .systemFont(ofSize: 17, weight: .semibold)
+        heading.font = .systemFont(ofSize: 16, weight: .semibold)
         heading.textColor = .labelColor
+        heading.lineBreakMode = .byTruncatingTail
 
         detail.stringValue = excerpt
-        detail.font = NSFont(name: "Georgia", size: 13.5) ?? .systemFont(ofSize: 13.5)
+        detail.font = NSFont(name: "Georgia", size: 13) ?? .systemFont(ofSize: 13)
         detail.textColor = .secondaryLabelColor
+        detail.lineBreakMode = .byTruncatingTail
 
         badge.stringValue = bText
-        badge.font = .systemFont(ofSize: 11, weight: .semibold)
+        badge.font = .systemFont(ofSize: 10.5, weight: .semibold)
 
         note.stringValue = nText
-        note.font = .systemFont(ofSize: 12, weight: .medium)
+        note.font = .systemFont(ofSize: 11.5, weight: .medium)
         note.textColor = .secondaryLabelColor
+        note.lineBreakMode = .byTruncatingTail
 
         open.target = target
         open.action = action
@@ -687,11 +778,6 @@ final class HomeCard: NSView {
         }
 
         for view in cardViews { addSubview(view) }
-
-        // Hover tooltip for quick preview
-        let fullPreview = "\(title)\n\(bText)\n\(nText)"
-        toolTip = fullPreview
-        badge.toolTip = fullPreview
     }
 
     @objc private func handleDOIClick() {
@@ -721,17 +807,17 @@ final class HomeCard: NSView {
             rankLabel.isHidden = true
             categoryBadge.frame = NSRect(x: pad, y: 14, width: w, height: 16)
         }
-        heading.frame = NSRect(x: pad, y: 32, width: w, height: 24)
-        detail.frame = NSRect(x: pad, y: 58, width: w, height: 52)
-        badge.frame = NSRect(x: pad, y: 114, width: w, height: 18)
-        note.frame = NSRect(x: pad, y: 134, width: w, height: 48)
+        heading.frame = NSRect(x: pad, y: 32, width: w, height: 22)
+        detail.frame = NSRect(x: pad, y: 56, width: w, height: 44)
+        badge.frame = NSRect(x: pad, y: 104, width: w, height: 16)
+        note.frame = NSRect(x: pad, y: 124, width: w, height: 68)
 
         if let doiBtn = doiButton {
             let doiW: CGFloat = 68
-            open.frame = NSRect(x: pad, y: bounds.height - 44, width: w - doiW - 10, height: 28)
-            doiBtn.frame = NSRect(x: bounds.width - pad - doiW, y: bounds.height - 44, width: doiW, height: 28)
+            open.frame = NSRect(x: pad, y: bounds.height - 42, width: w - doiW - 10, height: 28)
+            doiBtn.frame = NSRect(x: bounds.width - pad - doiW, y: bounds.height - 42, width: doiW, height: 28)
         } else {
-            open.frame = NSRect(x: pad, y: bounds.height - 44, width: min(210, w), height: 28)
+            open.frame = NSRect(x: pad, y: bounds.height - 42, width: min(210, w), height: 28)
         }
     }
 
@@ -833,6 +919,7 @@ final class HomeDashboard: NSView {
     var header: [NSView] = [], cards: [HomeCard] = [], footer: [NSView] = []
     var carousel: PartnerShowcaseCarousel?
     var categoryBar: WritingCategoryBar?
+    let searchField = NSSearchField()
     var allCards: [(card: HomeCard, category: String)] = []
     var sections: [HomeDashboardSection] = []
     var selectedCategoryIndex: Int = 0
@@ -858,8 +945,48 @@ final class HomeDashboard: NSView {
     var sidebarTerms: NSButton?
     var sidebarVersionLabel: NSView?
 
+    @objc func searchTextChanged(_ sender: NSSearchField) {
+        let query = sender.stringValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        applyFilter(query: query)
+    }
+
+    func applyFilter(query: String) {
+        if query.isEmpty {
+            sidebarSearch?.isSelected = false
+            carousel?.isHidden = false
+            categoryBar?.isHidden = false
+            filterCards(categoryIndex: selectedCategoryIndex)
+            return
+        }
+
+        sidebarSearch?.isSelected = true
+        for item in sidebarNavItems { item.isSelected = false }
+
+        carousel?.isHidden = true
+        categoryBar?.isHidden = true
+
+        let matches = allCards.filter { item in
+            let text = (item.card.heading.stringValue + " " + item.card.detail.stringValue + " " + item.card.note.stringValue + " " + item.category).lowercased()
+            return text.contains(query)
+        }
+
+        for item in allCards {
+            item.card.isHidden = !matches.contains(where: { $0.card === item.card })
+        }
+        for sec in sections {
+            let secMatches = sec.cards.filter { !($0.isHidden) }
+            sec.header.isHidden = secMatches.isEmpty
+        }
+        cards = matches.map { $0.card }
+        needsLayout = true
+    }
+
     func filterCards(categoryIndex: Int) {
         selectedCategoryIndex = categoryIndex
+        searchField.stringValue = ""
+        sidebarSearch?.isSelected = false
+        carousel?.isHidden = false
+        categoryBar?.isHidden = false
         for (i, item) in sidebarNavItems.enumerated() {
             item.isSelected = (i == categoryIndex)
         }
@@ -907,12 +1034,12 @@ final class HomeDashboard: NSView {
         let side: CGFloat = compact ? 200 : 240
         let contentWidth = width - side - 56
 
-        sidebar.frame = NSRect(x: 24, y: 24, width: side - 16, height: max(680, bounds.height - 48))
-        main.frame = NSRect(x: side + 24, y: 24, width: contentWidth, height: 1200)
+        sidebar.frame = NSRect(x: 20, y: 20, width: side - 16, height: max(680, bounds.height - 40))
+        main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: 1200)
 
         // Apple TV Sidebar subviews layout
         let sideW = sidebar.bounds.width
-        var curY: CGFloat = 0
+        var curY: CGFloat = 4
 
         if let search = sidebarSearch {
             search.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
@@ -925,8 +1052,8 @@ final class HomeDashboard: NSView {
         }
 
         if let libHeader = sidebarLibraryHeader {
-            curY += 8
-            libHeader.frame = NSRect(x: 8, y: curY, width: sideW - 16, height: 16)
+            curY += 12
+            libHeader.frame = NSRect(x: 14, y: curY, width: sideW - 20, height: 16)
             curY += 22
         }
 
@@ -936,9 +1063,6 @@ final class HomeDashboard: NSView {
         }
 
         if sidebarLibraryItems.isEmpty && !sidebarActions.isEmpty {
-            sidebarIcon?.frame = NSRect(x: 4, y: 4, width: 34, height: 34)
-            sidebarBrand?.frame = NSRect(x: 46, y: 2, width: max(80, sideW - 48), height: 22)
-            sidebarSubtitle?.frame = NSRect(x: 46, y: 24, width: max(80, sideW - 48), height: 18)
             curY = 64
             for b in sidebarActions {
                 b.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
@@ -947,8 +1071,8 @@ final class HomeDashboard: NSView {
         }
 
         if let recHeader = sidebarRecentHeader {
-            curY += 8
-            recHeader.frame = NSRect(x: 8, y: curY, width: max(80, sideW - 16), height: 16)
+            curY += 12
+            recHeader.frame = NSRect(x: 14, y: curY, width: max(80, sideW - 20), height: 16)
             curY += 22
         }
 
@@ -957,42 +1081,30 @@ final class HomeDashboard: NSView {
             curY += 28
         }
         if let empty = sidebarRecentEmpty {
-            empty.frame = NSRect(x: 8, y: curY, width: max(80, sideW - 16), height: 32)
+            empty.frame = NSRect(x: 14, y: curY, width: max(80, sideW - 20), height: 32)
             curY += 34
         }
 
-        if let profile = sidebarProfile {
-            curY += 10
-            profile.frame = NSRect(x: 0, y: curY, width: sideW, height: 36)
-            curY += 46
-        }
-
-        let bottomPillY = max(curY + 12, 440)
-        let pillGap: CGFloat = 8
-        let pillW = max(50, (sideW - 12 - pillGap) / 2)
-        sidebarAbout?.frame = NSRect(x: 6, y: bottomPillY, width: pillW, height: 24)
-        sidebarSetup?.frame = NSRect(x: 6 + pillW + pillGap, y: bottomPillY, width: pillW, height: 24)
-
-        let linkY = bottomPillY + 30
-        sidebarPrivacy?.frame = NSRect(x: 6, y: linkY, width: pillW, height: 20)
-        sidebarTerms?.frame = NSRect(x: 6 + pillW + pillGap, y: linkY, width: pillW, height: 20)
-
-        let verY = linkY + 24
-        sidebarVersionLabel?.frame = NSRect(x: 6, y: verY, width: max(80, sideW - 12), height: 16)
-
-        sidebar.frame = NSRect(x: 24, y: 24, width: side - 16, height: max(verY + 24, bounds.height - 48))
+        // Pin user profile Casper Ryou at the bottom of the sidebar
+        let profileHeight: CGFloat = 42
+        let minProfileY = curY + 20
+        let visibleBottomY = clip.bounds.height - profileHeight - 44
+        let profileY = max(minProfileY, visibleBottomY)
+        sidebar.frame = NSRect(x: 20, y: 20, width: side - 16, height: max(profileY + profileHeight + 10, clip.bounds.height - 40))
+        sidebarProfile?.frame = NSRect(x: 2, y: profileY, width: sideW - 4, height: profileHeight)
 
         // Main content layout (tidy and neat)
-        header[0].frame = NSRect(x: 0, y: 0, width: contentWidth, height: 36)
-        if header.count > 1 { header[1].frame = NSRect(x: 0, y: 38, width: contentWidth, height: 24) }
+        header[0].frame = NSRect(x: 0, y: 0, width: contentWidth, height: 34)
+        if header.count > 1 { header[1].frame = NSRect(x: 0, y: 36, width: contentWidth, height: 22) }
+        searchField.frame = NSRect(x: 0, y: 64, width: min(440, contentWidth), height: 28)
 
-        var curMainY: CGFloat = 72
-        if let carousel = carousel {
+        var curMainY: CGFloat = 104
+        if let carousel = carousel, !carousel.isHidden {
             carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 240)
             curMainY += 240 + 20
         }
 
-        if let categoryBar = categoryBar {
+        if let categoryBar = categoryBar, !categoryBar.isHidden {
             categoryBar.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 36)
             curMainY += 36 + 24
         }
@@ -1000,50 +1112,58 @@ final class HomeDashboard: NSView {
         let columns = compact ? 1 : 2
         let gap: CGFloat = 20
         let cardWidth = (contentWidth - CGFloat(columns - 1) * gap) / CGFloat(columns)
+        let cardHeight: CGFloat = 276
 
         if sections.isEmpty {
             for (i, card) in cards.enumerated() {
                 card.frame = NSRect(
                     x: CGFloat(i % columns) * (cardWidth + gap),
-                    y: curMainY + CGFloat(i / columns) * 276,
+                    y: curMainY + CGFloat(i / columns) * (cardHeight + 20),
                     width: cardWidth,
-                    height: 256
+                    height: cardHeight
                 )
             }
-            let bottom = curMainY + CGFloat((cards.count + columns - 1) / columns) * 276 + 20
+            let bottom = curMainY + CGFloat((cards.count + columns - 1) / columns) * (cardHeight + 20) + 20
             curMainY = bottom
         } else {
             for sec in sections {
                 guard !sec.isHidden else { continue }
-                sec.header.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 64)
-                curMainY += 64 + 14
-
+                sec.header.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 68)
+                curMainY += 68 + 16
                 for (i, card) in sec.cards.enumerated() {
                     card.frame = NSRect(
                         x: CGFloat(i % columns) * (cardWidth + gap),
-                        y: curMainY + CGFloat(i / columns) * 276,
+                        y: curMainY + CGFloat(i / columns) * (cardHeight + 20),
                         width: cardWidth,
-                        height: 256
+                        height: cardHeight
                     )
                 }
                 let rowCount = (sec.cards.count + columns - 1) / columns
-                curMainY += CGFloat(rowCount) * 276 + 32
+                curMainY += CGFloat(rowCount) * (cardHeight + 20) + 32
             }
         }
 
         let bottom = curMainY + 10
         if !footer.isEmpty {
-            let btnW = min(340, contentWidth)
-            footer[0].frame = NSRect(x: (contentWidth - btnW) / 2, y: bottom, width: btnW, height: 40)
+            let btnW = min(300, contentWidth)
+            footer[0].frame = NSRect(x: (contentWidth - btnW) / 2, y: bottom, width: btnW, height: 42)
         }
         if footer.count > 1 {
-            footer[1].frame = NSRect(x: 0, y: bottom + 48, width: contentWidth, height: 22)
+            footer[1].frame = NSRect(x: 0, y: bottom + 52, width: contentWidth, height: 22)
         }
-        frame.size = NSSize(width: width, height: max(clip.bounds.height, bottom + 110))
+
+        let totalH = max(bounds.height, curMainY + 120)
+        main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: totalH)
+        frame.size.height = totalH + 40
     }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
+        searchField.placeholderString = "Search practice essays, research papers, topics, DOIs..."
+        searchField.font = .systemFont(ofSize: 13)
+        searchField.target = self
+        searchField.action = #selector(searchTextChanged(_:))
+        main.addSubview(searchField)
         addSubview(sidebar)
         addSubview(main)
     }
@@ -1192,49 +1312,24 @@ extension Passage {
 
         // Apple TV User Profile View
         let profile = AppleTVProfileView(frame: .zero)
-        profile.settingsButton.target = self
-        profile.settingsButton.action = #selector(showSettings)
         dashboard.sidebar.addSubview(profile)
         dashboard.sidebarProfile = profile
 
-        // Secondary Footer Links
+        // Secondary Footer Links (kept in dashboard for property references, accessed via profile menu)
         let about = GlassPillButton(title: "About", target: self, action: #selector(showAbout))
-        about.bezelStyle = .regularSquare
-        about.isBordered = false
-        about.attributedTitle = NSAttributedString(
-            string: "About",
-            attributes: [.foregroundColor: NSColor.labelColor, .font: NSFont.systemFont(ofSize: 11, weight: .medium)]
-        )
-        dashboard.sidebar.addSubview(about)
         dashboard.sidebarAbout = about
 
         let setup = GlassPillButton(title: "Quick setup", target: self, action: #selector(showOnboarding))
-        setup.bezelStyle = .regularSquare
-        setup.isBordered = false
-        setup.attributedTitle = NSAttributedString(
-            string: "Quick setup",
-            attributes: [.foregroundColor: NSColor.labelColor, .font: NSFont.systemFont(ofSize: 11, weight: .medium)]
-        )
-        dashboard.sidebar.addSubview(setup)
         dashboard.sidebarSetup = setup
 
         let priv = button("Privacy", #selector(showPrivacy))
-        priv.isBordered = false
-        priv.contentTintColor = .secondaryLabelColor
-        priv.font = .systemFont(ofSize: 11)
-        dashboard.sidebar.addSubview(priv)
         dashboard.sidebarPrivacy = priv
 
         let terms = button("Terms", #selector(showTerms))
-        terms.isBordered = false
-        terms.contentTintColor = .secondaryLabelColor
-        terms.font = .systemFont(ofSize: 11)
-        dashboard.sidebar.addSubview(terms)
         dashboard.sidebarTerms = terms
 
         let verLabel = label("v1.6.0 · Liquid Glass", 10)
         verLabel.textColor = .tertiaryLabelColor
-        dashboard.sidebar.addSubview(verLabel)
         dashboard.sidebarVersionLabel = verLabel
 
         // Main Content Header
@@ -1425,11 +1520,19 @@ extension Passage {
     @objc func selectHomeCategoryItem(_ sender: NSButton) {
         guard let scroll = root.subviews.first as? NSScrollView,
               let dashboard = scroll.documentView as? HomeDashboard else { return }
+        dashboard.sidebarSearch?.isSelected = false
         dashboard.filterCards(categoryIndex: sender.tag)
     }
 
     @objc func focusSearchOrFilter() {
-        showExampleLibrary()
+        guard let scroll = root.subviews.first as? NSScrollView,
+              let dashboard = scroll.documentView as? HomeDashboard else {
+            showExampleLibrary()
+            return
+        }
+        for item in dashboard.sidebarNavItems { item.isSelected = false }
+        dashboard.sidebarSearch?.isSelected = true
+        window.makeFirstResponder(dashboard.searchField)
     }
     @objc func showAgentTools(){let panel=makeAgentWindow();infoWindow=panel;panel.center();panel.makeKeyAndOrderFront(nil)}
     func makeAgentWindow()->NSWindow {

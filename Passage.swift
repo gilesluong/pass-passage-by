@@ -376,6 +376,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var preferencesNavigation:[NSButton]=[]
     var briefHidden=false
     var promptEditor:NSTextView?
+    var taskPromptField:NSTextField?
     var taskBrief=NSScrollView()
     var taskBriefHeight:NSLayoutConstraint?
     var annotationSave:DispatchWorkItem?
@@ -2169,7 +2170,13 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         closeComment()
     }
 
-    func controlTextDidChange(_ notification:Notification) { if notification.object as? NSTextField === commentLabel {persistComment()} }
+    func controlTextDidChange(_ notification:Notification) {
+        if notification.object as? NSTextField === commentLabel { persistComment() }
+        if notification.object as? NSTextField === taskPromptField {
+            data.document.prompt = taskPromptField?.stringValue
+            saveDraft()
+        }
+    }
     @objc func annotationChanged(){persistComment()}
     func popoverDidClose(_ notification:Notification) {
         guard notification.object as? NSPopover === commentPopover else{return}
@@ -2234,14 +2241,21 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         scheduleAnnotationLayout()
     }
     @objc func editTaskBrief(){
-        let panel=NSPanel(contentRect:NSRect(x:0,y:0,width:520,height:320),styleMask:[.titled],backing:.buffered,defer:false);panel.title=(data.document.prompt ?? "").isEmpty ? "Add task":"Edit task"
-        let text=NSTextView(frame:NSRect(x:0,y:0,width:480,height:220));text.string=data.document.prompt ?? "";text.font = .systemFont(ofSize:18);text.isRichText=false;text.isEditable=true;text.isSelectable=true;text.isVerticallyResizable=true;text.textContainer?.widthTracksTextView=true;text.autoresizingMask=[.width];promptEditor=text
-        let scroll=NSScrollView(frame:NSRect(x:20,y:70,width:480,height:230));scroll.documentView=text;scroll.hasVerticalScroller=true;panel.contentView!.addSubview(scroll)
-        let remove=button("Delete task",#selector(deleteTaskBrief));remove.frame=NSRect(x:20,y:20,width:110,height:32);panel.contentView!.addSubview(remove)
-        let done=button("Done",#selector(saveTaskBrief),keyEquivalent:"\r");done.frame=NSRect(x:390,y:20,width:110,height:32);panel.contentView!.addSubview(done);window.beginSheet(panel);panel.makeFirstResponder(text)
+        if briefHidden { briefHidden=false; refreshTaskBrief() }
+        if let field = taskPromptField {
+            window.makeFirstResponder(field)
+            field.currentEditor()?.selectedRange = NSRange(location: field.stringValue.count, length: 0)
+        } else {
+            data.document.prompt = "WRITING TASK 2\nAllow about 40 minutes.\n\nEnter task prompt here..."
+            refreshTaskBrief()
+            if let field = taskPromptField {
+                window.makeFirstResponder(field)
+                field.selectText(nil)
+            }
+        }
     }
-    @objc func saveTaskBrief(){snapshot();data.document.prompt=promptEditor?.string;briefHidden=false;closeOnboarding();saveDraft();refreshTaskBrief()}
-    @objc func deleteTaskBrief(){snapshot();data.document.prompt=nil;data.images=nil;closeOnboarding();saveDraft();refreshTaskBrief()}
+    @objc func saveTaskBrief(){snapshot();if let pe=promptEditor{data.document.prompt=pe.string};briefHidden=false;closeOnboarding();saveDraft();refreshTaskBrief()}
+    @objc func deleteTaskBrief(){snapshot();data.document.prompt=nil;data.images=nil;taskPromptField=nil;closeOnboarding();saveDraft();refreshTaskBrief()}
     @objc func showImages() { briefHidden=false;refreshTaskBrief() }
     func refreshTaskBrief(){
         let prompt=data.document.prompt ?? ""
@@ -2259,9 +2273,21 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         var y:CGFloat=12
         if !prompt.isEmpty {
             let size=max(17,prefs.double(forKey:"briefSize"))
-            let label=NSTextField(wrappingLabelWithString:prompt);label.font = .systemFont(ofSize:size);label.isSelectable=true
+            let label=NSTextField(wrappingLabelWithString:prompt)
+            label.font = .systemFont(ofSize:size)
+            label.isEditable = true
+            label.isSelectable = true
+            label.drawsBackground = false
+            label.isBordered = false
+            label.focusRingType = .none
+            label.delegate = self
+            taskPromptField = label
             let height=(prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:NSFont.systemFont(ofSize:size)]).height+24
-            label.frame=NSRect(x:16,y:12,width:textWidth,height:height);content.addSubview(label);y=height+24
+            label.frame=NSRect(x:16,y:12,width:textWidth,height:height)
+            content.addSubview(label)
+            y=height+24
+        } else {
+            taskPromptField = nil
         }
         var imageY:CGFloat=paired ? 8:y
         for picture in data.images ?? [] {
