@@ -1,0 +1,69 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "fb7dfa9c-c382-4df2-a7b0-ccb5716f1873",
+    "title": "Technology & the classroom",
+    "text": "As digital tools become part of everyday education, some people argue that teachers will eventually be replaced by technology. Although online resources can make learning more accessible, I believe that teachers remain essential because they provide guidance that software cannot reliably offer.\n\nOne clear benefit of technology is the flexibility it gives learners. Recorded lessons allow students to revisit difficult concepts at their own pace, while online exercises provide immediate feedback. For example, a student who struggles with fractions can practise the same skill several times without waiting for the next class. This makes technology a valuable support for independent learning.\n\nHowever, access to information does not automatically lead to understanding. Teachers recognise when a student is confused, adapt their explanation and encourage learners to question an idea. Technology always improves every student's results. This claim overlooks differences in motivation, access and the quality of digital materials. The most effective classrooms therefore combine digital resources with thoughtful human guidance.\n\nIn conclusion, technology can extend what education offers, but it should complement rather than replace teachers. Schools should invest in useful digital tools while preserving the personal support that helps students learn with confidence.",
+    "taskType": "task2",
+    "prompt": "Some people believe that technology will replace teachers. To what extent do you agree or disagree?"
+  },
+  "annotations": [
+    {
+      "id": "demo-position",
+      "start": 188,
+      "end": 228,
+      "quote": "I believe that teachers remain essential",
+      "kind": "structure",
+      "level": "sentence",
+      "label": "A clear position",
+      "body": "The writer states a position in the introduction. Select a passage and use Comment to add your own teaching note.",
+      "side": "left"
+    },
+    {
+      "id": "demo-collocation",
+      "start": 429,
+      "end": 446,
+      "quote": "at their own pace",
+      "kind": "vocabulary",
+      "level": "word",
+      "label": "A useful collocation",
+      "body": "“At their own pace” expresses flexible learning speed. Click this note to locate the phrase; zoom closer to discuss its wording.",
+      "side": "right"
+    },
+    {
+      "id": "demo-example",
+      "start": 499,
+      "end": 628,
+      "quote": "For example, a student who struggles with fractions can practise the same skill several times without waiting for the next class.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "From claim to example",
+      "body": "A concrete example makes the preceding idea easier to follow. Highlight a useful passage to draw attention to it during class.",
+      "side": "left"
+    },
+    {
+      "id": "demo-overclaim",
+      "start": 889,
+      "end": 940,
+      "quote": "Technology always improves every student's results.",
+      "kind": "correction",
+      "level": "sentence",
+      "label": "An absolute claim",
+      "body": "“Always” and “every” make this statement too broad. The next sentence challenges it. Try a more qualified claim.",
+      "side": "right",
+      "suggestion": "Technology can improve students’ results when it is used appropriately."
+    },
+    {
+      "id": "demo-conclusion",
+      "start": 1207,
+      "end": 1237,
+      "quote": "complement rather than replace",
+      "kind": "vocabulary",
+      "level": "word",
+      "label": "A concise contrast",
+      "body": "This phrase brings the conclusion back to the position stated at the beginning.",
+      "side": "left"
+    }
+  ]
+}

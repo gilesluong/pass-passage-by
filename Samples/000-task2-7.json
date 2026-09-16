@@ -1,0 +1,62 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "curated-task2-7",
+    "title": "Task 2 · Tourism and local communities",
+    "text": "International tourism can support jobs and encourage cultural exchange, yet its benefits do not always reach the people who live in popular destinations. Two important problems are pressure on housing and damage to shared spaces. Local policies should address these effects while preserving the income that responsible tourism can provide.\n\nWhen homes are converted into short-term holiday accommodation, the supply available to permanent residents may decline. Workers can then struggle to find affordable housing close to their jobs. A busy visitor economy may therefore depend on employees who cannot comfortably live within it. Local authorities can respond by requiring registration of holiday rentals and limiting conversions in areas where housing is already scarce. Such rules should distinguish an occasional room rental from a large commercial operation, since treating them identically could impose unnecessary restrictions on households.\n\nHigh visitor numbers can also place pressure on historic sites, public transport and waste collection. A town designed for a relatively small population may find that its busiest streets become difficult for residents to use. Rather than promoting unlimited growth, authorities could manage access to especially sensitive places through timed entry and invest visitor revenues in maintenance. Information about less crowded routes can also distribute demand more evenly, although this should be planned with the communities receiving those visitors.\n\nResidents need a meaningful role in these decisions. Businesses may favour increased arrivals, while local families experience the costs in their daily lives. Public consultation and transparent reporting of tourism revenue can help ensure that both perspectives influence policy. In conclusion, tourism becomes problematic when its expansion outpaces housing and infrastructure. Targeted rental rules, managed access and investment in public services can reduce those pressures without assuming that tourism itself should be rejected.",
+    "taskType": "task2",
+    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nInternational tourism brings benefits but can also create problems for local communities. What problems can it cause, and how can they be addressed?\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "extra-7-0",
+      "start": 0,
+      "end": 153,
+      "quote": "International tourism can support jobs and encourage cultural exchange, yet its benefits do not always reach the people who live in popular destinations.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Position",
+      "body": "Housing pressure and damage to shared spaces are the two problems promised by the introduction. Each should receive a corresponding solution.",
+      "side": "left",
+      "tag": "blue"
+    },
+    {
+      "id": "extra-7-1",
+      "start": 341,
+      "end": 461,
+      "quote": "When homes are converted into short-term holiday accommodation, the supply available to permanent residents may decline.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "First argument",
+      "body": "Short-term rentals reduce long-term housing supply; registration and conversion limits target that mechanism. The distinction between a spare room and a commercial operation qualifies the proposal.",
+      "side": "right",
+      "tag": "green"
+    },
+    {
+      "id": "extra-7-2",
+      "start": 951,
+      "end": 1053,
+      "quote": "High visitor numbers can also place pressure on historic sites, public transport and waste collection.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Development",
+      "body": "Timed entry addresses pressure on sensitive sites, while visitor revenue funds maintenance. Both measures respond directly to capacity constraints.",
+      "side": "left",
+      "tag": "orange"
+    },
+    {
+      "id": "extra-7-3",
+      "start": 1502,
+      "end": 1554,
+      "quote": "Residents need a meaningful role in these decisions.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Judgement",
+      "body": "Consultation explains whose interests should guide the policy. The conclusion combines housing rules and infrastructure instead of claiming tourism must stop.",
+      "side": "right",
+      "tag": "purple"
+    }
+  ]
+}

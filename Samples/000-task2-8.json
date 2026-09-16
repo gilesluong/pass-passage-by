@@ -1,0 +1,62 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "curated-task2-8",
+    "title": "Task 2 · Practical skills at school",
+    "text": "Whether schools should prioritise practical skills or academic knowledge depends partly on what education is expected to achieve. Supporters of life-skills teaching want pupils to manage everyday responsibilities confidently, whereas others emphasise the intellectual foundations provided by traditional subjects. I believe both are necessary and should be connected rather than treated as competitors.\n\nPractical lessons can prepare young people for decisions they will soon make independently. Understanding a rental agreement, comparing borrowing costs or planning a household budget can prevent avoidable difficulties. These topics are particularly useful for pupils whose families cannot provide detailed guidance. Schools offer a common setting in which everyone can encounter them. However, practical teaching should involve realistic decisions and discussion, not merely instructions that students memorise and forget after an examination.\n\nTraditional subjects also develop abilities that remain useful beyond the classroom. Mathematics helps learners evaluate numerical claims, while history encourages them to examine evidence and distinguish interpretation from fact. Literature can require careful attention to language and perspectives different from one’s own. Removing too much time from these subjects could leave pupils with narrow knowledge of current procedures but fewer tools for understanding unfamiliar problems. Everyday practices may change, yet the ability to reason critically continues to matter.\n\nA sensible approach is to integrate selected practical applications into existing subjects while reserving some dedicated time for responsibilities such as first aid. For example, a mathematics lesson could compare the total costs of different payment plans, requiring pupils to apply the concepts they have studied. Teachers would need suitable materials and training to make this approach effective. In conclusion, practical preparation deserves a stronger place in schools, but not at the expense of a broad academic foundation. Education should equip pupils both to handle immediate responsibilities and to continue learning throughout their lives.",
+    "taskType": "task2",
+    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nSchools should devote more time to practical life skills instead of traditional academic subjects. Discuss both views and give your opinion.\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "extra-8-0",
+      "start": 0,
+      "end": 129,
+      "quote": "Whether schools should prioritise practical skills or academic knowledge depends partly on what education is expected to achieve.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Position",
+      "body": "Presents both positions and a clear integrative opinion. The essay must show the value of practical preparation and academic foundations.",
+      "side": "left",
+      "tag": "blue"
+    },
+    {
+      "id": "extra-8-1",
+      "start": 404,
+      "end": 495,
+      "quote": "Practical lessons can prepare young people for decisions they will soon make independently.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "First argument",
+      "body": "Budgeting and rental agreements make life skills concrete. Equal access to guidance gives a reason for schools, rather than families alone, to teach these skills.",
+      "side": "right",
+      "tag": "green"
+    },
+    {
+      "id": "extra-8-2",
+      "start": 949,
+      "end": 1033,
+      "quote": "Traditional subjects also develop abilities that remain useful beyond the classroom.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Development",
+      "body": "Maths, history and literature illustrate different transferable reasoning skills. This develops the academic side instead of treating it as tradition for its own sake.",
+      "side": "left",
+      "tag": "orange"
+    },
+    {
+      "id": "extra-8-3",
+      "start": 1527,
+      "end": 1693,
+      "quote": "A sensible approach is to integrate selected practical applications into existing subjects while reserving some dedicated time for responsibilities such as first aid.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Judgement",
+      "body": "The payment-plan lesson demonstrates integration in practice. Teacher preparation is a realistic condition on the proposed compromise.",
+      "side": "right",
+      "tag": "purple"
+    }
+  ]
+}

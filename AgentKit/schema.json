@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "document",
+    "annotations"
+  ],
+  "properties": {
+    "format": {
+      "const": "ielts-semantic-breakdown"
+    },
+    "version": {
+      "const": 1
+    },
+    "document": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "text",
+        "taskType"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "taskType": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "start",
+          "end",
+          "quote",
+          "kind",
+          "level",
+          "label",
+          "body"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "suggestion": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sourceStyle": {
+            "type": "string"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "kind": {
+            "enum": [
+              "comment",
+              "correction",
+              "vocabulary",
+              "structure",
+              "bold",
+              "italic",
+              "underline",
+              "highlight"
+            ]
+          },
+          "level": {
+            "enum": [
+              "essay",
+              "paragraph",
+              "sentence",
+              "word"
+            ]
+          },
+          "side": {
+            "enum": [
+              "left",
+              "right"
+            ]
+          },
+          "tag": {
+            "enum": [
+              "blue",
+              "orange",
+              "red",
+              "purple",
+              "green",
+              "yellow",
+              "gray"
+            ]
+          }
+        }
+      }
+    },
+    "images": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

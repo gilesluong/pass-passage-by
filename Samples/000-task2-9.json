@@ -1,0 +1,62 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "curated-task2-9",
+    "title": "Task 2 · Urban green spaces",
+    "text": "Replacing parks and other green spaces with housing can appear to offer a quick response to accommodation shortages. Although cities need enough homes for their residents, I consider the widespread loss of accessible green space a negative development. Housing policy should recognise the public functions of these areas instead of treating all undeveloped land as unused.\n\nParks provide opportunities for exercise, recreation and informal social contact without requiring people to spend money. This is especially valuable for residents of small flats who do not have private gardens. If a neighbourhood loses its only nearby park, a new facility on the edge of the city may not provide an adequate replacement. Children and older people may be unable to travel there independently. The relevant question is therefore not only how much green space remains across the city, but also whether people can reach it easily.\n\nGreen areas can also help cities manage environmental pressures. Trees offer shade, and permeable ground allows some rainwater to enter the soil rather than immediately reaching drainage systems. The precise benefits depend on local conditions, so a small decorative strip cannot automatically replace an established park. Once land is densely developed, recreating a substantial public space may be difficult and expensive. Planning decisions should take this long-term loss into account rather than considering only the immediate number of homes delivered.\n\nThis does not mean that every patch of land must remain unchanged. Cities should examine alternatives such as reusing vacant buildings, developing former industrial sites and allowing suitable increases in density near transport links. Some construction may still be necessary, but it should be accompanied by a clear assessment of access to public space. In conclusion, housing shortages require action, yet routinely sacrificing parks risks making cities less liveable. A successful policy must provide homes and protect the shared spaces that make dense urban living workable.",
+    "taskType": "task2",
+    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nSome cities are replacing green spaces with housing. Is this a positive or negative development?\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "extra-9-0",
+      "start": 0,
+      "end": 116,
+      "quote": "Replacing parks and other green spaces with housing can appear to offer a quick response to accommodation shortages.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Position",
+      "body": "The position is negative about widespread park loss, not about all construction. Preserve that qualification throughout the essay.",
+      "side": "left",
+      "tag": "blue"
+    },
+    {
+      "id": "extra-9-1",
+      "start": 374,
+      "end": 495,
+      "quote": "Parks provide opportunities for exercise, recreation and informal social contact without requiring people to spend money.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "First argument",
+      "body": "Access is distinguished from total green area. The child or older resident who cannot reach a distant replacement park explains why location matters.",
+      "side": "right",
+      "tag": "green"
+    },
+    {
+      "id": "extra-9-2",
+      "start": 920,
+      "end": 984,
+      "quote": "Green areas can also help cities manage environmental pressures.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Development",
+      "body": "Shade and drainage develop environmental functions. The claim is qualified by local conditions, avoiding a universal numerical promise.",
+      "side": "left",
+      "tag": "orange"
+    },
+    {
+      "id": "extra-9-3",
+      "start": 1480,
+      "end": 1546,
+      "quote": "This does not mean that every patch of land must remain unchanged.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Judgement",
+      "body": "Vacant buildings and industrial land provide alternatives to park conversion. The conclusion weighs housing need against the public functions already explained.",
+      "side": "right",
+      "tag": "purple"
+    }
+  ]
+}

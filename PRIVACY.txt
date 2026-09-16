@@ -1,0 +1,14 @@
+PRIVACY — LOCAL PREVIEW
+16 September 2026
+
+Pass Passage By! stores your draft locally in Application Support/Passage. The legacy folder name is retained to preserve existing work. Appearance and zoom preferences are stored in macOS UserDefaults, and macOS records recent documents.
+
+This build does not add analytics, advertising, account registration, cloud sync or a remote AI service. Import and export use files you select. Dictionary lookups are passed to macOS Dictionary Services; dictionary availability and behavior depend on your Mac and installed dictionaries.
+
+JSON documents may contain your writing, annotations and embedded task images. MD/TXT exports contain text only. You choose where to save and share them. Other software, system backups or sync services may process files in those locations under their own policies.
+
+Sparkle checks the configured GitHub Releases HTTPS feed for signed updates. GitHub receives normal download/request metadata; essays and images are not included. You can disable automatic checks in Settings → Updates.
+
+Scans are processed locally using Apple Vision. Original images are retained in the document only when Keep source images is selected. Optional annotation suggestions use the on-device Apple Intelligence model when available. The app does not download AI models automatically or send scans to a remote AI service. My writing stores documents in Application Support/Passage/Library. Copy agent brief puts selected writing and skill instructions on the clipboard; your chosen external agent has its own privacy policy.
+
+Closing the app does not delete its local draft. Keep exports of work you need to retain. This notice describes this local preview, not future hosted services.

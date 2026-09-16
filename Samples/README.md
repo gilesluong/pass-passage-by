@@ -1,0 +1,1 @@
+20 original practice examples: 10 Task 1 charts, 10 Task 2 essays. See sample-manifest.json. No official questions or band scores. Each includes four specific notes. Historical generators are archived; maintain the curated JSON directly.

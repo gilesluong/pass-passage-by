@@ -1,0 +1,62 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "curated-task2-2",
+    "title": "Task 2 · Food waste",
+    "text": "Household food waste is a serious problem because producing food requires land, water, energy and labour. Much of this waste results from shopping habits and uncertainty about how long products remain usable. Reducing it requires practical changes at home, supported by clearer information from retailers and public authorities.\n\nOne important cause is that people buy more than they can realistically consume. Large promotional packs can appear economical, but they offer poor value if half the contents are discarded. Busy households may also shop without checking what is already in the fridge or planning meals for the week. As a result, ingredients are forgotten or replaced by takeaway meals. Another cause is confusion about date labels. Some consumers interpret every printed date as an immediate safety deadline, even when the label is intended to describe quality rather than safety. This uncertainty encourages unnecessary disposal.\n\nAt home, a short meal plan and a shopping list can help match purchases to actual needs. People can also store food carefully, freeze suitable surplus portions and use older ingredients first. These measures are more realistic than expecting every household to stop wasting food immediately. Retailers have a role too: they can offer smaller pack sizes at fair prices and explain storage instructions clearly. Where local rules permit it, edible surplus food can be redirected through community organisations instead of being thrown away.\n\nPublic information campaigns should focus on specific decisions rather than simply telling people that waste is bad. For instance, explaining the difference between safety and quality labels can help shoppers act with greater confidence while still following food-safety advice. In conclusion, household waste is driven by overbuying, poor planning and unclear information. Coordinated improvements in purchasing, storage and labelling would address these causes more effectively than blaming individual consumers alone.",
+    "taskType": "task2",
+    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nLarge amounts of food are wasted by households. What are the causes of this problem, and what measures could reduce it?\n\nSupport your answer with reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "t2-2-0",
+      "start": 0,
+      "end": 105,
+      "quote": "Household food waste is a serious problem because producing food requires land, water, energy and labour.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Problem focus",
+      "body": "Identifies shopping habits and uncertainty as causes. This gives the reader a clear plan for the cause-and-measures question.",
+      "side": "left",
+      "tag": "blue"
+    },
+    {
+      "id": "t2-2-1",
+      "start": 330,
+      "end": 410,
+      "quote": "One important cause is that people buy more than they can realistically consume.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Developed argument",
+      "body": "The promotional-pack example shows how an apparently cheap purchase creates waste. The date-label explanation adds a separate cause rather than repeating poor planning.",
+      "side": "right",
+      "tag": "green"
+    },
+    {
+      "id": "t2-2-2",
+      "start": 945,
+      "end": 1033,
+      "quote": "At home, a short meal plan and a shopping list can help match purchases to actual needs.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Matched solutions",
+      "body": "Each proposal matches a cause: lists limit overbuying, freezing preserves surplus, and clearer instructions address uncertainty. This cause-solution alignment supports coherence.",
+      "side": "left",
+      "tag": "orange"
+    },
+    {
+      "id": "t2-2-3",
+      "start": 1485,
+      "end": 1601,
+      "quote": "Public information campaigns should focus on specific decisions rather than simply telling people that waste is bad.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Synthesis",
+      "body": "Explains what a useful campaign would actually teach. The conclusion then synthesises the coordinated response without claiming that consumer education alone solves the problem.",
+      "side": "right",
+      "tag": "purple"
+    }
+  ]
+}

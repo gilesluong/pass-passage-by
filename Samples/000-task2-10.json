@@ -1,0 +1,62 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "curated-task2-10",
+    "title": "Task 2 · Repairing consumer goods",
+    "text": "Many damaged household products are discarded even when they might be repairable. This behaviour reflects the relative cost and convenience of replacement, as well as the way products are designed. Encouraging repair therefore requires changes in the market for products and services, rather than simply asking consumers to be less wasteful.\n\nOne reason is that the cost of diagnosis and labour can approach the price of a new item. Consumers may also be uncertain whether a repaired product will remain reliable, while a replacement comes with an advertised guarantee. If finding a technician takes several days but ordering a new appliance takes minutes, replacement can seem the more practical choice. These considerations are particularly significant when people depend on the product for daily activities and cannot easily manage without it.\n\nDesign creates another obstacle. Some manufacturers use components that are difficult to remove or do not make spare parts readily available. Even a skilled independent technician may then be unable to carry out a straightforward repair. Requiring suitable products to be designed for disassembly and making essential parts and instructions available would address this barrier. Rules should account for legitimate safety concerns, but those concerns should not become a general excuse for preventing all independent maintenance.\n\nConsumers also need trustworthy services and clearer information. Repair businesses could provide transparent estimates and reasonable guarantees on completed work, reducing uncertainty about the outcome. Public initiatives might support local repair training or provide information on where reliable services can be found. Such measures would be more useful than campaigns that ignore the financial decisions households face. In conclusion, replacement is common because it is often cheaper, faster and easier than repair. More repairable designs, accessible parts and dependable services would make keeping products in use a realistic option for a wider range of people.",
+    "taskType": "task2",
+    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nPeople often replace damaged products instead of repairing them. Why does this happen, and what could encourage more repairs?\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "extra-10-0",
+      "start": 0,
+      "end": 81,
+      "quote": "Many damaged household products are discarded even when they might be repairable.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Position",
+      "body": "Identifies relative cost, convenience and design as causes. The answer therefore needs both service and product-design solutions.",
+      "side": "left",
+      "tag": "blue"
+    },
+    {
+      "id": "extra-10-1",
+      "start": 343,
+      "end": 432,
+      "quote": "One reason is that the cost of diagnosis and labour can approach the price of a new item.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "First argument",
+      "body": "The guarantee and time comparison explains why replacing an item can be rational. This avoids blaming consumers without considering their constraints.",
+      "side": "right",
+      "tag": "green"
+    },
+    {
+      "id": "extra-10-2",
+      "start": 848,
+      "end": 880,
+      "quote": "Design creates another obstacle.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Development",
+      "body": "Restricted components and spare parts create a separate supply-side barrier. Design-for-disassembly requirements directly address that cause.",
+      "side": "left",
+      "tag": "orange"
+    },
+    {
+      "id": "extra-10-3",
+      "start": 1379,
+      "end": 1444,
+      "quote": "Consumers also need trustworthy services and clearer information.",
+      "kind": "structure",
+      "level": "paragraph",
+      "label": "Judgement",
+      "body": "Transparent estimates and repair guarantees reduce the uncertainty introduced earlier. Training and accessible information support the proposed repair market.",
+      "side": "right",
+      "tag": "purple"
+    }
+  ]
+}

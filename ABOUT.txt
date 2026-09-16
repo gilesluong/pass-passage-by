@@ -1,0 +1,14 @@
+PASS PASSAGE BY!
+Let the words take you somewhere.
+
+A quiet native writing space for students, teachers and curious readers. Move from the whole argument to a single word, look it up in your Mac’s dictionaries, and keep your thoughts connected in the margins.
+
+Write in Markdown. Put a note inside {braces} to connect it to a margin. Choose Student, Teacher or Custom in Settings → Zoom. Your source remains editable text.
+
+Built for macOS • Local-first • No account required
+
+This is an independent preview, not affiliated with Ulysses, Apple or IELTS. Markdown compatibility is partial. Dictionary text comes from dictionaries installed on your Mac.
+
+Version 1.6
+
+Scan photos or PDFs, review locally recognized text, and keep your writing in My writing. Apple Intelligence feedback is optional and requires an already available on-device model. Updates are delivered through Sparkle.
