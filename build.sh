@@ -30,6 +30,8 @@ codesign --force --deep --sign - "$PPB_APP"
 codesign --verify --deep --strict "$PPB_APP"
 mkdir -p /tmp/PPBPreview
 ditto --norsrc --noextattr "$PPB_APP" '/tmp/PPBPreview/Pass Passage By!.app'
+ditto --norsrc --noextattr "$PPB_APP" 'dist/Pass Passage By!.app'
+test -d "$HOME/Applications" && ditto --norsrc --noextattr "$PPB_APP" "$HOME/Applications/Pass Passage By!.app"
 ditto -c -k --norsrc --noextattr --keepParent "$PPB_APP" dist/PPB-macOS.zip
 python3 - "$PPB_STAGE" <<'PY'
 import pathlib,shutil,sys
