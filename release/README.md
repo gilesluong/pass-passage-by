@@ -1,3 +1,5 @@
+> 17 September: source repo is PRIVATE. v1.7.0 release exists there but anonymous Sparkle gets 404. Do not make source public. Await approval for a separate public binary/feed-only repo, then create a NEW version/build with its feed URL. Installed app remains 1.6.0 (9); no manual overwrite occurred.
+
 # Pass Passage By! releases
 
 The source and release repository is https://github.com/gilesluong/pass-passage-by.
