@@ -50,7 +50,7 @@ final class DictionaryTabButton: NSButton {
     var isSelectedTab = false { didSet { needsDisplay = true } }
 
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        let isDark = LiquidGlass.isDark(for: self)
         if isSelectedTab {
             let fill = isDark ? NSColor.white.withAlphaComponent(0.20) : NSColor.black.withAlphaComponent(0.12)
             fill.setFill()
@@ -147,8 +147,7 @@ final class AppleDictionaryPaneView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         wantsLayer = true
-        layer?.cornerRadius = 10
-        layer?.masksToBounds = true
+        if let l = layer { LiquidGlass.configureLayer(l, radius: LiquidGlass.smallCornerRadius, shadow: true) }
         divider.boxType = .separator
         addSubview(divider)
     }
@@ -167,18 +166,10 @@ final class AppleDictionaryPaneView: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        let bg = isDark
-            ? NSColor(calibratedRed: 0.13, green: 0.14, blue: 0.18, alpha: 0.95)
-            : NSColor(calibratedWhite: 0.98, alpha: 0.95)
-        bg.setFill()
-        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 10, yRadius: 10)
-        path.fill()
-        let stroke = isDark ? NSColor.white.withAlphaComponent(0.12) : NSColor.black.withAlphaComponent(0.08)
-        stroke.setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        let isDark = LiquidGlass.isDark(for: self)
+        LiquidGlass.drawCard(in: bounds, isDark: isDark, radius: LiquidGlass.smallCornerRadius, elevated: true)
 
+        let stroke = isDark ? NSColor.white.withAlphaComponent(0.12) : NSColor.black.withAlphaComponent(0.08)
         let linePath = NSBezierPath()
         linePath.move(to: NSPoint(x: 0, y: 38))
         linePath.line(to: NSPoint(x: bounds.width, y: 38))
@@ -1253,7 +1244,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let kind = NSTextField(labelWithString: kindText)
             kind.font = .systemFont(ofSize: 9, weight: .bold)
             kind.textColor = isResearchSource
-                ? (isDark ? NSColor(calibratedRed: 1.0, green: 0.65, blue: 0.2, alpha: 1.0) : NSColor.systemOrange)
+                ? LiquidGlass.researchAccent(isDark: isDark)
                 : noteColor(n)
 
             let body = NSTextField(wrappingLabelWithString: n.body + (n.suggestion.map { "\n\nSuggested: " + $0 } ?? ""))
@@ -1280,7 +1271,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             card.spacing = 8
             card.edgeInsets = NSEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
             card.wantsLayer = true
-            card.layer?.cornerRadius = isComicTheme() ? 14 : 10
+            let cardRadius: CGFloat = isComicTheme() ? 14 : LiquidGlass.smallCornerRadius
+            if let l = card.layer { LiquidGlass.configureLayer(l, radius: cardRadius, shadow: isResearchSource) }
             card.layer?.borderWidth = isResearchSource ? 1.0 : 0
             let borderColor = isResearchSource
                 ? (isDark ? NSColor(calibratedRed: 1.0, green: 0.65, blue: 0.2, alpha: 0.35).cgColor : NSColor(calibratedRed: 0.9, green: 0.5, blue: 0.1, alpha: 0.25).cgColor)
@@ -1511,7 +1503,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
 
         let isDark = isDarkMode()
-        let accent = isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+        let accent = LiquidGlass.accent(isDark: isDark)
 
         var y: CGFloat = 8
         for w in words {
@@ -1541,7 +1533,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func updateWordListHighlight() {
         let isDark = isDarkMode()
-        let accent = isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+        let accent = LiquidGlass.accent(isDark: isDark)
         for sub in dictWordListView.subviews {
             guard let b = sub as? NSButton, let id = b.identifier?.rawValue else { continue }
             let isCurrent = (id.lowercased() == currentWord.lowercased())
@@ -1573,7 +1565,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func displayAppleDefinition() {
         let isDark = isDarkMode()
-        let accent = isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+        let accent = LiquidGlass.accent(isDark: isDark)
 
         let result = NSMutableAttributedString()
 

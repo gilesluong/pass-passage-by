@@ -25,10 +25,9 @@ final class SidebarItemButton: NSButton {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        if wantsLayer, let l = layer { l.cornerCurve = .continuous }
         if isHovered {
-            let hoverBg = isDark ? NSColor.white.withAlphaComponent(0.08) : NSColor.black.withAlphaComponent(0.06)
-            hoverBg.setFill()
+            LiquidGlass.hoverFill(isDark: LiquidGlass.isDark(for: self)).setFill()
             let path = NSBezierPath(roundedRect: bounds, xRadius: 8, yRadius: 8)
             path.fill()
         }
@@ -40,21 +39,17 @@ final class GlassPillButton: NSButton {
     override var isFlipped: Bool { true }
     var isActive: Bool = false { didSet { needsDisplay = true } }
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        let accent = isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+        let isDark = LiquidGlass.isDark(for: self)
+        let accent = LiquidGlass.accent(isDark: isDark)
         let bg = isActive
-            ? (isDark ? accent.withAlphaComponent(0.26) : accent.withAlphaComponent(0.18))
-            : (isDark ? NSColor.white.withAlphaComponent(0.08) : NSColor.black.withAlphaComponent(0.05))
+            ? LiquidGlass.pillActiveFill(isDark: isDark, accent: accent)
+            : LiquidGlass.pillInactiveFill(isDark: isDark)
         bg.setFill()
         let radius = bounds.height / 2
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
         path.fill()
-        let stroke = isActive
-            ? (isDark ? accent.withAlphaComponent(0.60) : accent.withAlphaComponent(0.40))
-            : (isDark ? NSColor.white.withAlphaComponent(0.12) : NSColor.black.withAlphaComponent(0.08))
-        stroke.setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        // Specular rim
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: radius)
         super.draw(dirtyRect)
     }
 }
@@ -62,17 +57,14 @@ final class GlassPillButton: NSButton {
 final class CardActionPill: NSButton {
     override var isFlipped: Bool { true }
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        let accent = isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+        let isDark = LiquidGlass.isDark(for: self)
+        let accent = LiquidGlass.accent(isDark: isDark)
         let bg = isDark ? accent.withAlphaComponent(0.18) : accent.withAlphaComponent(0.10)
         bg.setFill()
         let radius = bounds.height / 2
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
         path.fill()
-        let stroke = isDark ? accent.withAlphaComponent(0.35) : accent.withAlphaComponent(0.20)
-        stroke.setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: radius)
         super.draw(dirtyRect)
     }
 }
@@ -115,7 +107,7 @@ final class PartnerShowcaseCarousel: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         wantsLayer = true
-        layer?.cornerRadius = 18
+        if let l = layer { LiquidGlass.configureLayer(l) }
 
         partnerBadge.font = .systemFont(ofSize: 11, weight: .bold)
         educatorLabel.font = .systemFont(ofSize: 12, weight: .semibold)
@@ -200,7 +192,7 @@ final class PartnerShowcaseCarousel: NSView {
     func updateContent() {
         guard currentIndex >= 0 && currentIndex < slides.count else { return }
         let slide = slides[currentIndex]
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        let isDark = LiquidGlass.isDark(for: self)
 
         partnerBadge.stringValue = slide.badgeText
         partnerBadge.textColor = slide.accentColor
@@ -264,18 +256,8 @@ final class PartnerShowcaseCarousel: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        let cardBg = isDark
-            ? NSColor(calibratedRed: 0.14, green: 0.17, blue: 0.23, alpha: 0.95)
-            : NSColor(calibratedRed: 0.98, green: 0.98, blue: 1.0, alpha: 0.98)
-        cardBg.setFill()
-        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 18, yRadius: 18)
-        path.fill()
-
-        let strokeColor = isDark ? NSColor.white.withAlphaComponent(0.16) : NSColor.black.withAlphaComponent(0.08)
-        strokeColor.setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        let isDark = LiquidGlass.isDark(for: self)
+        LiquidGlass.drawCard(in: bounds, isDark: isDark, elevated: true)
     }
 }
 
@@ -358,7 +340,7 @@ final class HomeCard: NSView {
         super.init(frame: .zero)
         self.categoryType = categoryType
         wantsLayer = true
-        layer?.cornerRadius = 18
+        if let l = layer { LiquidGlass.configureLayer(l) }
 
         let parts = annotation.split(separator: "\n", maxSplits: 1).map(String.init)
         let bText = parts.first ?? "Margin notes · PPB! practice"
@@ -410,34 +392,21 @@ final class HomeCard: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let isDark = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        let isDark = LiquidGlass.isDark(for: self)
 
-        // Specular Liquid Glass Fill
-        let cardBg = isDark
-            ? NSColor(calibratedRed: 0.16, green: 0.18, blue: 0.23, alpha: 0.90)
-            : NSColor(calibratedRed: 0.99, green: 0.99, blue: 1.0, alpha: 0.95)
-        cardBg.setFill()
-        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 18, yRadius: 18)
-        path.fill()
-
-        // Specular rim gradient stroke (Apple HIG)
-        let strokeColor = isDark
-            ? NSColor.white.withAlphaComponent(0.14)
-            : NSColor.black.withAlphaComponent(0.08)
-        strokeColor.setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        // Liquid Glass card fill + gradient specular rim
+        LiquidGlass.drawCard(in: bounds, isDark: isDark)
 
         heading.textColor = .labelColor
         detail.textColor = .secondaryLabelColor
 
         let accent: NSColor = {
             if categoryType == "research" {
-                return isDark ? NSColor(calibratedRed: 1.0, green: 0.65, blue: 0.2, alpha: 1.0) : NSColor.systemOrange
+                return LiquidGlass.researchAccent(isDark: isDark)
             } else if categoryType == "essays" {
-                return isDark ? NSColor(calibratedRed: 0.75, green: 0.5, blue: 1.0, alpha: 1.0) : NSColor.systemPurple
+                return LiquidGlass.essayAccent(isDark: isDark)
             } else {
-                return isDark ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0) : NSColor.systemBlue
+                return LiquidGlass.accent(isDark: isDark)
             }
         }()
 
