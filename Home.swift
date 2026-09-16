@@ -558,6 +558,7 @@ final class HomeDashboard: NSView {
     var sidebarSetup: NSButton?
     var sidebarPrivacy: NSButton?
     var sidebarTerms: NSButton?
+    var sidebarVersionLabel: NSView?
 
     func filterCards(categoryIndex: Int) {
         selectedCategoryIndex = categoryIndex
@@ -621,8 +622,8 @@ final class HomeDashboard: NSView {
 
         var curY = recY + 24
         for b in sidebarRecentButtons {
-            b.frame = NSRect(x: 6, y: curY, width: max(80, sideW - 12), height: 24)
-            curY += 26
+            b.frame = NSRect(x: 0, y: curY, width: sideW, height: 26)
+            curY += 28
         }
         if let empty = sidebarRecentEmpty {
             empty.frame = NSRect(x: 6, y: curY, width: max(80, sideW - 12), height: 36)
@@ -638,6 +639,9 @@ final class HomeDashboard: NSView {
         let linkY = bottomPillY + 34
         sidebarPrivacy?.frame = NSRect(x: 6, y: linkY, width: pillW, height: 22)
         sidebarTerms?.frame = NSRect(x: 6 + pillW + pillGap, y: linkY, width: pillW, height: 22)
+
+        let verY = linkY + 26
+        sidebarVersionLabel?.frame = NSRect(x: 6, y: verY, width: max(80, sideW - 12), height: 16)
 
         // Main content layout (tidy and neat)
         header[0].frame = NSRect(x: 0, y: 0, width: contentWidth, height: 36)
@@ -752,18 +756,18 @@ extension Passage {
         dashboard.sidebar.addSubview(brand)
         dashboard.sidebarBrand = brand
 
-        let subtitle = label("Your writing studio", 12)
+        let subtitle = label("Academic Writing Studio", 12)
         subtitle.textColor = .secondaryLabelColor
         dashboard.sidebar.addSubview(subtitle)
         dashboard.sidebarSubtitle = subtitle
 
         // Sidebar Actions (Apple HIG native style)
         let actions: [(String, Selector, String)] = [
-            ("New essay", #selector(newEssay), "square.and.pencil"),
+            ("New document…", #selector(showNewDocumentMenu(_:)), "square.and.pencil"),
             ("Scan document…", #selector(captureDocument), "doc.viewfinder"),
             ("Continue draft", #selector(resumeDraft), "clock.arrow.circlepath"),
             ("Create with an agent", #selector(showAgentTools), "sparkles"),
-            ("My writing", #selector(showWritingLibrary), "folder"),
+            ("Writing library", #selector(showWritingLibrary), "folder"),
             ("Settings", #selector(showSettings), "gearshape")
         ]
 
@@ -808,14 +812,37 @@ extension Passage {
         dashboard.sidebarRecentHeader = recent
 
         let saved = LibraryStore.records(in: saveURL.deletingLastPathComponent().appendingPathComponent("Library"))
-        let urls = (saved.map { $0.url } + NSDocumentController.shared.recentDocumentURLs.filter { FileManager.default.fileExists(atPath: $0.path) }).prefix(4)
+        let urls = (saved.map { $0.url } + NSDocumentController.shared.recentDocumentURLs.filter { FileManager.default.fileExists(atPath: $0.path) }).prefix(5)
         for url in urls {
-            let b = NSButton(title: saved.first(where: { $0.url == url })?.document.document.title ?? url.deletingPathExtension().lastPathComponent, target: self, action: #selector(openRecent))
+            let title = saved.first(where: { $0.url == url })?.document.document.title ?? url.deletingPathExtension().lastPathComponent
+            let low = (title + " " + url.lastPathComponent).lowercased()
+            let icon: String = {
+                if low.contains("doi") || low.contains("research") || low.contains("study") || low.contains("paper") {
+                    return "🔬 "
+                } else if low.contains("ielts") || low.contains("task") || low.contains("band") {
+                    return "🎓 "
+                } else if low.contains("essay") || low.contains("discursive") || low.contains("argument") {
+                    return "✍️ "
+                } else {
+                    return "📄 "
+                }
+            }()
+            let b = SidebarItemButton(title: "", target: self, action: #selector(openRecent))
+            b.bezelStyle = .regularSquare
             b.isBordered = false
-            b.alignment = .left
-            b.lineBreakMode = .byTruncatingTail
-            b.contentTintColor = .labelColor
-            b.font = .systemFont(ofSize: 13)
+            b.wantsLayer = true
+            b.layer?.cornerRadius = 6
+            let pStyle = NSMutableParagraphStyle()
+            pStyle.alignment = .left
+            pStyle.lineBreakMode = .byTruncatingTail
+            b.attributedTitle = NSAttributedString(
+                string: "  " + icon + title,
+                attributes: [
+                    .foregroundColor: NSColor.labelColor,
+                    .font: NSFont.systemFont(ofSize: 12, weight: .regular),
+                    .paragraphStyle: pStyle
+                ]
+            )
             b.identifier = .init(url.path)
             b.toolTip = url.path
             dashboard.sidebar.addSubview(b)
@@ -862,6 +889,11 @@ extension Passage {
         terms.font = .systemFont(ofSize: 11)
         dashboard.sidebar.addSubview(terms)
         dashboard.sidebarTerms = terms
+
+        let verLabel = label("v1.6.0 · Liquid Glass", 10)
+        verLabel.textColor = .tertiaryLabelColor
+        dashboard.sidebar.addSubview(verLabel)
+        dashboard.sidebarVersionLabel = verLabel
 
         // Main Content Header
         let head0 = label("Learn from a closer reading.", 28, true)
@@ -1053,8 +1085,10 @@ extension Passage {
         label("1  Describe the writing and feedback you want",70)
         let topic=NSTextView(frame:NSRect(x:0,y:0,width:536,height:100));topic.isRichText=false;topic.font = .systemFont(ofSize:15);topic.string=prefs.string(forKey:"agentBrief") ?? "Write about public transport. Explain the argument structure and annotate useful vocabulary in Vietnamese.";agentBrief=topic
         let scroll=NSScrollView(frame:NSRect(x:24,y:110,width:552,height:110));scroll.borderType = .bezelBorder;scroll.hasVerticalScroller=true;topic.isVerticallyResizable=true;topic.autoresizingMask=[.width];topic.textContainer?.widthTracksTextView=true;scroll.documentView=topic;page.addSubview(scroll)
-        let task=NSPopUpButton(frame:NSRect(x:24,y:234,width:176,height:30));task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Other writing"]);agentTask=task;page.addSubview(task)
-        let context=NSButton(checkboxWithTitle:"Include current essay",target:nil,action:nil);context.frame=NSRect(x:218,y:234,width:280,height:30);context.isEnabled=opened;agentContext=context;page.addSubview(context)
+        let task=NSPopUpButton(frame:NSRect(x:24,y:234,width:236,height:30))
+        task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Research & Academic Paper","Discursive Essay","Other writing"])
+        agentTask=task;page.addSubview(task)
+        let context=NSButton(checkboxWithTitle:"Include current essay",target:nil,action:nil);context.frame=NSRect(x:276,y:234,width:260,height:30);context.isEnabled=opened;agentContext=context;page.addSubview(context)
         label("Feedback skill",280)
         let skills=NSPopUpButton(frame:NSRect(x:24,y:310,width:400,height:30));agentSkills=skills;page.addSubview(skills);reloadAgentSkills()
         let add=button("Add skill…",#selector(addSkill));add.frame=NSRect(x:440,y:310,width:136,height:30);page.addSubview(add)
@@ -1076,8 +1110,22 @@ extension Passage {
         }
     }
     func agentInstruction()->String {
-        let kind=agentTask?.indexOfSelectedItem==1 ? "task1":agentTask?.indexOfSelectedItem==2 ? "unknown":"task2"
+        let taskIndex = agentTask?.indexOfSelectedItem ?? 0
+        let kind: String = {
+            switch taskIndex {
+            case 0: return "task2"
+            case 1: return "task1"
+            case 2: return "research"
+            case 3: return "discursive"
+            default: return "unknown"
+            }
+        }()
         var text="Create an annotated writing document for Pass Passage By!. Task type: \(kind).\n\nREQUEST\n"+(agentBrief?.string ?? "")
+        if kind == "research" {
+            text += "\n\nACADEMIC RESEARCH & DOI GUIDELINES: Include structured DOI references (e.g. doi:10.1016/... or https://doi.org/...) and academic source annotations with abstract summaries."
+        } else if kind == "discursive" {
+            text += "\n\nARGUMENT FLOW GUIDELINES: Explicitly annotate thesis statement, concessions, counter-arguments, and dialectical synthesis."
+        }
         if agentContext?.state == .on,opened {text += "\n\nCURRENT ESSAY (preserve unless revision is requested)\n"+data.document.text}
         if let url=agentSkills?.selectedItem?.representedObject as? URL,let skill=try? String(contentsOf:url,encoding:.utf8){text += "\n\nUSER-SELECTED FEEDBACK SKILL\n"+skill}
         for name in ["SKILL.md","schema.json"] {let url=resourceDirectory.appendingPathComponent("AgentKit/"+name);if let contract=try? String(contentsOf:url,encoding:.utf8){text += "\n\nPPB IMPORT CONTRACT — \(name)\n"+contract}}

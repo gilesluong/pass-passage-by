@@ -711,6 +711,113 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
     }
 
+    @objc func showNewDocumentMenu(_ sender: Any?) {
+        guard let view = sender as? NSView else {
+            newEssay()
+            return
+        }
+        let menu = NSMenu(title: "New Document")
+
+        let ieltsItem = NSMenuItem(title: "IELTS Task 2 Practice Essay", action: #selector(newIELTSEssay), keyEquivalent: "")
+        ieltsItem.target = self
+        ieltsItem.image = NSImage(systemSymbolName: "graduationcap", accessibilityDescription: "IELTS")
+        menu.addItem(ieltsItem)
+
+        let researchItem = NSMenuItem(title: "Academic Research Study (with DOI)", action: #selector(newResearchPaper), keyEquivalent: "")
+        researchItem.target = self
+        researchItem.image = NSImage(systemSymbolName: "atom", accessibilityDescription: "Research")
+        menu.addItem(researchItem)
+
+        let discursiveItem = NSMenuItem(title: "Discursive Essay (Argument Flow)", action: #selector(newDiscursiveEssay), keyEquivalent: "")
+        discursiveItem.target = self
+        discursiveItem.image = NSImage(systemSymbolName: "text.quote", accessibilityDescription: "Essay")
+        menu.addItem(discursiveItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let blankItem = NSMenuItem(title: "Blank Writing Canvas", action: #selector(newEssay), keyEquivalent: "n")
+        blankItem.target = self
+        blankItem.image = NSImage(systemSymbolName: "doc", accessibilityDescription: "Blank")
+        menu.addItem(blankItem)
+
+        let point = NSPoint(x: view.bounds.maxX + 4, y: view.bounds.minY)
+        menu.popUp(positioning: nil, at: point, in: view)
+    }
+
+    @objc func newIELTSEssay() {
+        if opened { saveDraft() }; writingLibrary?.close()
+        let prompt = "Some people believe that unpaid community service should be a compulsory part of high school programmes. To what extent do you agree or disagree?"
+        let starterText = """
+In contemporary society, whether volunteer work should be made a compulsory component of the secondary school curriculum remains contentious. While critics argue that mandatory obligations overburden students already facing intense academic competition, I contend that community engagement provides essential civic lessons and personal maturity that classroom instruction cannot offer alone.
+
+To begin with, high school students today endure considerable pressure from standardized exams and college entrance requirements. Compelling them to perform unpaid community service may encroach upon critical revision time. Nevertheless, when structured thoughtfully, service activities serve as an active reprieve from sedentary study, fostering collaboration and leadership in practical settings.
+
+Furthermore, direct involvement in charitable organizations cultivates empathy. Interacting with diverse demographics—such as the elderly in hospice care or underprivileged children—enables young individuals to comprehend complex social issues firsthand.
+
+In conclusion, although the demands of academic life are undeniably heavy, integrating community service into high school education equips adolescents with a balanced perspective on civic duty.
+"""
+        var b = Breakdown.plain(starterText, title: "IELTS Task 2: Community Service")
+        b.document.prompt = prompt
+        b.document.taskType = "task2"
+        data = b
+        past = []
+        future = []
+        openWorkspace()
+    }
+
+    @objc func newResearchPaper() {
+        if opened { saveDraft() }; writingLibrary?.close()
+        let prompt = "Investigation into Attention Mechanisms and Cognitive Load in Academic Reading Interfaces."
+        let starterText = """
+Abstract
+Digital annotation environments have transformed scholarly reading workflows, yet their effects on cognitive load remain inadequately characterized. This investigation examines how bidirectional margin anchors and contextual previews influence reading comprehension and citation retention among academic researchers.
+
+1. Introduction & Related Work
+Prior research by Vaswani et al. (2017) demonstrated that sparse visual anchors reduce navigational latency across multi-modal textual representations (doi:10.48550/arXiv.1706.03762). Traditional split-view interfaces often introduce split-attention effects (Sweller, 2011), forcing readers to continually remap working memory between disjoint panels.
+
+2. Methodology
+We conducted a within-subject evaluation with 48 university researchers analyzing complex peer-reviewed literature. Participants completed comparative reading tasks across two experimental conditions: traditional inline footnotes versus dynamic margin anchor connectors with DOI source popovers (doi:10.1038/s41586-020-2649-2).
+
+3. Results & Discussion
+Participants using continuous margin anchor connections achieved 27% faster citation verification times (p < 0.01) while reporting lower subjective cognitive burden. Dynamic source previews allowed readers to verify contextual methodology without breaking reading momentum.
+
+4. Conclusion
+Integrating persistent bidirectional margin anchors and DOI preview popovers into scholarly writing tools significantly reduces task-switching overhead, offering a robust foundation for modern academic reading interfaces.
+"""
+        var b = Breakdown.plain(starterText, title: "Research: Cognitive Load in Reading Tools")
+        b.document.prompt = prompt
+        b.document.taskType = "research"
+        data = b
+        past = []
+        future = []
+        openWorkspace()
+    }
+
+    @objc func newDiscursiveEssay() {
+        if opened { saveDraft() }; writingLibrary?.close()
+        let prompt = "Does technological automation enhance human creativity, or does it erode authentic intellectual craftsmanship?"
+        let starterText = """
+Introduction & Thesis Statement
+The rapid ascent of automated generative systems has ignited profound debates concerning the future of intellectual labor. While detractors caution that reliance on algorithmic generation may erode artisanal discipline and critical thinking, I argue that thoughtful automation acts as a cognitive scaffolding, liberating creators from repetitive synthesis to focus on dialectical creativity and nuanced inquiry.
+
+The Case for Artisanal Preservation
+Skeptics maintain that craftsmanship is forged through friction. The meticulous process of drafting prose, verifying evidence, and refining arguments cultivates deep cognitive resilience. When automated tools instantly deliver pre-packaged summaries, students and authors risk forfeiting the rigorous discernment that authentic problem-solving demands.
+
+The Counter-Perspective: Scaffolding and Synthesis
+Conversely, history demonstrates that technological instruments consistently elevate creative ambition. Just as the printing press democratized literacy without abolishing philosophical rigor, intelligent writing platforms relieve researchers of mechanical lookup friction. Rather than replacing intellect, structured tools expose rhetorical patterns and semantic connections that would otherwise remain obscured.
+
+Synthesis & Conclusion
+Ultimately, the value of automation lies not in passive delegation, but in active partnership. By leveraging algorithmic tools to manage compositional logistics, writers can devote their analytical faculties to higher-order synthesis and moral discernment.
+"""
+        var b = Breakdown.plain(starterText, title: "Discursive: Automation and Creativity")
+        b.document.prompt = prompt
+        b.document.taskType = "discursive"
+        data = b
+        past = []
+        future = []
+        openWorkspace()
+    }
+
     @objc func newEssay() {
         if opened {saveDraft()};writingLibrary?.close()
         data = .plain("", title: "Untitled Essay")
@@ -2270,30 +2377,29 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     // MARK: - Onboarding Modal (Requirement 7)
     @objc func showOnboarding() {
-        let sheet = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 560, height: 460), styleMask: [.titled], backing: .buffered, defer: false)
-        sheet.title = "Pass Passage By!"
+        let sheet = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 580, height: 500), styleMask: [.titled], backing: .buffered, defer: false)
+        sheet.title = "Pass Passage By! — Writing Studio Setup"
 
         let title = NSTextField(labelWithString: "Pass Passage By!")
         title.font = currentHeadlineFont(size: 24)
 
-        let intro = NSTextField(wrappingLabelWithString: "Write with focus. Read with perspective. A native workspace for your words, your notes and the discoveries between them.")
-        intro.font = .systemFont(ofSize:14)
+        let intro = NSTextField(wrappingLabelWithString: "Your native writing studio for closer readings, academic source previews, and pedagogical feedback.")
+        intro.font = .systemFont(ofSize: 14)
         intro.textColor = .secondaryLabelColor
 
-        let f1 = createFeatureRow(symbol: "magnifyingglass", title: "4 Semantic Zoom Levels", desc: "Choose Teacher, Student or Custom in Settings → Zoom. Pinch or use ⌥⌘+ / ⌥⌘− to follow your path.")
-        let f2 = createFeatureRow(symbol: "character.book.closed", title: "Automatic Dictionary", desc: "Zoom into any single word to instantly see active macOS Dictionary definitions without extra clicks.")
-        let f3 = createFeatureRow(symbol: "arrow.left.arrow.right", title: "Two-sided Margin Notes & Connectors", desc: "Annotate arguments on left and right margins, complete with visual anchor guidelines.")
-        let f4 = createFeatureRow(symbol: "paintpalette", title: "Paper, typography & appearance", desc: "Choose Paper, Sepia, Forest or Midnight and adjust your reading font in Settings.")
+        let f1 = createFeatureRow(symbol: "atom", title: "Academic Research & Source Previews", desc: "Recognize DOI links, preview peer-reviewed abstracts inline on hover, and anchor methodology directly to margins.")
+        let f2 = createFeatureRow(symbol: "text.quote", title: "Argument Flow & Composition", desc: "Analyze thesis statements, concessions, and counter-arguments with bidirectional visual connector guidelines.")
+        let f3 = createFeatureRow(symbol: "graduationcap", title: "IELTS Band 8.5+ Criteria", desc: "Evaluate Task 1 and Task 2 essays across Task Response, Coherence, Lexical Resource, and Grammar.")
+        let f4 = createFeatureRow(symbol: "sparkles", title: "Antigravity AI Agent Kit (@PPB!)", desc: "Connect local agents to review essays, export skill packages, or import structured annotation JSONs.")
 
-        let startBtn = button("Try Annotated Example", #selector(startFromOnboarding))
+        let startBtn = button("Try Practice Document", #selector(startFromOnboarding))
         startBtn.controlSize = .large
 
-        let close=button("Done",#selector(closeOnboarding),keyEquivalent:"\u{1b}")
-        let all = stack([title, intro, f1, f2, dictionaryPicker(), f3, f4, stack([close,startBtn])], vertical: true)
-        all.spacing = 12
+        let close = button("Done", #selector(closeOnboarding), keyEquivalent: "\u{1b}")
+        let all = stack([title, intro, f1, f2, f3, f4, dictionaryPicker(), stack([close, startBtn])], vertical: true)
+        all.spacing = 11
         all.alignment = .leading
-        attach(all, to: sheet.contentView!, inset: 26)
-
+        attach(all, to: sheet.contentView!, inset: 24)
 
         window.beginSheet(sheet)
     }
@@ -2465,16 +2571,147 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
     }
 
-    @objc func showAbout(){showInfo("About",file:"ABOUT")}
-    @objc func showPrivacy(){showInfo("Privacy",file:"PRIVACY")}
-    @objc func showTerms(){showInfo("Terms — local preview",file:"TERMS")}
-    func showInfo(_ title:String,file:String){
-        guard let url=Bundle.main.url(forResource:file,withExtension:"txt"),let text=try? String(contentsOf:url,encoding:.utf8) else{return}
-        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:580,height:500),styleMask:[.titled,.closable,.resizable],backing:.buffered,defer:false)
-        panel.title=title;panel.isReleasedWhenClosed=false
-        let view=NSTextView(frame:NSRect(x:0,y:0,width:580,height:500));view.isEditable=false;view.isSelectable=true;view.string=text;view.font = .systemFont(ofSize:15);view.textContainerInset=NSSize(width:28,height:28)
-        let scroll=NSScrollView();scroll.hasVerticalScroller=true;scroll.documentView=view;view.autoresizingMask=[.width];view.isVerticallyResizable=true;view.textContainer?.widthTracksTextView=true
-        panel.contentView=scroll;infoWindow=panel;panel.center();panel.makeKeyAndOrderFront(nil)
+    @objc func showAbout() {
+        let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 520, height: 440), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        panel.title = "About Pass Passage By!"
+        panel.isReleasedWhenClosed = false
+
+        let canvas = MarginCanvas(frame: NSRect(x: 0, y: 0, width: 520, height: 440))
+        panel.contentView = canvas
+
+        // App Icon
+        let iconView = NSImageView(frame: NSRect(x: (520 - 56) / 2, y: 20, width: 56, height: 56))
+        iconView.image = NSImage(named: "Passage") ?? NSImage(systemSymbolName: "book.closed", accessibilityDescription: "Pass Passage By!")
+        iconView.wantsLayer = true
+        iconView.layer?.cornerRadius = 12
+        iconView.layer?.masksToBounds = true
+        canvas.addSubview(iconView)
+
+        func makeLabel(_ text: String, y: CGFloat, size: CGFloat, weight: NSFont.Weight, color: NSColor = .labelColor) -> NSTextField {
+            let tf = NSTextField(wrappingLabelWithString: text)
+            tf.font = .systemFont(ofSize: size, weight: weight)
+            tf.textColor = color
+            tf.alignment = .center
+            tf.frame = NSRect(x: 24, y: y, width: 472, height: 22)
+            canvas.addSubview(tf)
+            return tf
+        }
+
+        _ = makeLabel("Pass Passage By!", y: 84, size: 19, weight: .bold)
+        _ = makeLabel("Version 1.6.0 (Build 9) · Academic Writing Studio", y: 108, size: 12, weight: .medium, color: .secondaryLabelColor)
+
+        let desc = NSTextField(wrappingLabelWithString: "The native writing studio for closer readings, academic source previews, and pedagogical feedback on macOS.")
+        desc.font = NSFont(name: "Georgia", size: 13) ?? .systemFont(ofSize: 13)
+        desc.alignment = .center
+        desc.textColor = .labelColor
+        desc.frame = NSRect(x: 36, y: 134, width: 448, height: 36)
+        canvas.addSubview(desc)
+
+        // 4 Badges in 2 columns
+        let badges: [(String, String)] = [
+            ("🔬 Research", "DOI previews & citations"),
+            ("✍️ Essays", "Argument flow & dialectics"),
+            ("🎓 IELTS", "Task 1 & 2 band criteria"),
+            ("🤖 @PPB!", "Antigravity AI Agent kit")
+        ]
+        let colW: CGFloat = 220
+        for (i, b) in badges.enumerated() {
+            let col = i % 2
+            let row = i / 2
+            let x: CGFloat = 34 + CGFloat(col) * (colW + 12)
+            let y: CGFloat = 178 + CGFloat(row) * 40
+
+            let badgeView = NSView(frame: NSRect(x: x, y: y, width: colW, height: 34))
+            badgeView.wantsLayer = true
+            badgeView.layer?.cornerRadius = 8
+            badgeView.layer?.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.08).cgColor
+
+            let titleTf = NSTextField(labelWithString: b.0)
+            titleTf.font = .systemFont(ofSize: 11, weight: .bold)
+            titleTf.textColor = .labelColor
+            titleTf.frame = NSRect(x: 10, y: 17, width: colW - 20, height: 15)
+
+            let descTf = NSTextField(labelWithString: b.1)
+            descTf.font = .systemFont(ofSize: 10, weight: .regular)
+            descTf.textColor = .secondaryLabelColor
+            descTf.frame = NSRect(x: 10, y: 2, width: colW - 20, height: 14)
+
+            badgeView.addSubview(titleTf)
+            badgeView.addSubview(descTf)
+            canvas.addSubview(badgeView)
+        }
+
+        // Tech specs
+        let specs = NSTextField(wrappingLabelWithString: "Apple Silicon Native · Apple Vision OCR · Liquid Glass HIG · Sparkle Updates")
+        specs.font = .systemFont(ofSize: 11, weight: .medium)
+        specs.textColor = .tertiaryLabelColor
+        specs.alignment = .center
+        specs.frame = NSRect(x: 24, y: 270, width: 472, height: 18)
+        canvas.addSubview(specs)
+
+        // Separator
+        let sep = NSBox(frame: NSRect(x: 36, y: 294, width: 448, height: 1))
+        sep.boxType = .separator
+        canvas.addSubview(sep)
+
+        // Copyright / Local-first
+        let copy = NSTextField(wrappingLabelWithString: "Local-first • No account or API keys required • Privacy by design")
+        copy.font = .systemFont(ofSize: 11, weight: .regular)
+        copy.textColor = .secondaryLabelColor
+        copy.alignment = .center
+        copy.frame = NSRect(x: 24, y: 304, width: 472, height: 18)
+        canvas.addSubview(copy)
+
+        // Glass Done button
+        let doneBtn = GlassPillButton(title: "Done", target: self, action: #selector(closeInfoWindow))
+        doneBtn.bezelStyle = .regularSquare
+        doneBtn.isBordered = false
+        doneBtn.frame = NSRect(x: (520 - 120) / 2, y: 334, width: 120, height: 30)
+        doneBtn.attributedTitle = NSAttributedString(
+            string: "Done",
+            attributes: [
+                .foregroundColor: NSColor.labelColor,
+                .font: NSFont.systemFont(ofSize: 12, weight: .semibold)
+            ]
+        )
+        canvas.addSubview(doneBtn)
+
+        infoWindow = panel
+        panel.center()
+        panel.makeKeyAndOrderFront(nil)
+    }
+
+    @objc func closeInfoWindow() {
+        infoWindow?.close()
+    }
+
+    @objc func showPrivacy() { showInfo("Privacy Policy", file: "PRIVACY") }
+    @objc func showTerms() { showInfo("Terms of Service", file: "TERMS") }
+
+    func showInfo(_ title: String, file: String) {
+        let url = Bundle.main.url(forResource: file, withExtension: "txt") ?? resourceDirectory.appendingPathComponent(file + ".txt")
+        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return }
+        let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 600, height: 520), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+        panel.title = title
+        panel.isReleasedWhenClosed = false
+
+        let view = NSTextView(frame: NSRect(x: 0, y: 0, width: 600, height: 520))
+        view.isEditable = false
+        view.isSelectable = true
+        view.string = text
+        view.font = NSFont(name: "Georgia", size: 14) ?? .systemFont(ofSize: 14)
+        view.textContainerInset = NSSize(width: 32, height: 28)
+
+        let scroll = NSScrollView()
+        scroll.hasVerticalScroller = true
+        scroll.documentView = view
+        view.autoresizingMask = [.width]
+        view.isVerticallyResizable = true
+        view.textContainer?.widthTracksTextView = true
+        panel.contentView = scroll
+        infoWindow = panel
+        panel.center()
+        panel.makeKeyAndOrderFront(nil)
     }
 
     func showAlert(_ text: String) {

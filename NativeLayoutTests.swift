@@ -89,6 +89,35 @@ final class TestPassage:Passage {
         precondition(app.agentInstruction().contains("PPB IMPORT CONTRACT"))
         precondition(app.agentInstruction().contains("ielts-semantic-breakdown"))
         try render(agent.contentView!,to:"/tmp/ppb-agent-layout.png")
+
+        app.showAbout()
+        precondition(app.infoWindow != nil)
+        app.infoWindow!.contentView!.layoutSubtreeIfNeeded()
+        try render(app.infoWindow!.contentView!, to: "/tmp/ppb-about-layout.png")
+        app.closeInfoWindow()
+
+        app.showPrivacy()
+        precondition(app.infoWindow != nil)
+        app.closeInfoWindow()
+
+        app.showTerms()
+        precondition(app.infoWindow != nil)
+        app.closeInfoWindow()
+
+        app.newIELTSEssay()
+        precondition(app.data.document.taskType == "task2")
+        precondition(!app.data.document.text.isEmpty)
+        try app.data.validate()
+
+        app.newResearchPaper()
+        precondition(app.data.document.taskType == "research")
+        precondition(app.data.document.text.contains("doi:"))
+        try app.data.validate()
+
+        app.newDiscursiveEssay()
+        precondition(app.data.document.taskType == "discursive")
+        precondition(!app.data.document.text.isEmpty)
+        try app.data.validate()
         let fixture=NSImage(size:NSSize(width:1200,height:700))
         fixture.lockFocus();NSColor.white.setFill();NSRect(x:0,y:0,width:1200,height:700).fill()
         let sample="Public transport helps people reach school.\nTeachers can explain complex ideas clearly."
