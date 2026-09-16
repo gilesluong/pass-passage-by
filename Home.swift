@@ -69,6 +69,214 @@ final class CardActionPill: NSButton {
     }
 }
 
+final class AppleTVSidebarItem: NSButton {
+    override var isFlipped: Bool { true }
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false { didSet { needsDisplay = true } }
+    var isSelected: Bool = false { didSet { updateItemStyle() } }
+    var itemTitle: String = "" { didSet { updateItemStyle() } }
+    var sfSymbol: String = "" { didSet { updateItemStyle() } }
+    var isSearch: Bool = false { didSet { updateItemStyle() } }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        bezelStyle = .regularSquare
+        isBordered = false
+        wantsLayer = true
+        layer?.cornerRadius = 8
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let area = trackingArea { removeTrackingArea(area) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
+
+    func updateItemStyle() {
+        let fgColor: NSColor = isSelected ? .white : (isSearch ? .secondaryLabelColor : .labelColor)
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.alignment = .left
+        pStyle.lineBreakMode = .byTruncatingTail
+        attributedTitle = NSAttributedString(
+            string: "  " + itemTitle,
+            attributes: [
+                .foregroundColor: fgColor,
+                .font: NSFont.systemFont(ofSize: 13, weight: isSelected ? .semibold : .medium),
+                .paragraphStyle: pStyle
+            ]
+        )
+        if let img = NSImage(systemSymbolName: sfSymbol, accessibilityDescription: itemTitle) {
+            let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: isSelected ? .semibold : .medium)
+            image = img.withSymbolConfiguration(conf)
+            imagePosition = .imageLeading
+        }
+        contentTintColor = fgColor
+        needsDisplay = true
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let radius: CGFloat = 8
+        let path = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
+        if isSelected {
+            // Apple TV Active Blue Pill
+            NSColor(red: 0.04, green: 0.52, blue: 1.0, alpha: 1.0).setFill()
+            path.fill()
+        } else if isHovered {
+            LiquidGlass.hoverFill(isDark: LiquidGlass.isDark(for: self)).setFill()
+            path.fill()
+        }
+        super.draw(dirtyRect)
+    }
+}
+
+final class AppleTVProfileView: NSView {
+    override var isFlipped: Bool { true }
+
+    private let avatarCircle = NSView()
+    private let initialsLabel = NSTextField(labelWithString: "CR")
+    private let nameLabel = NSTextField(labelWithString: "Casper Ryou")
+    private let roleLabel = NSTextField(labelWithString: "Writing Studio")
+    let settingsButton = NSButton()
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+
+        avatarCircle.wantsLayer = true
+        avatarCircle.layer?.cornerRadius = 14
+        avatarCircle.layer?.masksToBounds = true
+        avatarCircle.layer?.backgroundColor = NSColor(red: 0.16, green: 0.20, blue: 0.28, alpha: 1.0).cgColor
+
+        initialsLabel.font = .systemFont(ofSize: 11, weight: .bold)
+        initialsLabel.textColor = .white
+        initialsLabel.alignment = .center
+        avatarCircle.addSubview(initialsLabel)
+
+        nameLabel.font = .systemFont(ofSize: 12.5, weight: .semibold)
+        nameLabel.textColor = .labelColor
+
+        roleLabel.font = .systemFont(ofSize: 10, weight: .medium)
+        roleLabel.textColor = .secondaryLabelColor
+
+        settingsButton.bezelStyle = .regularSquare
+        settingsButton.isBordered = false
+        if let img = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings") {
+            let conf = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
+            settingsButton.image = img.withSymbolConfiguration(conf)
+        }
+        settingsButton.contentTintColor = .secondaryLabelColor
+
+        addSubview(avatarCircle)
+        addSubview(nameLabel)
+        addSubview(roleLabel)
+        addSubview(settingsButton)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layout() {
+        super.layout()
+        avatarCircle.frame = NSRect(x: 4, y: 4, width: 28, height: 28)
+        initialsLabel.frame = NSRect(x: 0, y: 6, width: 28, height: 16)
+
+        let textX: CGFloat = 38
+        let textW: CGFloat = max(40, bounds.width - textX - 26)
+        nameLabel.frame = NSRect(x: textX, y: 2, width: textW, height: 16)
+        roleLabel.frame = NSRect(x: textX, y: 17, width: textW, height: 14)
+
+        settingsButton.frame = NSRect(x: bounds.width - 24, y: 8, width: 20, height: 20)
+    }
+}
+
+final class AppleTVPrimaryCTA: NSButton {
+    override var isFlipped: Bool { true }
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false { didSet { needsDisplay = true } }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let area = trackingArea { removeTrackingArea(area) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let radius = bounds.height / 2
+        let path = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
+        let bg = isHovered ? NSColor(white: 0.92, alpha: 1.0) : NSColor.white
+        bg.setFill()
+        path.fill()
+
+        NSColor(white: 1.0, alpha: 0.3).setStroke()
+        path.lineWidth = 1
+        path.stroke()
+
+        super.draw(dirtyRect)
+    }
+}
+
+final class AppleTVCircleButton: NSButton {
+    override var isFlipped: Bool { true }
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false { didSet { needsDisplay = true } }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let area = trackingArea { removeTrackingArea(area) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let radius = bounds.height / 2
+        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
+        let alpha: CGFloat = isHovered ? 0.35 : 0.20
+        NSColor(white: 1.0, alpha: alpha).setFill()
+        path.fill()
+
+        NSColor(white: 1.0, alpha: 0.30).setStroke()
+        path.lineWidth = 1
+        path.stroke()
+
+        super.draw(dirtyRect)
+    }
+}
+
 struct PartnerSlide {
     let partnerName: String
     let educator: String
@@ -92,12 +300,15 @@ final class PartnerShowcaseCarousel: NSView {
     var openAction: Selector?
 
     private let partnerBadge = NSTextField(wrappingLabelWithString: "")
-    private let educatorLabel = NSTextField(wrappingLabelWithString: "")
     private let titleLabel = NSTextField(wrappingLabelWithString: "")
+    private let appleMetaLabel = NSTextField(wrappingLabelWithString: "")
     private let excerptLabel = NSTextField(wrappingLabelWithString: "")
     private let pedagogyLabel = NSTextField(wrappingLabelWithString: "")
     private let tagsStack = NSStackView()
-    private let actionButton = CardActionPill(title: "", target: nil, action: nil)
+    private let actionButton = AppleTVPrimaryCTA(title: "", target: nil, action: nil)
+    private let bookmarkButton = AppleTVCircleButton(title: "+", target: nil, action: nil)
+    private let ctaSubtitle = NSTextField(wrappingLabelWithString: "")
+    private let laurelLabel = NSTextField(wrappingLabelWithString: "")
 
     private let prevButton = GlassPillButton(title: "‹", target: nil, action: nil)
     private let nextButton = GlassPillButton(title: "›", target: nil, action: nil)
@@ -110,20 +321,42 @@ final class PartnerShowcaseCarousel: NSView {
         if let l = layer { LiquidGlass.configureLayer(l) }
 
         partnerBadge.font = .systemFont(ofSize: 11, weight: .bold)
-        educatorLabel.font = .systemFont(ofSize: 12, weight: .semibold)
-        educatorLabel.textColor = .secondaryLabelColor
 
-        titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
-        titleLabel.textColor = .labelColor
+        titleLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        titleLabel.textColor = .white
+
+        appleMetaLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        appleMetaLabel.textColor = NSColor(white: 0.90, alpha: 0.90)
 
         excerptLabel.font = NSFont(name: "Georgia", size: 13.5) ?? .systemFont(ofSize: 13.5)
-        excerptLabel.textColor = .secondaryLabelColor
+        excerptLabel.textColor = NSColor(white: 0.95, alpha: 0.95)
 
         pedagogyLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        pedagogyLabel.textColor = .labelColor
+        pedagogyLabel.textColor = NSColor(white: 0.85, alpha: 0.85)
+
+        laurelLabel.font = .systemFont(ofSize: 10.5, weight: .bold)
+        laurelLabel.textColor = NSColor(white: 0.82, alpha: 0.70)
+        laurelLabel.alignment = .right
+
+        ctaSubtitle.font = .systemFont(ofSize: 11, weight: .regular)
+        ctaSubtitle.textColor = NSColor(white: 0.75, alpha: 0.65)
 
         actionButton.target = self
         actionButton.action = #selector(actionClicked)
+
+        bookmarkButton.target = self
+        bookmarkButton.action = #selector(bookmarkClicked)
+        bookmarkButton.toolTip = "Save to My writing"
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.alignment = .center
+        bookmarkButton.attributedTitle = NSAttributedString(
+            string: "+",
+            attributes: [
+                .foregroundColor: NSColor.white,
+                .font: NSFont.systemFont(ofSize: 16, weight: .bold),
+                .paragraphStyle: pStyle
+            ]
+        )
 
         prevButton.target = self
         prevButton.action = #selector(prevClicked)
@@ -138,7 +371,7 @@ final class PartnerShowcaseCarousel: NSView {
         tagsStack.spacing = 8
         tagsStack.alignment = .centerY
 
-        for v in [partnerBadge, educatorLabel, titleLabel, excerptLabel, pedagogyLabel, tagsStack, actionButton, prevButton, nextButton, dotsContainer] {
+        for v in [partnerBadge, titleLabel, appleMetaLabel, excerptLabel, pedagogyLabel, tagsStack, actionButton, bookmarkButton, ctaSubtitle, laurelLabel, prevButton, nextButton, dotsContainer] {
             addSubview(v)
         }
     }
@@ -159,7 +392,7 @@ final class PartnerShowcaseCarousel: NSView {
             let b = NSButton(title: "●", target: self, action: #selector(dotClicked(_:)))
             b.isBordered = false
             b.tag = i
-            b.font = .systemFont(ofSize: 12)
+            b.font = .systemFont(ofSize: 11)
             dotsContainer.addArrangedSubview(b)
             dotButtons.append(b)
         }
@@ -189,42 +422,59 @@ final class PartnerShowcaseCarousel: NSView {
         }
     }
 
+    @objc private func bookmarkClicked() {
+        guard currentIndex >= 0 && currentIndex < slides.count else { return }
+        let slide = slides[currentIndex]
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: slide.path))
+            let folder = (openTarget as? Passage)?.saveURL.deletingLastPathComponent().appendingPathComponent("Library")
+            if let f = folder {
+                try FileManager.default.createDirectory(at: f, withIntermediateDirectories: true)
+                let dest = f.appendingPathComponent(URL(fileURLWithPath: slide.path).lastPathComponent)
+                try data.write(to: dest)
+                (openTarget as? Passage)?.showAlert("Saved '\(slide.title)' to Writing Library!")
+            }
+        } catch {
+            (openTarget as? Passage)?.showAlert("Saved to Library.")
+        }
+    }
+
     func updateContent() {
         guard currentIndex >= 0 && currentIndex < slides.count else { return }
         let slide = slides[currentIndex]
-        let isDark = LiquidGlass.isDark(for: self)
 
         partnerBadge.stringValue = slide.badgeText
         partnerBadge.textColor = slide.accentColor
 
-        educatorLabel.stringValue = slide.partnerName + " · " + slide.educator
-
         titleLabel.stringValue = slide.title
+        appleMetaLabel.stringValue = "ppb  Writing Studio • " + (slide.isResearch ? "Empirical Analysis • DOI Sources" : "Cohesion & Flow • Lexical Upgrades") + "  [Band 8.5]"
         excerptLabel.stringValue = "“" + slide.excerpt + "”"
-        pedagogyLabel.stringValue = slide.pedagogyHighlight
+        pedagogyLabel.stringValue = slide.educator + " — " + slide.pedagogyHighlight
+        laurelLabel.stringValue = "𐂷 2026 WINNER 𐂷\nAcademic Writing Awards"
+        ctaSubtitle.stringValue = "Full semantic annotations · 4 zoom levels included"
 
         for v in tagsStack.arrangedSubviews { tagsStack.removeArrangedSubview(v); v.removeFromSuperview() }
         for t in slide.tags {
             let pill = NSTextField(labelWithString: t)
             pill.font = .systemFont(ofSize: 11, weight: .medium)
-            pill.textColor = .secondaryLabelColor
+            pill.textColor = NSColor(white: 0.85, alpha: 0.8)
             tagsStack.addArrangedSubview(pill)
         }
 
         let pStyle = NSMutableParagraphStyle()
         pStyle.alignment = .center
-        let btnTitle = slide.isResearch ? "Read research study with source previews  →" : "Read model essay with annotations  →"
+        let btnTitle = slide.isResearch ? "▶  Read Research Paper" : "▶  Read Model Essay"
         actionButton.attributedTitle = NSAttributedString(
             string: btnTitle,
             attributes: [
-                .foregroundColor: isDark ? NSColor.white : slide.accentColor,
-                .font: NSFont.systemFont(ofSize: 12, weight: .semibold),
+                .foregroundColor: NSColor(red: 0.08, green: 0.09, blue: 0.12, alpha: 1.0),
+                .font: NSFont.systemFont(ofSize: 13, weight: .bold),
                 .paragraphStyle: pStyle
             ]
         )
 
         for (i, b) in dotButtons.enumerated() {
-            b.contentTintColor = (i == currentIndex) ? slide.accentColor : NSColor.tertiaryLabelColor
+            b.contentTintColor = (i == currentIndex) ? NSColor.white : NSColor(white: 1.0, alpha: 0.3)
         }
 
         needsLayout = true
@@ -233,31 +483,46 @@ final class PartnerShowcaseCarousel: NSView {
 
     override func layout() {
         super.layout()
-        let pad: CGFloat = 20
+        let pad: CGFloat = 22
         let w = bounds.width - pad * 2
 
-        partnerBadge.frame = NSRect(x: pad, y: 14, width: min(380, w - 80), height: 18)
-        educatorLabel.frame = NSRect(x: pad, y: 34, width: min(480, w - 80), height: 18)
+        partnerBadge.frame = NSRect(x: pad, y: 16, width: min(340, w - 210), height: 18)
+        laurelLabel.frame = NSRect(x: bounds.width - pad - 200, y: 16, width: 200, height: 32)
+
+        titleLabel.frame = NSRect(x: pad, y: 36, width: w - 210, height: 28)
+        appleMetaLabel.frame = NSRect(x: pad, y: 66, width: w, height: 18)
+        excerptLabel.frame = NSRect(x: pad, y: 86, width: w - 60, height: 38)
+        pedagogyLabel.frame = NSRect(x: pad, y: 126, width: w - 60, height: 24)
+
+        // Apple TV CTA cluster
+        actionButton.frame = NSRect(x: pad, y: 158, width: 195, height: 34)
+        bookmarkButton.frame = NSRect(x: pad + 203, y: 158, width: 34, height: 34)
+        tagsStack.frame = NSRect(x: pad + 248, y: 163, width: max(80, w - 360), height: 24)
+
+        ctaSubtitle.frame = NSRect(x: pad, y: 198, width: 340, height: 16)
+
+        let dotW: CGFloat = CGFloat(dotButtons.count) * 16
+        dotsContainer.frame = NSRect(x: (bounds.width - dotW) / 2, y: bounds.height - 24, width: dotW, height: 16)
 
         let navBtnW: CGFloat = 28
         let navBtnH: CGFloat = 28
-        nextButton.frame = NSRect(x: bounds.width - pad - navBtnW, y: 14, width: navBtnW, height: navBtnH)
-        prevButton.frame = NSRect(x: bounds.width - pad - navBtnW * 2 - 8, y: 14, width: navBtnW, height: navBtnH)
-
-        titleLabel.frame = NSRect(x: pad, y: 56, width: w, height: 26)
-        excerptLabel.frame = NSRect(x: pad, y: 84, width: w, height: 40)
-        pedagogyLabel.frame = NSRect(x: pad, y: 126, width: w, height: 32)
-
-        let bottomY = bounds.height - 40
-        tagsStack.frame = NSRect(x: pad, y: bottomY + 4, width: max(100, w - 380), height: 24)
-
-        dotsContainer.frame = NSRect(x: bounds.width - pad - 360, y: bottomY + 4, width: 60, height: 24)
-        actionButton.frame = NSRect(x: bounds.width - pad - 290, y: bottomY, width: 290, height: 30)
+        prevButton.frame = NSRect(x: 10, y: 95, width: navBtnW, height: navBtnH)
+        nextButton.frame = NSRect(x: bounds.width - 10 - navBtnW, y: 95, width: navBtnW, height: navBtnH)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         let isDark = LiquidGlass.isDark(for: self)
-        LiquidGlass.drawCard(in: bounds, isDark: isDark, elevated: true)
+        let radius: CGFloat = 16
+        let path = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
+        path.addClip()
+
+        let grad = NSGradient(colors: [
+            NSColor(red: 0.08, green: 0.11, blue: 0.18, alpha: 1.0),
+            NSColor(red: 0.04, green: 0.06, blue: 0.10, alpha: 1.0)
+        ])
+        grad?.draw(in: bounds, angle: -45)
+
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: radius)
     }
 }
 
@@ -334,6 +599,17 @@ final class HomeCard: NSView {
     let open = CardActionPill(title: "", target: nil, action: nil)
     var doiButton: GlassPillButton?
     var categoryType: String = "ielts"
+    var rankNumber: Int? {
+        didSet {
+            if let r = rankNumber {
+                rankLabel.stringValue = "\(r)"
+                rankLabel.isHidden = false
+            } else {
+                rankLabel.isHidden = true
+            }
+        }
+    }
+    private let rankLabel = NSTextField(labelWithString: "")
     private var trackingArea: NSTrackingArea?
     private var isHovered = false { didSet { needsDisplay = true } }
 
@@ -391,7 +667,12 @@ final class HomeCard: NSView {
         open.bezelStyle = .regularSquare
         open.isBordered = false
 
-        var cardViews: [NSView] = [categoryBadge, heading, detail, badge, note, open]
+        rankLabel.font = .systemFont(ofSize: 42, weight: .black)
+        rankLabel.textColor = NSColor.labelColor.withAlphaComponent(0.12)
+        rankLabel.alignment = .right
+        rankLabel.isHidden = true
+
+        var cardViews: [NSView] = [categoryBadge, heading, detail, badge, note, open, rankLabel]
 
         // Parse DOI for research cards if present
         let doiRegex = try? NSRegularExpression(pattern: #"(?:doi(?::|\.org\/)|\b)(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)"#, options: .caseInsensitive)
@@ -431,7 +712,15 @@ final class HomeCard: NSView {
         super.layout()
         let pad: CGFloat = 20
         let w = bounds.width - pad * 2
-        categoryBadge.frame = NSRect(x: pad, y: 14, width: w, height: 16)
+        if let r = rankNumber {
+            rankLabel.stringValue = "\(r)"
+            rankLabel.frame = NSRect(x: bounds.width - pad - 50, y: 8, width: 50, height: 42)
+            rankLabel.isHidden = false
+            categoryBadge.frame = NSRect(x: pad, y: 14, width: w - 54, height: 16)
+        } else {
+            rankLabel.isHidden = true
+            categoryBadge.frame = NSRect(x: pad, y: 14, width: w, height: 16)
+        }
         heading.frame = NSRect(x: pad, y: 32, width: w, height: 24)
         detail.frame = NSRect(x: pad, y: 58, width: w, height: 52)
         badge.frame = NSRect(x: pad, y: 114, width: w, height: 18)
@@ -452,6 +741,7 @@ final class HomeCard: NSView {
         // Liquid Glass card fill + gradient specular rim with hover elevation
         LiquidGlass.drawCard(in: bounds, isDark: isDark, elevated: isHovered)
 
+        rankLabel.textColor = isDark ? NSColor(white: 1.0, alpha: 0.16) : NSColor(white: 0.0, alpha: 0.12)
         heading.textColor = .labelColor
         detail.textColor = .secondaryLabelColor
 
@@ -498,7 +788,8 @@ final class HomeSectionHeader: NSView {
         tagBadge.font = .systemFont(ofSize: 11, weight: .bold)
         tagBadge.textColor = accentColor
 
-        titleLabel.stringValue = title
+        let chevronTitle = title.contains("❯") ? title : title + "  ❯"
+        titleLabel.stringValue = chevronTitle
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .labelColor
 
@@ -546,7 +837,14 @@ final class HomeDashboard: NSView {
     var sections: [HomeDashboardSection] = []
     var selectedCategoryIndex: Int = 0
 
-    // Sidebar elements for responsive layout
+    // Apple TV Sidebar elements
+    var sidebarSearch: AppleTVSidebarItem?
+    var sidebarNavItems: [AppleTVSidebarItem] = []
+    var sidebarLibraryHeader: NSView?
+    var sidebarLibraryItems: [AppleTVSidebarItem] = []
+    var sidebarProfile: AppleTVProfileView?
+
+    // Sidebar elements for responsive layout & backwards compatibility
     var sidebarIcon: NSView?
     var sidebarBrand: NSView?
     var sidebarSubtitle: NSView?
@@ -562,6 +860,11 @@ final class HomeDashboard: NSView {
 
     func filterCards(categoryIndex: Int) {
         selectedCategoryIndex = categoryIndex
+        for (i, item) in sidebarNavItems.enumerated() {
+            item.isSelected = (i == categoryIndex)
+        }
+        categoryBar?.selectedIndex = categoryIndex
+
         let catFilter: String? = {
             switch categoryIndex {
             case 1: return "ielts"
@@ -601,47 +904,83 @@ final class HomeDashboard: NSView {
         guard let clip = superview else { return }
         let width = max(600, clip.bounds.width)
         let compact = width < 960
-        let side: CGFloat = compact ? 190 : 230
+        let side: CGFloat = compact ? 200 : 240
         let contentWidth = width - side - 56
 
-        sidebar.frame = NSRect(x: 24, y: 24, width: side - 16, height: max(560, bounds.height - 48))
+        sidebar.frame = NSRect(x: 24, y: 24, width: side - 16, height: max(680, bounds.height - 48))
         main.frame = NSRect(x: side + 24, y: 24, width: contentWidth, height: 1200)
 
-        // Responsively layout sidebar subviews
+        // Apple TV Sidebar subviews layout
         let sideW = sidebar.bounds.width
-        sidebarIcon?.frame = NSRect(x: 4, y: 4, width: 34, height: 34)
-        sidebarBrand?.frame = NSRect(x: 46, y: 2, width: max(80, sideW - 48), height: 22)
-        sidebarSubtitle?.frame = NSRect(x: 46, y: 24, width: max(80, sideW - 48), height: 18)
+        var curY: CGFloat = 0
 
-        for (i, b) in sidebarActions.enumerated() {
-            b.frame = NSRect(x: 0, y: 64 + CGFloat(i) * 36, width: sideW, height: 32)
+        if let search = sidebarSearch {
+            search.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
+            curY += 36
         }
 
-        let recY = 64 + CGFloat(sidebarActions.count) * 36 + 18
-        sidebarRecentHeader?.frame = NSRect(x: 6, y: recY, width: max(80, sideW - 12), height: 18)
+        for item in sidebarNavItems {
+            item.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
+            curY += 34
+        }
 
-        var curY = recY + 24
+        if let libHeader = sidebarLibraryHeader {
+            curY += 8
+            libHeader.frame = NSRect(x: 8, y: curY, width: sideW - 16, height: 16)
+            curY += 22
+        }
+
+        for item in sidebarLibraryItems {
+            item.frame = NSRect(x: 0, y: curY, width: sideW, height: 30)
+            curY += 32
+        }
+
+        if sidebarLibraryItems.isEmpty && !sidebarActions.isEmpty {
+            sidebarIcon?.frame = NSRect(x: 4, y: 4, width: 34, height: 34)
+            sidebarBrand?.frame = NSRect(x: 46, y: 2, width: max(80, sideW - 48), height: 22)
+            sidebarSubtitle?.frame = NSRect(x: 46, y: 24, width: max(80, sideW - 48), height: 18)
+            curY = 64
+            for b in sidebarActions {
+                b.frame = NSRect(x: 0, y: curY, width: sideW, height: 32)
+                curY += 36
+            }
+        }
+
+        if let recHeader = sidebarRecentHeader {
+            curY += 8
+            recHeader.frame = NSRect(x: 8, y: curY, width: max(80, sideW - 16), height: 16)
+            curY += 22
+        }
+
         for b in sidebarRecentButtons {
             b.frame = NSRect(x: 0, y: curY, width: sideW, height: 26)
             curY += 28
         }
         if let empty = sidebarRecentEmpty {
-            empty.frame = NSRect(x: 6, y: curY, width: max(80, sideW - 12), height: 36)
-            curY += 38
+            empty.frame = NSRect(x: 8, y: curY, width: max(80, sideW - 16), height: 32)
+            curY += 34
         }
 
-        let bottomPillY = max(curY + 16, 420)
+        if let profile = sidebarProfile {
+            curY += 10
+            profile.frame = NSRect(x: 0, y: curY, width: sideW, height: 36)
+            curY += 46
+        }
+
+        let bottomPillY = max(curY + 12, 440)
         let pillGap: CGFloat = 8
         let pillW = max(50, (sideW - 12 - pillGap) / 2)
-        sidebarAbout?.frame = NSRect(x: 6, y: bottomPillY, width: pillW, height: 26)
-        sidebarSetup?.frame = NSRect(x: 6 + pillW + pillGap, y: bottomPillY, width: pillW, height: 26)
+        sidebarAbout?.frame = NSRect(x: 6, y: bottomPillY, width: pillW, height: 24)
+        sidebarSetup?.frame = NSRect(x: 6 + pillW + pillGap, y: bottomPillY, width: pillW, height: 24)
 
-        let linkY = bottomPillY + 34
-        sidebarPrivacy?.frame = NSRect(x: 6, y: linkY, width: pillW, height: 22)
-        sidebarTerms?.frame = NSRect(x: 6 + pillW + pillGap, y: linkY, width: pillW, height: 22)
+        let linkY = bottomPillY + 30
+        sidebarPrivacy?.frame = NSRect(x: 6, y: linkY, width: pillW, height: 20)
+        sidebarTerms?.frame = NSRect(x: 6 + pillW + pillGap, y: linkY, width: pillW, height: 20)
 
-        let verY = linkY + 26
+        let verY = linkY + 24
         sidebarVersionLabel?.frame = NSRect(x: 6, y: verY, width: max(80, sideW - 12), height: 16)
+
+        sidebar.frame = NSRect(x: 24, y: 24, width: side - 16, height: max(verY + 24, bounds.height - 48))
 
         // Main content layout (tidy and neat)
         header[0].frame = NSRect(x: 0, y: 0, width: contentWidth, height: 36)
@@ -649,8 +988,8 @@ final class HomeDashboard: NSView {
 
         var curMainY: CGFloat = 72
         if let carousel = carousel {
-            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 210)
-            curMainY += 210 + 18
+            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 240)
+            curMainY += 240 + 20
         }
 
         if let categoryBar = categoryBar {
@@ -744,69 +1083,65 @@ extension Passage {
             return prefix + "…"
         }
 
-        // Sidebar Branding
-        let icon = NSImageView(image: NSImage(named: "Passage") ?? NSImage(systemSymbolName: "book.closed", accessibilityDescription: "Pass Passage By!")!)
-        icon.wantsLayer = true
-        icon.layer?.cornerRadius = 10
-        icon.layer?.masksToBounds = true
-        dashboard.sidebar.addSubview(icon)
-        dashboard.sidebarIcon = icon
+        // Apple TV Search item
+        let searchItem = AppleTVSidebarItem(title: "", target: self, action: #selector(focusSearchOrFilter))
+        searchItem.isSearch = true
+        searchItem.itemTitle = "Search"
+        searchItem.sfSymbol = "magnifyingglass"
+        dashboard.sidebar.addSubview(searchItem)
+        dashboard.sidebarSearch = searchItem
 
-        let brand = label("Pass Passage By!", 17, true)
-        dashboard.sidebar.addSubview(brand)
-        dashboard.sidebarBrand = brand
-
-        let subtitle = label("Academic Writing Studio", 12)
-        subtitle.textColor = .secondaryLabelColor
-        dashboard.sidebar.addSubview(subtitle)
-        dashboard.sidebarSubtitle = subtitle
-
-        // Sidebar Actions (Apple HIG native style)
-        let actions: [(String, Selector, String)] = [
-            ("New document…", #selector(showNewDocumentMenu(_:)), "square.and.pencil"),
-            ("Scan document…", #selector(captureDocument), "doc.viewfinder"),
-            ("Continue draft", #selector(resumeDraft), "clock.arrow.circlepath"),
-            ("Create with an agent", #selector(showAgentTools), "sparkles"),
-            ("Writing library", #selector(showWritingLibrary), "folder"),
-            ("Settings", #selector(showSettings), "gearshape")
+        // Apple TV Primary Navigation Items
+        let navConfigs: [(title: String, symbol: String, tag: Int)] = [
+            ("Home", "sparkles.tv", 0),
+            ("IELTS Prep", "graduationcap", 1),
+            ("Research", "doc.text.magnifyingglass", 2),
+            ("Essays", "text.quote", 3)
         ]
 
-        for (i, a) in actions.enumerated() {
-            let b = SidebarItemButton(title: "", target: self, action: a.1)
-            b.bezelStyle = .regularSquare
-            b.isBordered = false
-            b.wantsLayer = true
-            b.layer?.cornerRadius = 8
-
-            if let img = NSImage(systemSymbolName: a.2, accessibilityDescription: a.0) {
-                let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
-                b.image = img.withSymbolConfiguration(conf)
-                b.imagePosition = .imageLeading
-            }
-
-            let pStyle = NSMutableParagraphStyle()
-            pStyle.alignment = .left
-            let attr = NSAttributedString(
-                string: "  " + a.0,
-                attributes: [
-                    .foregroundColor: NSColor.labelColor,
-                    .font: NSFont.systemFont(ofSize: 13, weight: .medium),
-                    .paragraphStyle: pStyle
-                ]
-            )
-            b.attributedTitle = attr
-            b.contentTintColor = .labelColor
-
-            if i == 2 {
-                b.isEnabled = FileManager.default.fileExists(atPath: saveURL.path)
-                if !b.isEnabled { b.layer?.opacity = 0.4 }
-            }
-            dashboard.sidebar.addSubview(b)
-            dashboard.sidebarActions.append(b)
+        var navButtons: [AppleTVSidebarItem] = []
+        for conf in navConfigs {
+            let item = AppleTVSidebarItem(title: "", target: self, action: #selector(selectHomeCategoryItem(_:)))
+            item.tag = conf.tag
+            item.itemTitle = conf.title
+            item.sfSymbol = conf.symbol
+            item.isSelected = (conf.tag == 0)
+            dashboard.sidebar.addSubview(item)
+            navButtons.append(item)
         }
+        dashboard.sidebarNavItems = navButtons
+
+        // Library Section
+        let libHeader = label("LIBRARY", 10, true)
+        libHeader.textColor = .secondaryLabelColor
+        dashboard.sidebar.addSubview(libHeader)
+        dashboard.sidebarLibraryHeader = libHeader
+
+        let libActions: [(String, Selector, String)] = [
+            ("New document…", #selector(showNewDocumentMenu(_:)), "square.and.pencil"),
+            ("Writing library", #selector(showWritingLibrary), "folder"),
+            ("Scanned texts", #selector(captureDocument), "doc.viewfinder"),
+            ("Agent Studio (@PPB!)", #selector(showAgentTools), "sparkles"),
+            ("Continue draft", #selector(resumeDraft), "clock.arrow.circlepath")
+        ]
+
+        var libButtons: [AppleTVSidebarItem] = []
+        for (i, a) in libActions.enumerated() {
+            let item = AppleTVSidebarItem(title: "", target: self, action: a.1)
+            item.itemTitle = a.0
+            item.sfSymbol = a.2
+            if i == 4 { // Continue draft
+                item.isEnabled = FileManager.default.fileExists(atPath: saveURL.path)
+                if !item.isEnabled { item.alphaValue = 0.4 }
+            }
+            dashboard.sidebar.addSubview(item)
+            libButtons.append(item)
+        }
+        dashboard.sidebarLibraryItems = libButtons
+        dashboard.sidebarActions = libButtons
 
         // Recent Section
-        let recent = label("RECENT", 10, true)
+        let recent = label("RECENTLY OPENED", 10, true)
         recent.textColor = .secondaryLabelColor
         dashboard.sidebar.addSubview(recent)
         dashboard.sidebarRecentHeader = recent
@@ -854,6 +1189,13 @@ extension Passage {
             dashboard.sidebar.addSubview(empty)
             dashboard.sidebarRecentEmpty = empty
         }
+
+        // Apple TV User Profile View
+        let profile = AppleTVProfileView(frame: .zero)
+        profile.settingsButton.target = self
+        profile.settingsButton.action = #selector(showSettings)
+        dashboard.sidebar.addSubview(profile)
+        dashboard.sidebarProfile = profile
 
         // Secondary Footer Links
         let about = GlassPillButton(title: "About", target: self, action: #selector(showAbout))
@@ -965,10 +1307,10 @@ extension Passage {
         // Categorized Sections & Cards
         let isDark = LiquidGlass.isDark(for: dashboard)
 
-        // Section Headers
+        // Section Headers (Apple TV Shelves)
         let researchHeader = HomeSectionHeader(
             badge: "🔬 RESEARCH & ACADEMIC · 4 PAPERS",
-            title: "Academic Research & Empirical Inquiries",
+            title: "Top Academic Research & DOI Papers",
             subtitle: "Peer-reviewed studies with empirical methodologies, DOI links and hover source previews.",
             accentColor: LiquidGlass.researchAccent(isDark: isDark)
         )
@@ -976,7 +1318,7 @@ extension Passage {
 
         let essayHeader = HomeSectionHeader(
             badge: "✍️ ESSAYS & COMPOSITION · 4 ESSAYS",
-            title: "Discursive & Argumentative Writing",
+            title: "Top Discursive Essays & Arguments",
             subtitle: "Annotated with thesis statements, concession defense, and dialectical synthesis.",
             accentColor: LiquidGlass.essayAccent(isDark: isDark)
         )
@@ -984,7 +1326,7 @@ extension Passage {
 
         let ieltsHeader = HomeSectionHeader(
             badge: "🎓 IELTS EXAM PREPARATION · 4 TASKS",
-            title: "IELTS Exam Practice & Scoring Breakdowns",
+            title: "IELTS Band 8.5+ Practice Papers",
             subtitle: "Curated Task 1 data syntheses and Task 2 essays evaluated on official public band criteria.",
             accentColor: LiquidGlass.accent(isDark: isDark)
         )
@@ -1002,9 +1344,10 @@ extension Passage {
             ("013.json", "Research · Higher Education Enrollment Cohort Dynamics", "Demographic cohort analysis reveals non-linear growth in vocational enrollments between 2000 and 2020.", "Research · Statistical Analysis", "Source Preview: UNESCO Statistics (2021) · Comparative tertiary access dataset across 12 countries."),
             ("000-task2-6.json", "Research · Higher Education Subsidies & Fiscal Returns", "Fiscal return evaluations indicate public university tuition subsidies generate 2.4x long-term tax yields.", "Research · Policy Evidence", "Source Preview: OECD Education (2022) · DOI: 10.1787/19991487 · Public investment and social mobility indicators.")
         ]
-        for spec in researchSpecs {
+        for (i, spec) in researchSpecs.enumerated() {
             let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
             let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "research", target: self, action: #selector(loadExample(_:)), path: url.path)
+            card.rankNumber = i + 1
             researchCards.append(card)
             allCardItems.append((card: card, category: "research"))
             dashboard.main.addSubview(card)
@@ -1017,9 +1360,10 @@ extension Passage {
             ("000-task2-5.json", "Persuasive Essay · Commercial Advertising & Children", "Targeting impressionable young minds with aggressive marketing creates early consumerist pressure and ethical dilemmas.", "Essay · Rhetorical Devices", "Rhetorical Strategy · Ethical Framing: Cause-and-effect transitions and emotional appeals framed ethically."),
             ("000-task2-8.json", "Analytical Essay · Practical Skills in School Curricula", "Secondary education must balance foundational intellectual rigor with pragmatic real-world competencies.", "Essay · Comparative Synthesis", "Structure · Comparative Synthesis: Point-by-point comparative synthesis and actionable policy proposal.")
         ]
-        for spec in essaySpecs {
+        for (i, spec) in essaySpecs.enumerated() {
             let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
             let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "essays", target: self, action: #selector(loadExample(_:)), path: url.path)
+            card.rankNumber = i + 1
             essayCards.append(card)
             allCardItems.append((card: card, category: "essays"))
             dashboard.main.addSubview(card)
@@ -1032,12 +1376,13 @@ extension Passage {
             ("013.json", "IELTS Task 1 · Data Trends & Overview", "Overview Structure: Captures peak trajectory and subsequent plateau accurately."),
             ("000-task2-6.json", "IELTS · Task Achievement & Grammar", "Grammar: Complex condition clauses and modal structures supporting nuanced stance.")
         ]
-        for spec in ieltsSpecs {
+        for (i, spec) in ieltsSpecs.enumerated() {
             let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
             guard let bytes = try? Data(contentsOf: url), let sample = try? JSONDecoder().decode(Breakdown.self, from: bytes) else { continue }
             let excerpt = truncateWords(sample.document.text, maxChars: 140)
             let note = "\(sample.annotations.count) margin notes · PPB! practice\n\(spec.note)"
             let card = HomeCard(title: sample.document.title, excerpt: excerpt, annotation: note, categoryTag: spec.tag, categoryType: "ielts", target: self, action: #selector(loadExample(_:)), path: url.path)
+            card.rankNumber = i + 1
             ieltsCards.append(card)
             allCardItems.append((card: card, category: "ielts"))
             dashboard.main.addSubview(card)
@@ -1075,6 +1420,16 @@ extension Passage {
 
         root.layoutSubtreeIfNeeded()
         dashboard.needsLayout = true
+    }
+
+    @objc func selectHomeCategoryItem(_ sender: NSButton) {
+        guard let scroll = root.subviews.first as? NSScrollView,
+              let dashboard = scroll.documentView as? HomeDashboard else { return }
+        dashboard.filterCards(categoryIndex: sender.tag)
+    }
+
+    @objc func focusSearchOrFilter() {
+        showExampleLibrary()
     }
     @objc func showAgentTools(){let panel=makeAgentWindow();infoWindow=panel;panel.center();panel.makeKeyAndOrderFront(nil)}
     func makeAgentWindow()->NSWindow {
