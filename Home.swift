@@ -332,9 +332,30 @@ final class HomeCard: NSView {
     let badge = NSTextField(wrappingLabelWithString: "")
     let note = NSTextField(wrappingLabelWithString: "")
     let open = CardActionPill(title: "", target: nil, action: nil)
+    var doiButton: GlassPillButton?
     var categoryType: String = "ielts"
+    private var trackingArea: NSTrackingArea?
+    private var isHovered = false { didSet { needsDisplay = true } }
 
     override var isFlipped: Bool { true }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let area = trackingArea { removeTrackingArea(area) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
 
     init(title: String, excerpt: String, annotation: String, categoryTag: String = "PRACTICE ESSAY", categoryType: String = "ielts", target: AnyObject, action: Selector, path: String) {
         super.init(frame: .zero)
@@ -370,7 +391,34 @@ final class HomeCard: NSView {
         open.bezelStyle = .regularSquare
         open.isBordered = false
 
-        for view in [categoryBadge, heading, detail, badge, note, open] { addSubview(view) }
+        var cardViews: [NSView] = [categoryBadge, heading, detail, badge, note, open]
+
+        // Parse DOI for research cards if present
+        let doiRegex = try? NSRegularExpression(pattern: #"(?:doi(?::|\.org\/)|\b)(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)"#, options: .caseInsensitive)
+        if let match = doiRegex?.firstMatch(in: annotation, range: NSRange(location: 0, length: (annotation as NSString).length)), match.numberOfRanges > 1 {
+            let doi = (annotation as NSString).substring(with: match.range(at: 1))
+            let doiBtn = GlassPillButton(title: "DOI ↗", target: self, action: #selector(handleDOIClick))
+            doiBtn.identifier = NSUserInterfaceItemIdentifier(doi)
+            doiBtn.font = .systemFont(ofSize: 11, weight: .semibold)
+            doiBtn.toolTip = "Open https://doi.org/\(doi) in browser"
+            doiButton = doiBtn
+            cardViews.append(doiBtn)
+        }
+
+        for view in cardViews { addSubview(view) }
+
+        // Hover tooltip for quick preview
+        let fullPreview = "\(title)\n\(bText)\n\(nText)"
+        toolTip = fullPreview
+        badge.toolTip = fullPreview
+    }
+
+    @objc private func handleDOIClick() {
+        guard let doi = doiButton?.identifier?.rawValue, !doi.isEmpty else { return }
+        let urlStr = doi.hasPrefix("http") ? doi : "https://doi.org/" + doi
+        if let url = URL(string: urlStr) {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     convenience init(title: String, excerpt: String, annotation: String, target: AnyObject, action: Selector, path: String) {
@@ -388,14 +436,21 @@ final class HomeCard: NSView {
         detail.frame = NSRect(x: pad, y: 58, width: w, height: 52)
         badge.frame = NSRect(x: pad, y: 114, width: w, height: 18)
         note.frame = NSRect(x: pad, y: 134, width: w, height: 48)
-        open.frame = NSRect(x: pad, y: bounds.height - 44, width: min(200, w), height: 28)
+
+        if let doiBtn = doiButton {
+            let doiW: CGFloat = 68
+            open.frame = NSRect(x: pad, y: bounds.height - 44, width: w - doiW - 10, height: 28)
+            doiBtn.frame = NSRect(x: bounds.width - pad - doiW, y: bounds.height - 44, width: doiW, height: 28)
+        } else {
+            open.frame = NSRect(x: pad, y: bounds.height - 44, width: min(210, w), height: 28)
+        }
     }
 
     override func draw(_ dirtyRect: NSRect) {
         let isDark = LiquidGlass.isDark(for: self)
 
-        // Liquid Glass card fill + gradient specular rim
-        LiquidGlass.drawCard(in: bounds, isDark: isDark)
+        // Liquid Glass card fill + gradient specular rim with hover elevation
+        LiquidGlass.drawCard(in: bounds, isDark: isDark, elevated: isHovered)
 
         heading.textColor = .labelColor
         detail.textColor = .secondaryLabelColor
@@ -416,14 +471,68 @@ final class HomeCard: NSView {
 
         let pStyle = NSMutableParagraphStyle()
         pStyle.alignment = .center
+        let btnTitle = (categoryType == "research") ? "Read research  →" : "Read annotations  →"
         open.attributedTitle = NSAttributedString(
-            string: "Read annotations  →",
+            string: btnTitle,
             attributes: [
                 .foregroundColor: isDark ? NSColor.white : accent,
                 .font: NSFont.systemFont(ofSize: 12, weight: .semibold),
                 .paragraphStyle: pStyle
             ]
         )
+    }
+}
+
+final class HomeSectionHeader: NSView {
+    override var isFlipped: Bool { true }
+    let tagBadge = NSTextField(wrappingLabelWithString: "")
+    let titleLabel = NSTextField(wrappingLabelWithString: "")
+    let subtitleLabel = NSTextField(wrappingLabelWithString: "")
+    var accentColor: NSColor = .systemBlue
+
+    init(badge: String, title: String, subtitle: String, accentColor: NSColor) {
+        super.init(frame: .zero)
+        self.accentColor = accentColor
+
+        tagBadge.stringValue = badge.uppercased()
+        tagBadge.font = .systemFont(ofSize: 11, weight: .bold)
+        tagBadge.textColor = accentColor
+
+        titleLabel.stringValue = title
+        titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        titleLabel.textColor = .labelColor
+
+        subtitleLabel.stringValue = subtitle
+        subtitleLabel.font = .systemFont(ofSize: 12.5, weight: .regular)
+        subtitleLabel.textColor = .secondaryLabelColor
+
+        for v in [tagBadge, titleLabel, subtitleLabel] { addSubview(v) }
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layout() {
+        super.layout()
+        tagBadge.frame = NSRect(x: 0, y: 0, width: bounds.width, height: 16)
+        titleLabel.frame = NSRect(x: 0, y: 18, width: bounds.width, height: 24)
+        subtitleLabel.frame = NSRect(x: 0, y: 44, width: bounds.width, height: 18)
+    }
+}
+
+final class HomeDashboardSection {
+    let key: String
+    let header: HomeSectionHeader
+    var cards: [HomeCard]
+    var isHidden: Bool = false {
+        didSet {
+            header.isHidden = isHidden
+            for c in cards { c.isHidden = isHidden }
+        }
+    }
+
+    init(key: String, header: HomeSectionHeader, cards: [HomeCard]) {
+        self.key = key
+        self.header = header
+        self.cards = cards
     }
 }
 
@@ -434,6 +543,7 @@ final class HomeDashboard: NSView {
     var carousel: PartnerShowcaseCarousel?
     var categoryBar: WritingCategoryBar?
     var allCards: [(card: HomeCard, category: String)] = []
+    var sections: [HomeDashboardSection] = []
     var selectedCategoryIndex: Int = 0
 
     // Sidebar elements for responsive layout
@@ -460,16 +570,27 @@ final class HomeDashboard: NSView {
             }
         }()
 
-        if catFilter == nil {
-            cards = Array(allCards.prefix(4).map { $0.card })
-            for (i, item) in allCards.enumerated() {
-                item.card.isHidden = (i >= 4)
+        if sections.isEmpty {
+            if catFilter == nil {
+                cards = Array(allCards.prefix(4).map { $0.card })
+                for (i, item) in allCards.enumerated() {
+                    item.card.isHidden = (i >= 4)
+                }
+            } else {
+                cards = allCards.filter { $0.category == catFilter }.map { $0.card }
+                for item in allCards {
+                    item.card.isHidden = (item.category != catFilter)
+                }
             }
         } else {
-            cards = allCards.filter { $0.category == catFilter }.map { $0.card }
-            for item in allCards {
-                item.card.isHidden = (item.category != catFilter)
+            for sec in sections {
+                if let filter = catFilter {
+                    sec.isHidden = (sec.key != filter)
+                } else {
+                    sec.isHidden = false
+                }
             }
+            cards = sections.filter { !$0.isHidden }.flatMap { $0.cards }
         }
         needsLayout = true
     }
@@ -525,26 +646,49 @@ final class HomeDashboard: NSView {
         var curMainY: CGFloat = 72
         if let carousel = carousel {
             carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 210)
-            curMainY += 210 + 16
+            curMainY += 210 + 18
         }
 
         if let categoryBar = categoryBar {
             categoryBar.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 36)
-            curMainY += 36 + 16
+            curMainY += 36 + 24
         }
 
         let columns = compact ? 1 : 2
         let gap: CGFloat = 20
         let cardWidth = (contentWidth - CGFloat(columns - 1) * gap) / CGFloat(columns)
-        for (i, card) in cards.enumerated() {
-            card.frame = NSRect(
-                x: CGFloat(i % columns) * (cardWidth + gap),
-                y: curMainY + CGFloat(i / columns) * 276,
-                width: cardWidth,
-                height: 256
-            )
+
+        if sections.isEmpty {
+            for (i, card) in cards.enumerated() {
+                card.frame = NSRect(
+                    x: CGFloat(i % columns) * (cardWidth + gap),
+                    y: curMainY + CGFloat(i / columns) * 276,
+                    width: cardWidth,
+                    height: 256
+                )
+            }
+            let bottom = curMainY + CGFloat((cards.count + columns - 1) / columns) * 276 + 20
+            curMainY = bottom
+        } else {
+            for sec in sections {
+                guard !sec.isHidden else { continue }
+                sec.header.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: 64)
+                curMainY += 64 + 14
+
+                for (i, card) in sec.cards.enumerated() {
+                    card.frame = NSRect(
+                        x: CGFloat(i % columns) * (cardWidth + gap),
+                        y: curMainY + CGFloat(i / columns) * 276,
+                        width: cardWidth,
+                        height: 256
+                    )
+                }
+                let rowCount = (sec.cards.count + columns - 1) / columns
+                curMainY += CGFloat(rowCount) * 276 + 32
+            }
         }
-        let bottom = curMainY + CGFloat((cards.count + columns - 1) / columns) * 276 + 20
+
+        let bottom = curMainY + 10
         if !footer.isEmpty {
             let btnW = min(340, contentWidth)
             footer[0].frame = NSRect(x: (contentWidth - btnW) / 2, y: bottom, width: btnW, height: 40)
@@ -552,7 +696,7 @@ final class HomeDashboard: NSView {
         if footer.count > 1 {
             footer[1].frame = NSRect(x: 0, y: bottom + 48, width: contentWidth, height: 22)
         }
-        frame.size = NSSize(width: width, height: max(clip.bounds.height, bottom + 96))
+        frame.size = NSSize(width: width, height: max(clip.bounds.height, bottom + 110))
     }
 
     override init(frame: NSRect) {
@@ -786,10 +930,70 @@ extension Passage {
         dashboard.categoryBar = categoryBar
         dashboard.main.addSubview(categoryBar)
 
-        // Categorized Cards
+        // Categorized Sections & Cards
+        let isDark = LiquidGlass.isDark(for: dashboard)
+
+        // Section Headers
+        let researchHeader = HomeSectionHeader(
+            badge: "🔬 RESEARCH & ACADEMIC · 4 PAPERS",
+            title: "Academic Research & Empirical Inquiries",
+            subtitle: "Peer-reviewed studies with empirical methodologies, DOI links and hover source previews.",
+            accentColor: LiquidGlass.researchAccent(isDark: isDark)
+        )
+        dashboard.main.addSubview(researchHeader)
+
+        let essayHeader = HomeSectionHeader(
+            badge: "✍️ ESSAYS & COMPOSITION · 4 ESSAYS",
+            title: "Discursive & Argumentative Writing",
+            subtitle: "Annotated with thesis statements, concession defense, and dialectical synthesis.",
+            accentColor: LiquidGlass.essayAccent(isDark: isDark)
+        )
+        dashboard.main.addSubview(essayHeader)
+
+        let ieltsHeader = HomeSectionHeader(
+            badge: "🎓 IELTS EXAM PREPARATION · 4 TASKS",
+            title: "IELTS Exam Practice & Scoring Breakdowns",
+            subtitle: "Curated Task 1 data syntheses and Task 2 essays evaluated on official public band criteria.",
+            accentColor: LiquidGlass.accent(isDark: isDark)
+        )
+        dashboard.main.addSubview(ieltsHeader)
+
+        var researchCards: [HomeCard] = []
+        var essayCards: [HomeCard] = []
+        var ieltsCards: [HomeCard] = []
         var allCardItems: [(card: HomeCard, category: String)] = []
 
-        // IELTS Writing Cards
+        // 1. Research & Academic Cards (with Source Previews & DOIs)
+        let researchSpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
+            ("000-task2-3.json", "Research · Food Supply Logistics & Waste", "Empirical supply chain audits demonstrate 33% systemic losses before commercial retail distribution networks.", "Research · Source Preview & DOI", "Source Preview: Chen et al. (2023) · DOI: 10.1016/j.jclepro.2023.138902 · Empirical circular economy metrics."),
+            ("000-task2-1.json", "Research · Urban Transit Infrastructure Elasticity", "Econometric models across European metropolitan areas show substantial carbon abatement following multimodal transit expansion.", "Research · Source Preview & Citations", "Source Preview: Thorne & Martinez (2022) · DOI: 10.1080/transit.2022.091 · Elasticity models in urban mobility."),
+            ("013.json", "Research · Higher Education Enrollment Cohort Dynamics", "Demographic cohort analysis reveals non-linear growth in vocational enrollments between 2000 and 2020.", "Research · Statistical Analysis", "Source Preview: UNESCO Statistics (2021) · Comparative tertiary access dataset across 12 countries."),
+            ("000-task2-6.json", "Research · Higher Education Subsidies & Fiscal Returns", "Fiscal return evaluations indicate public university tuition subsidies generate 2.4x long-term tax yields.", "Research · Policy Evidence", "Source Preview: OECD Education (2022) · DOI: 10.1787/19991487 · Public investment and social mobility indicators.")
+        ]
+        for spec in researchSpecs {
+            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
+            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "research", target: self, action: #selector(loadExample(_:)), path: url.path)
+            researchCards.append(card)
+            allCardItems.append((card: card, category: "research"))
+            dashboard.main.addSubview(card)
+        }
+
+        // 2. Essays & Composition Cards
+        let essaySpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
+            ("000-task2-6.json", "Discursive Essay · University Tuition & Social Equity", "Higher education represents both an individual career investment and a shared public good, justifying shared state funding.", "Essay · Argument Flow & Thesis", "Argument Flow · Thesis & Concession: Nuanced thesis concession followed by robust counter-argument refutation."),
+            ("000-task2-2.json", "Argumentative Essay · Digital Pedagogy & Mentorship", "While digital platforms offer unprecedented accessibility, cognitive depth requires human guidance and deliberate mentorship.", "Essay · Thesis Defense", "Argument Flow · Dialectical Synthesis: Balanced dialectical synthesis comparing automated tools and human mentorship."),
+            ("000-task2-5.json", "Persuasive Essay · Commercial Advertising & Children", "Targeting impressionable young minds with aggressive marketing creates early consumerist pressure and ethical dilemmas.", "Essay · Rhetorical Devices", "Rhetorical Strategy · Ethical Framing: Cause-and-effect transitions and emotional appeals framed ethically."),
+            ("000-task2-8.json", "Analytical Essay · Practical Skills in School Curricula", "Secondary education must balance foundational intellectual rigor with pragmatic real-world competencies.", "Essay · Comparative Synthesis", "Structure · Comparative Synthesis: Point-by-point comparative synthesis and actionable policy proposal.")
+        ]
+        for spec in essaySpecs {
+            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
+            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "essays", target: self, action: #selector(loadExample(_:)), path: url.path)
+            essayCards.append(card)
+            allCardItems.append((card: card, category: "essays"))
+            dashboard.main.addSubview(card)
+        }
+
+        // 3. IELTS Writing Cards
         let ieltsSpecs: [(file: String, tag: String, note: String)] = [
             ("000-task2-3.json", "IELTS · Task Response & Band 8.5", "Task Response: Identifies structural waste causes and consumer behavioral shifts."),
             ("000-task2-1.json", "IELTS · Cohesion & Lexical Resource", "Cohesion: Examines topic sentences and discourse transitions across paragraphs."),
@@ -802,43 +1006,18 @@ extension Passage {
             let excerpt = truncateWords(sample.document.text, maxChars: 140)
             let note = "\(sample.annotations.count) margin notes · PPB! practice\n\(spec.note)"
             let card = HomeCard(title: sample.document.title, excerpt: excerpt, annotation: note, categoryTag: spec.tag, categoryType: "ielts", target: self, action: #selector(loadExample(_:)), path: url.path)
+            ieltsCards.append(card)
             allCardItems.append((card: card, category: "ielts"))
             dashboard.main.addSubview(card)
         }
 
-        // Research & Academic Cards (with Source Previews & DOIs)
-        let researchSpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
-            ("000-task2-3.json", "Research · Food Supply Logistics & Waste", "Empirical supply chain audits demonstrate 33% systemic losses before commercial retail distribution networks.", "Research · Source Preview & DOI", "Source Preview: Chen et al. (2023) · DOI: 10.1016/j.jclepro.2023.138902 · Empirical circular economy metrics."),
-            ("000-task2-1.json", "Research · Urban Transit Infrastructure Elasticity", "Econometric models across European metropolitan areas show substantial carbon abatement following multimodal transit expansion.", "Research · Source Preview & Citations", "Source Preview: Thorne & Martinez (2022) · DOI: 10.1080/transit.2022.091 · Elasticity models in urban mobility."),
-            ("013.json", "Research · Higher Education Enrollment Cohort Dynamics", "Demographic cohort analysis reveals non-linear growth in vocational enrollments between 2000 and 2020.", "Research · Statistical Analysis", "Source Preview: UNESCO Statistics (2021) · Comparative tertiary access dataset across 12 countries."),
-            ("000-task2-6.json", "Research · Higher Education Subsidies & Fiscal Returns", "Fiscal return evaluations indicate public university tuition subsidies generate 2.4x long-term tax yields.", "Research · Policy Evidence", "Source Preview: OECD Education (2022) · DOI: 10.1787/19991487 · Public investment and social mobility indicators.")
-        ]
-        for spec in researchSpecs {
-            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
-            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "research", target: self, action: #selector(loadExample(_:)), path: url.path)
-            allCardItems.append((card: card, category: "research"))
-            dashboard.main.addSubview(card)
-        }
+        let rSec = HomeDashboardSection(key: "research", header: researchHeader, cards: researchCards)
+        let eSec = HomeDashboardSection(key: "essays", header: essayHeader, cards: essayCards)
+        let iSec = HomeDashboardSection(key: "ielts", header: ieltsHeader, cards: ieltsCards)
 
-        // Essays & Composition Cards
-        let essaySpecs: [(file: String, title: String, excerpt: String, tag: String, note: String)] = [
-            ("000-task2-6.json", "Discursive Essay · University Tuition & Social Equity", "Higher education represents both an individual career investment and a shared public good, justifying shared state funding.", "Essay · Argument Flow & Thesis", "Argument Flow · Thesis & Concession: Nuanced thesis concession followed by robust counter-argument refutation."),
-            ("000-task2-2.json", "Argumentative Essay · Digital Pedagogy & Mentorship", "While digital platforms offer unprecedented accessibility, cognitive depth requires human guidance and deliberate mentorship.", "Essay · Thesis Defense", "Argument Flow · Dialectical Synthesis: Balanced dialectical synthesis comparing automated tools and human mentorship."),
-            ("000-task2-5.json", "Persuasive Essay · Commercial Advertising & Children", "Targeting impressionable young minds with aggressive marketing creates early consumerist pressure and ethical dilemmas.", "Essay · Rhetorical Devices", "Rhetorical Strategy · Ethical Framing: Cause-and-effect transitions and emotional appeals framed ethically."),
-            ("000-task2-8.json", "Analytical Essay · Practical Skills in School Curricula", "Secondary education must balance foundational intellectual rigor with pragmatic real-world competencies.", "Essay · Comparative Synthesis", "Structure · Comparative Synthesis: Point-by-point comparative synthesis and actionable policy proposal.")
-        ]
-        for spec in essaySpecs {
-            let url = resourceDirectory.appendingPathComponent("Samples/" + spec.file)
-            let card = HomeCard(title: spec.title, excerpt: spec.excerpt, annotation: spec.note, categoryTag: spec.tag, categoryType: "essays", target: self, action: #selector(loadExample(_:)), path: url.path)
-            allCardItems.append((card: card, category: "essays"))
-            dashboard.main.addSubview(card)
-        }
-
+        dashboard.sections = [rSec, eSec, iSec]
         dashboard.allCards = allCardItems
-        dashboard.cards = Array(allCardItems.prefix(4).map { $0.card })
-        for (i, item) in allCardItems.enumerated() {
-            item.card.isHidden = (i >= 4)
-        }
+        dashboard.filterCards(categoryIndex: 0)
 
         // Footer Action
         let exploreBtn = GlassPillButton(title: "", target: self, action: #selector(showExampleLibrary))

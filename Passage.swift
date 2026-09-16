@@ -207,6 +207,7 @@ class WritingView: NSTextView {
     var point: ((Int) -> Void)?
     var hoverRange: ((Int) -> NSRange)?
     var editAnnotation: ((Int, NSPoint) -> Bool)?
+    var onHoverIndex: ((Int?, NSPoint) -> Void)?
     private var hover: NSRange?
     var pointerIndex: Int?
     private var hoverTimer: Timer?
@@ -232,6 +233,7 @@ class WritingView: NSTextView {
         let index = min(characterIndexForInsertion(at: point), (string as NSString).length - 1)
         pointerIndex = index
         hover = hoverRange?(index)
+        onHoverIndex?(index, point)
         if hoverTimer == nil && UserDefaults.standard.string(forKey: "hoverStyle") == "Stardust" && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             hoverTimer = Timer.scheduledTimer(withTimeInterval: 1.0/30, repeats: true) { [weak self] _ in self?.needsDisplay = true }
         }
@@ -241,6 +243,7 @@ class WritingView: NSTextView {
     func clearPointer() {
         hoverTimer?.invalidate(); hoverTimer = nil
         pointerIndex = nil; hover = nil; needsDisplay = true
+        onHoverIndex?(nil, .zero)
     }
 
     override func mouseMoved(with event: NSEvent) {
@@ -252,6 +255,7 @@ class WritingView: NSTextView {
         // Keep the last pointer target for a subsequent click on the zoom dock.
         hoverTimer?.invalidate(); hoverTimer = nil
         hover = nil; needsDisplay = true
+        onHoverIndex?(nil, .zero)
         super.mouseExited(with: event)
     }
 
@@ -438,6 +442,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var preferencesWindow: NSWindow?
     var settings: NSPopover?
     var commentPopover: NSPopover?
+    var hoverSourcePopover: NSPopover?
+    var lastHoverNoteId: String?
     var commentField = NSTextView()
     var commentKind = NSPopUpButton()
     var commentTag = NSPopUpButton()
@@ -804,6 +810,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         editor.editAnnotation = { [weak self] index, point in
             guard let self=self, let note=self.displayedNotes.first(where:{NSLocationInRange(self.visible.location+index,NSRange(location:$0.start,length:$0.end-$0.start))}) else{return false}
             self.openCommentPopover(existing:note,targetRect:NSRect(origin:point,size:NSSize(width:1,height:20)),view:self.editor);return true
+        }
+        editor.onHoverIndex = { [weak self] index, point in
+            self?.handleTextHover(index: index, point: point)
         }
         editor.point = { [weak self] pos in guard let self = self else { return }; self.focus = self.visible.location + pos }
 
@@ -1826,6 +1835,117 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         if let url = URL(string: urlStr) {
             NSWorkspace.shared.open(url)
         }
+    }
+
+    func handleTextHover(index: Int?, point: NSPoint) {
+        guard let idx = index else {
+            if hoverSourcePopover?.isShown == true {
+                hoverSourcePopover?.close()
+                lastHoverNoteId = nil
+            }
+            return
+        }
+
+        let absIndex = visible.location + idx
+        if let note = displayedNotes.first(where: { NSLocationInRange(absIndex, NSRange(location: $0.start, length: $0.end - $0.start)) }) {
+            if lastHoverNoteId == note.id && hoverSourcePopover?.isShown == true {
+                return
+            }
+            lastHoverNoteId = note.id
+            showHoverPreview(for: note, at: point)
+        } else {
+            if hoverSourcePopover?.isShown == true {
+                hoverSourcePopover?.close()
+                lastHoverNoteId = nil
+            }
+        }
+    }
+
+    func showHoverPreview(for note: Note, at point: NSPoint) {
+        hoverSourcePopover?.close()
+        let isDark = isDarkMode()
+        let isResearchSource = note.label.localizedCaseInsensitiveContains("source")
+            || note.label.localizedCaseInsensitiveContains("citation")
+            || note.label.localizedCaseInsensitiveContains("doi")
+            || note.label.localizedCaseInsensitiveContains("reference")
+            || note.kind == "citation"
+            || (note.sourceStyle != nil && !note.sourceStyle!.isEmpty)
+        let isIELTS = data.document.taskType.hasPrefix("task")
+
+        let pop = NSPopover()
+        pop.behavior = .transient
+        pop.animates = false
+
+        let vc = NSViewController()
+        let popView = NSView(frame: NSRect(x: 0, y: 0, width: 330, height: 160))
+        popView.wantsLayer = true
+
+        let badgeLabel = NSTextField(labelWithString: "")
+        badgeLabel.font = .systemFont(ofSize: 10, weight: .bold)
+
+        let titleLabel = NSTextField(wrappingLabelWithString: note.label)
+        titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        titleLabel.textColor = .labelColor
+
+        let quoteLabel = NSTextField(wrappingLabelWithString: "“" + note.quote + "”")
+        quoteLabel.font = NSFont(name: "Georgia-Italic", size: 12) ?? .systemFont(ofSize: 12)
+        quoteLabel.textColor = .secondaryLabelColor
+
+        let bodyLabel = NSTextField(wrappingLabelWithString: note.body)
+        bodyLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        bodyLabel.textColor = .labelColor
+
+        var stackViews: [NSView] = []
+        if isResearchSource {
+            badgeLabel.stringValue = "✦ RESEARCH SOURCE · PREVIEW"
+            badgeLabel.textColor = LiquidGlass.researchAccent(isDark: isDark)
+
+            let doiRegex = try? NSRegularExpression(pattern: #"(?:doi(?::|\.org\/)|\b)(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)"#, options: .caseInsensitive)
+            if let match = doiRegex?.firstMatch(in: note.body, range: NSRange(location: 0, length: (note.body as NSString).length)), match.numberOfRanges > 1 {
+                let doi = (note.body as NSString).substring(with: match.range(at: 1))
+                let doiBtn = GlassPillButton(title: "DOI: \(doi)  ↗", target: self, action: #selector(openDOI(_:)))
+                doiBtn.identifier = NSUserInterfaceItemIdentifier(doi)
+                doiBtn.bezelStyle = .regularSquare
+                doiBtn.isBordered = false
+                doiBtn.toolTip = "Open https://doi.org/\(doi) in browser"
+                doiBtn.heightAnchor.constraint(equalToConstant: 24).isActive = true
+                stackViews = [badgeLabel, titleLabel, quoteLabel, bodyLabel, doiBtn]
+            } else {
+                stackViews = [badgeLabel, titleLabel, quoteLabel, bodyLabel]
+            }
+        } else if isIELTS {
+            badgeLabel.stringValue = "🎓 IELTS WRITING CRITERIA · PREVIEW"
+            badgeLabel.textColor = LiquidGlass.accent(isDark: isDark)
+            stackViews = [badgeLabel, titleLabel, quoteLabel, bodyLabel]
+        } else {
+            badgeLabel.stringValue = "✍️ ESSAY ARGUMENT FLOW · PREVIEW"
+            badgeLabel.textColor = LiquidGlass.essayAccent(isDark: isDark)
+            stackViews = [badgeLabel, titleLabel, quoteLabel, bodyLabel]
+        }
+
+        let containerStack = NSStackView(views: stackViews)
+        containerStack.orientation = .vertical
+        containerStack.alignment = .leading
+        containerStack.spacing = 6
+        containerStack.translatesAutoresizingMaskIntoConstraints = false
+        popView.addSubview(containerStack)
+
+        NSLayoutConstraint.activate([
+            containerStack.leadingAnchor.constraint(equalTo: popView.leadingAnchor, constant: 14),
+            containerStack.trailingAnchor.constraint(equalTo: popView.trailingAnchor, constant: -14),
+            containerStack.topAnchor.constraint(equalTo: popView.topAnchor, constant: 12),
+            containerStack.bottomAnchor.constraint(equalTo: popView.bottomAnchor, constant: -12)
+        ])
+
+        let fittingSize = containerStack.fittingSize
+        popView.frame.size = NSSize(width: max(320, fittingSize.width + 28), height: max(100, fittingSize.height + 24))
+
+        vc.view = popView
+        pop.contentViewController = vc
+        hoverSourcePopover = pop
+
+        let targetRect = NSRect(origin: point, size: NSSize(width: 1, height: 18))
+        pop.show(relativeTo: targetRect, of: editor, preferredEdge: .maxY)
     }
 
     @objc func comment() {
