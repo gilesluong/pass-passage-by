@@ -2,7 +2,7 @@
 
 Fixes from user feedback: nested shelves forward vertical scroll directly to HomePageScrollView; carousel locks gesture axis and accepts at most one transition per gesture, ignoring momentum. There was no auto-advance timer; repeated inertia was the cause. All New Document types now create blank writing and no preset prompt. The obsolete baked-in IELTS/discursive examples have been removed from creation handlers; bundled samples remain.
 
-Build and native regression tests pass, including horizontal swipe/momentum, vertical axis lock, and blank creation for all three typed documents. Installed update must use Sparkle, never manual overwrite. Release verification to follow. Full-size Stage Manager gesture QA remains a limitation of the current screenshot tool.
+Build and native regression tests pass, including horizontal swipe/momentum, vertical axis lock, and blank creation for all three typed documents. Installed update must use Sparkle, never manual overwrite. Sparkle upgrade from 1.8.0 to 1.8.1 (13) verified; installed executable matches release SHA-256. Full-size Stage Manager gesture QA remains a limitation of the current screenshot tool.
 
 ---
 
