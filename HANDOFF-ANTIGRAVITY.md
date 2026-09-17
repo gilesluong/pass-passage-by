@@ -1,6 +1,6 @@
 # Current: Pass Passage By! 1.7.0 (11) — 17 September 2026
 
-Release v1.7.0 published to the PRIVATE canonical source repository; installed Sparkle upgrade is BLOCKED because anonymous feed requests return 404. Installed app remains 1.6.0 (9). User approval requested for a separate PUBLIC binary/feed-only repository named pass-passage-by-releases, preserving source privacy. Do not change source repository visibility. A follow-up build must point SUFeedURL back to the public binary repository; do not overwrite the already-published v1.7.0 archive. Canonical repository: https://github.com/gilesluong/pass-passage-by. This section supersedes all historical release and installation instructions below.
+Release v1.7.0 is live at https://github.com/gilesluong/pass-passage-by/releases/tag/v1.7.0. On 17 September the user changed the canonical repository to PUBLIC. Both the canonical and legacy redirected feed URLs return HTTP 200 without authentication. The installed app updated through Sparkle from 1.6.0 (9) to 1.7.0 (11), relaunched successfully, passed codesign --verify --deep --strict, and its executable SHA-256 matches the release build. No manual overwrite or separate public repository was needed. The installed SUFeedURL now points to the canonical repository. This supersedes the previous private-feed blocker and all historical release/installation instructions below.
 
 ## Product direction and implementation
 - Native AppKit remains the editor. Antigravity changes from a32c0dc and its uncommitted Home/Passage work were preserved.
