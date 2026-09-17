@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-0",
-    "title": "Task 2 · Public transport",
-    "text": "Urban transport budgets are limited, so governments must choose which investments offer the greatest public benefit. I largely agree that public transport should receive priority over new roads, particularly in crowded cities. However, this does not remove the need to maintain existing roads or improve essential connections in rural areas.\n\nA reliable bus or rail network can move large numbers of people while using relatively little road space. This matters because widening a busy road may encourage more residents to drive, gradually reducing the initial improvement in traffic flow. By contrast, frequent services and convenient connections can make it practical to leave a car at home. For example, a worker is more likely to use a bus if it arrives regularly and connects directly with the railway station. Investment must therefore cover service quality as well as vehicles and infrastructure.\n\nPublic transport also benefits people who cannot drive or afford a car. Students, older residents and low-income workers depend on affordable ways to reach education, healthcare and employment. A new urban motorway may offer them little direct assistance, whereas a well-planned bus route can widen their opportunities. Nevertheless, governments should not treat every location in the same way. In sparsely populated areas, a damaged road can isolate an entire community, and operating frequent trains would be unrealistic. Road maintenance and targeted improvements remain necessary in these circumstances.\n\nIn conclusion, public transport deserves the larger share of investment where congestion and population density make it effective. The aim should be to improve access for the greatest number of people, rather than simply increase the amount of road available to cars. A balanced policy can prioritise public transport while preserving essential road links.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nGovernments should spend more money on public transport than on building new roads. To what extent do you agree or disagree?\n\nSupport your answer with reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "admin-nd30-quyet-dinh",
+    "title": "Quyết định ban hành Quy chế văn thư điện tử",
+    "text": "Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015; Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019; Căn cứ Nghị định số 30/2020/NĐ-CP ngày 05 tháng 3 năm 2020 của Chính phủ về công tác văn thư; Theo đề nghị của Chánh Văn phòng cơ quan, Thủ trưởng đơn vị ban hành Quyết định về việc ban hành Quy chế tiếp nhận, xử lý, phát hành và quản lý văn bản điện tử trong toàn bộ hệ thống hoạt động nội bộ.\n\nQuy chế này quy định chi tiết về nguyên tắc gửi, nhận văn bản điện tử có chữ ký số chuyên dùng, việc tạo lập hồ sơ công việc số trên hệ thống thông tin điều hành, cũng như trách nhiệm bảo quản an toàn thông tin dữ liệu. Mọi văn bản phát hành phải đảm bảo đầy đủ thành phần thể thức bắt buộc: số ký hiệu cơ quan, thẩm quyền ban hành, ngày tháng văn bản và sơ đồ bố trí theo đúng quy chuẩn mẫu văn bản hành chính quy định tại Phụ lục I ban hành kèm theo Nghị định số 30/2020/NĐ-CP.\n\nViệc áp dụng chữ ký số chuyên dùng của tổ chức và cá nhân có thẩm quyền phải được thực hiện thông qua thiết bị mã hóa an toàn, không được phép chia sẻ chứng thư số hoặc bàn giao tài khoản quản trị cho người khác sử dụng. Các phòng chuyên môn có trách nhiệm cập nhật nhật ký lưu chuyển và kiểm soát tính toàn vẹn của hồ sơ điện tử.\n\nQuyết định này có hiệu lực thi hành kể từ ngày ký và thay thế các quy định trước đây trái với quyết định này. Chánh Văn phòng, Trưởng các phòng ban nghiệp vụ và toàn thể cán bộ, công chức, viên chức, người lao động thuộc cơ quan chịu trách nhiệm thi hành Quyết định này.",
+    "taskType": "administrative",
+    "prompt": "Chuẩn hoá thể thức văn bản hành chính theo Nghị định số 30/2020/NĐ-CP của Chính phủ về công tác văn thư.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "t2-0-0",
-      "start": 0,
-      "end": 116,
-      "quote": "Urban transport budgets are limited, so governments must choose which investments offer the greatest public benefit.",
+      "id": "admin-nd30-quyet-dinh-0",
+      "start": 183,
+      "end": 276,
+      "quote": "Căn cứ Nghị định số 30/2020/NĐ-CP ngày 05 tháng 3 năm 2020 của Chính phủ về công tác văn thư;",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position and scope",
-      "body": "“Largely agree” establishes a clear position while leaving room for the rural-road exception developed later. This directly answers the extent question.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Căn cứ pháp lý",
+      "body": "Phải trích dẫn chính xác số hiệu văn bản, ngày tháng ban hành và cơ quan ban hành theo trật tự hiệu lực pháp lý từ cao xuống thấp.",
+      "side": "left"
     },
     {
-      "id": "t2-0-1",
-      "start": 343,
-      "end": 448,
-      "quote": "A reliable bus or rail network can move large numbers of people while using relatively little road space.",
+      "id": "admin-nd30-quyet-dinh-1",
+      "start": 834,
+      "end": 958,
+      "quote": "sơ đồ bố trí theo đúng quy chuẩn mẫu văn bản hành chính quy định tại Phụ lục I ban hành kèm theo Nghị định số 30/2020/NĐ-CP.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Developed argument",
-      "body": "Explains the mechanism: more road capacity can attract drivers, whereas frequency and connections make buses usable. The worker example makes the policy argument concrete.",
-      "side": "right",
-      "tag": "green"
+      "level": "sentence",
+      "label": "Thể thức chuẩn",
+      "body": "Định dạng phông chữ Times New Roman, cỡ chữ, căn lề và vị trí đặt dấu số hiệu phải tuân thủ nghiêm ngặt theo mẫu quy định tại Phụ lục.",
+      "side": "right"
     },
     {
-      "id": "t2-0-2",
-      "start": 905,
-      "end": 976,
-      "quote": "Public transport also benefits people who cannot drive or afford a car.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Counterpoint and response",
-      "body": "Access for non-drivers supplies a second reason, then the rural exception prevents an overgeneralised recommendation. Keep the distinction between cities and sparsely populated areas visible.",
-      "side": "left",
-      "tag": "orange"
+      "id": "admin-nd30-quyet-dinh-2",
+      "start": 960,
+      "end": 1086,
+      "quote": "Việc áp dụng chữ ký số chuyên dùng của tổ chức và cá nhân có thẩm quyền phải được thực hiện thông qua thiết bị mã hóa an toàn,",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Chữ ký số cơ quan",
+      "body": "Chữ ký số có giá trị pháp lý tương đương con dấu ướt truyền thống, đòi hỏi quy trình cấp phát và thu hồi chứng thư số phải được ghi nhận rõ ràng.",
+      "side": "left"
     },
     {
-      "id": "t2-0-3",
-      "start": 1514,
-      "end": 1644,
-      "quote": "In conclusion, public transport deserves the larger share of investment where congestion and population density make it effective.",
+      "id": "admin-nd30-quyet-dinh-3",
+      "start": 1292,
+      "end": 1401,
+      "quote": "Quyết định này có hiệu lực thi hành kể từ ngày ký và thay thế các quy định trước đây trái với quyết định này.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Synthesis",
-      "body": "Returns to the budget priority and applies a consistent criterion: access for the greatest number. The exception matches the introduction.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Hiệu lực thi hành",
+      "body": "Mốc thời gian có hiệu lực phải được quy định tường minh để làm căn cứ giải quyết chuyển tiếp và bãi bỏ các văn bản cũ không còn phù hợp.",
+      "side": "right"
     }
   ]
 }

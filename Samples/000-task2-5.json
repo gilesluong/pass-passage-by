@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-4",
-    "title": "Task 2 · Children and advertising",
-    "text": "Advertising directed at children raises concerns because young audiences may not recognise the commercial purpose of a message. I support strong restrictions on advertising that exploits this vulnerability, especially for harmful products. However, a complete ban on every message about a product for children would be difficult to define and enforce fairly.\n\nChildren often have less experience than adults in evaluating persuasive claims. A colourful advert featuring a familiar character may make a product seem desirable without explaining its cost or limitations. This can place pressure on parents and encourage children to connect ownership with social acceptance. The concern is particularly strong when adverts promote foods of poor nutritional value or appear repeatedly within games and videos. In these cases, commercial messages can be closely mixed with entertainment, making their purpose even harder to identify.\n\nFor this reason, governments should prohibit manipulative techniques and require clear separation between advertising and other content. Platforms should not be allowed to use detailed behavioural profiles to target young children, and companies should be accountable for misleading claims. Schools and parents can also help children understand how advertising works, although education alone cannot remove the imbalance between a child and a professional marketing organisation. Regulation is therefore necessary even when families take an active role in media use.\n\nA universal ban, on the other hand, could include relatively harmless information about books, educational materials or local activities. The practical challenge is to distinguish useful information from aggressive persuasion without creating rules that are too vague to apply. In conclusion, I agree with banning advertising practices that exploit children, but favour targeted restrictions over an absolute prohibition. Effective protection should focus on the methods used, the products promoted and the age of the audience, supported by consistent enforcement across television and digital media.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nAdvertising aimed at children should be banned. To what extent do you agree or disagree?\n\nSupport your answer with reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "sop-corp-duyet-chi",
+    "title": "Quy chế kiểm soát hạn mức duyệt chi và tạm ứng tài chính",
+    "text": "Quy chế quản lý tài chính và phê duyệt ngân sách nội bộ được ban hành nhằm thiết lập cơ chế kiểm soát minh bạch đối với mọi hoạt động chi tiêu của công ty, phòng ngừa rủi ro thất thoát nguồn vốn và tối ưu hóa hiệu quả sử dụng dòng tiền kinh doanh. Mọi đề xuất chi tiêu phát sinh phải được lập kế hoạch trước và được phê duyệt bởi người có thẩm quyền tương ứng với từng hạn mức quy định.\n\nHạn mức duyệt chi của Trưởng phòng chuyên môn tối đa là hai mươi triệu đồng đối với các khoản chi thường xuyên trong kế hoạch quý đã được phân bổ. Đối với các khoản chi ngoài ngân sách hoặc có giá trị từ hai mươi triệu đồng đến hai trăm triệu đồng, thẩm quyền phê duyệt thuộc về Giám đốc khối nghiệp vụ. Các khoản chi trên hai trăm triệu đồng bắt buộc phải có chữ ký của Tổng Giám đốc và ý kiến thẩm định của Trưởng ban Kiểm soát.\n\nNhân viên nhận tiền tạm ứng để thực hiện nhiệm vụ công tác hoặc mua sắm vật tư phải hoàn tất thủ tục thanh quyết toán hoàn ứng trong vòng bảy ngày làm việc kể từ ngày hoàn thành công việc. Chứng từ quyết toán bắt buộc phải là hóa đơn giá trị gia tăng hợp pháp, kèm theo bảng kê chi tiết và biên bản nghiệm thu bàn giao hàng hóa hoặc dịch vụ.\n\nBộ phận Kế toán có quyền từ chối thanh toán đối với các chứng từ không hợp lệ hoặc vượt quá hạn mức đã được cấp phép. Mọi hành vi chia nhỏ gói chi để tránh vượt hạn mức thẩm quyền sẽ bị xử lý kỷ luật nghiêm khắc.",
+    "taskType": "onboarding",
+    "prompt": "Quy định phân quyền ký duyệt thanh toán, chứng từ thanh toán hợp lệ và quy trình hoàn ứng ngân sách phòng ban.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "t2-4-0",
-      "start": 0,
-      "end": 127,
-      "quote": "Advertising directed at children raises concerns because young audiences may not recognise the commercial purpose of a message.",
+      "id": "sop-corp-duyet-chi-0",
+      "start": 388,
+      "end": 534,
+      "quote": "Hạn mức duyệt chi của Trưởng phòng chuyên môn tối đa là hai mươi triệu đồng đối với các khoản chi thường xuyên trong kế hoạch quý đã được phân bổ.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position and scope",
-      "body": "Separates a ban on exploitative practices from a ban on all product information. This precise distinction keeps the qualified disagreement consistent.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Hạn mức quản lý",
+      "body": "Quy định rõ trần chi tiêu giúp phân cấp ủy quyền linh hoạt mà vẫn duy trì được kỷ luật ngân sách không vượt ngoài tầm kiểm soát.",
+      "side": "left"
     },
     {
-      "id": "t2-4-1",
-      "start": 360,
-      "end": 440,
-      "quote": "Children often have less experience than adults in evaluating persuasive claims.",
+      "id": "sop-corp-duyet-chi-1",
+      "start": 740,
+      "end": 818,
+      "quote": "phải có chữ ký của Tổng Giám đốc và ý kiến thẩm định của Trưởng ban Kiểm soát.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Developed argument",
-      "body": "Explains children’s difficulty recognising commercial intent, then links it to entertainment-based advertising. The paragraph focuses on vulnerability, not an unsupported claim that all adverts are harmful.",
-      "side": "right",
-      "tag": "green"
+      "level": "sentence",
+      "label": "Kiểm soát kép",
+      "body": "Cơ chế song trùng chữ ký của người ra quyết định và bộ phận thẩm định độc lập ngăn ngừa các xung đột lợi ích tài chính nghiêm trọng.",
+      "side": "right"
     },
     {
-      "id": "t2-4-2",
-      "start": 930,
-      "end": 1066,
-      "quote": "For this reason, governments should prohibit manipulative techniques and require clear separation between advertising and other content.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Counterpoint and response",
-      "body": "Proposes enforceable restrictions and explains why education alone is insufficient. This makes the response more developed than a general appeal for parents to supervise children.",
-      "side": "left",
-      "tag": "orange"
+      "id": "sop-corp-duyet-chi-2",
+      "start": 904,
+      "end": 1008,
+      "quote": "hoàn tất thủ tục thanh quyết toán hoàn ứng trong vòng bảy ngày làm việc kể từ ngày hoàn thành công việc.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Thời hạn hoàn ứng",
+      "body": "Thời hạn 7 ngày buộc người tạm ứng phải thu thập hóa đơn chứng từ kịp thời, tránh để đọng vốn hoặc thất lạc tài liệu quyết toán thuế.",
+      "side": "left"
     },
     {
-      "id": "t2-4-3",
-      "start": 1498,
-      "end": 1635,
-      "quote": "A universal ban, on the other hand, could include relatively harmless information about books, educational materials or local activities.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Synthesis",
-      "body": "The books-and-activities counterexample tests the scope of an absolute ban. The conclusion gives three concrete criteria for a targeted policy.",
-      "side": "right",
-      "tag": "purple"
+      "id": "sop-corp-duyet-chi-3",
+      "start": 1281,
+      "end": 1375,
+      "quote": "Mọi hành vi chia nhỏ gói chi để tránh vượt hạn mức thẩm quyền sẽ bị xử lý kỷ luật nghiêm khắc.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Chế tài vi phạm",
+      "body": "Hành vi lách trần phê duyệt bằng cách chia nhỏ hóa đơn cần được định danh là vi phạm cố ý để áp dụng hình thức xử lý thích đáng.",
+      "side": "right"
     }
   ]
 }

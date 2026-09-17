@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-10",
-    "title": "Task 2 · Repairing consumer goods",
-    "text": "Many damaged household products are discarded even when they might be repairable. This behaviour reflects the relative cost and convenience of replacement, as well as the way products are designed. Encouraging repair therefore requires changes in the market for products and services, rather than simply asking consumers to be less wasteful.\n\nOne reason is that the cost of diagnosis and labour can approach the price of a new item. Consumers may also be uncertain whether a repaired product will remain reliable, while a replacement comes with an advertised guarantee. If finding a technician takes several days but ordering a new appliance takes minutes, replacement can seem the more practical choice. These considerations are particularly significant when people depend on the product for daily activities and cannot easily manage without it.\n\nDesign creates another obstacle. Some manufacturers use components that are difficult to remove or do not make spare parts readily available. Even a skilled independent technician may then be unable to carry out a straightforward repair. Requiring suitable products to be designed for disassembly and making essential parts and instructions available would address this barrier. Rules should account for legitimate safety concerns, but those concerns should not become a general excuse for preventing all independent maintenance.\n\nConsumers also need trustworthy services and clearer information. Repair businesses could provide transparent estimates and reasonable guarantees on completed work, reducing uncertainty about the outcome. Public initiatives might support local repair training or provide information on where reliable services can be found. Such measures would be more useful than campaigns that ignore the financial decisions households face. In conclusion, replacement is common because it is often cheaper, faster and easier than repair. More repairable designs, accessible parts and dependable services would make keeping products in use a realistic option for a wider range of people.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nPeople often replace damaged products instead of repairing them. Why does this happen, and what could encourage more repairs?\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "admin-nd30-ke-hoach",
+    "title": "Kế hoạch ứng phó & khắc phục sự cố an toàn thông tin",
+    "text": "Thực hiện định hướng bảo đảm an toàn thông tin mạng quốc gia và các quy định của Chính phủ về bảo vệ bí mật nhà nước trên không gian mạng, cơ quan ban hành Kế hoạch phòng ngừa, ứng phó và khắc phục sự cố an toàn thông tin hệ thống quản lý văn bản điều hành năm 2026. Kế hoạch nhằm chủ động phòng ngừa các nguy cơ tấn công mạng, bảo đảm tính sẵn sàng, bảo mật và toàn vẹn của kho tài liệu số hóa.\n\nNội dung kế hoạch tập trung vào ba giải pháp trọng tâm: Thứ nhất, định kỳ hàng tuần thực hiện quét lỗ hổng bảo mật và kiểm tra mã độc trên toàn bộ máy chủ cơ sở dữ liệu. Thứ hai, duy trì cơ chế sao lưu dữ liệu tự động hàng ngày theo mô hình ba hai một, trong đó một bản lưu ngoại tuyến được bảo quản tại địa điểm dự phòng thảm họa độc lập. Thứ ba, tổ chức diễn tập thực chiến tình huống rò rỉ dữ liệu và khôi phục hệ thống trong vòng sáu giờ kể từ khi phát hiện cảnh báo.\n\nKinh phí thực hiện kế hoạch được bố trí từ nguồn kinh phí sự nghiệp công nghệ thông tin đã được phê duyệt trong dự toán ngân sách đầu năm. Phòng Công nghệ thông tin chủ trì phối hợp với các đơn vị liên quan tổ chức thực hiện và báo cáo kết quả lên Ban Chỉ đạo an toàn thông tin cơ quan.\n\nYêu cầu Thủ trưởng các đơn vị quán triệt nghiêm túc kế hoạch này đến toàn thể cán bộ công chức thuộc thẩm quyền quản lý để bảo đảm sự đồng bộ trong toàn cơ quan.",
+    "taskType": "administrative",
+    "prompt": "Xây dựng kế hoạch bảo đảm an toàn hệ thống lưu trữ tài liệu số hóa theo quy định bảo mật hồ sơ cơ quan nhà nước.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "extra-10-0",
-      "start": 0,
-      "end": 81,
-      "quote": "Many damaged household products are discarded even when they might be repairable.",
+      "id": "admin-nd30-ke-hoach-0",
+      "start": 267,
+      "end": 395,
+      "quote": "Kế hoạch nhằm chủ động phòng ngừa các nguy cơ tấn công mạng, bảo đảm tính sẵn sàng, bảo mật và toàn vẹn của kho tài liệu số hóa.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position",
-      "body": "Identifies relative cost, convenience and design as causes. The answer therefore needs both service and product-design solutions.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Mục đích kế hoạch",
+      "body": "Khẳng định mục tiêu bảo vệ bộ ba tính chất cốt lõi của an toàn thông tin: tính bảo mật, tính toàn vẹn và tính sẵn sàng của hồ sơ điện tử.",
+      "side": "left"
     },
     {
-      "id": "extra-10-1",
-      "start": 343,
-      "end": 432,
-      "quote": "One reason is that the cost of diagnosis and labour can approach the price of a new item.",
+      "id": "admin-nd30-ke-hoach-1",
+      "start": 576,
+      "end": 736,
+      "quote": "duy trì cơ chế sao lưu dữ liệu tự động hàng ngày theo mô hình ba hai một, trong đó một bản lưu ngoại tuyến được bảo quản tại địa điểm dự phòng thảm họa độc lập.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "First argument",
-      "body": "The guarantee and time comparison explains why replacing an item can be rational. This avoids blaming consumers without considering their constraints.",
-      "side": "right",
-      "tag": "green"
+      "level": "sentence",
+      "label": "Mô hình sao lưu",
+      "body": "Chiến lược sao lưu 3-2-1 là tiêu chuẩn phòng thủ dữ liệu hàng đầu, ngăn ngừa nguy cơ mất trắng dữ liệu khi xảy ra mã độc tống tiền.",
+      "side": "right"
     },
     {
-      "id": "extra-10-2",
-      "start": 848,
-      "end": 880,
-      "quote": "Design creates another obstacle.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Development",
-      "body": "Restricted components and spare parts create a separate supply-side barrier. Design-for-disassembly requirements directly address that cause.",
-      "side": "left",
-      "tag": "orange"
+      "id": "admin-nd30-ke-hoach-2",
+      "start": 745,
+      "end": 868,
+      "quote": "tổ chức diễn tập thực chiến tình huống rò rỉ dữ liệu và khôi phục hệ thống trong vòng sáu giờ kể từ khi phát hiện cảnh báo.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Chỉ số RTO",
+      "body": "Xác lập thời gian khôi phục mục tiêu RTO 6 giờ giúp đội ngũ kỹ thuật có thước đo rõ ràng trong các đợt kiểm tra diễn tập thực tế.",
+      "side": "left"
     },
     {
-      "id": "extra-10-3",
-      "start": 1379,
-      "end": 1444,
-      "quote": "Consumers also need trustworthy services and clearer information.",
+      "id": "admin-nd30-ke-hoach-3",
+      "start": 1188,
+      "end": 1277,
+      "quote": "quán triệt nghiêm túc kế hoạch này đến toàn thể cán bộ công chức thuộc thẩm quyền quản lý",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Judgement",
-      "body": "Transparent estimates and repair guarantees reduce the uncertainty introduced earlier. Training and accessible information support the proposed repair market.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Tổ chức thực hiện",
+      "body": "Ý thức tuân thủ của từng nhân sự là tuyến phòng thủ quan trọng nhất trong việc ngăn chặn các cuộc tấn công qua email giả mạo.",
+      "side": "right"
     }
   ]
 }

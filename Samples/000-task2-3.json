@@ -11,52 +11,48 @@
   },
   "annotations": [
     {
-      "id": "t2-2-0",
+      "id": "curated-task2-2-0",
       "start": 0,
       "end": 105,
       "quote": "Household food waste is a serious problem because producing food requires land, water, energy and labour.",
       "kind": "structure",
-      "level": "paragraph",
+      "level": "sentence",
       "label": "Problem focus",
-      "body": "Identifies shopping habits and uncertainty as causes. This gives the reader a clear plan for the cause-and-measures question.",
-      "side": "left",
-      "tag": "blue"
+      "body": "Establishes environmental and resource implications right in the opening line, setting up a coherent argument framework.",
+      "side": "left"
     },
     {
-      "id": "t2-2-1",
+      "id": "curated-task2-2-1",
       "start": 330,
       "end": 410,
       "quote": "One important cause is that people buy more than they can realistically consume.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Developed argument",
-      "body": "The promotional-pack example shows how an apparently cheap purchase creates waste. The date-label explanation adds a separate cause rather than repeating poor planning.",
-      "side": "right",
-      "tag": "green"
+      "level": "sentence",
+      "label": "Behavioral driver",
+      "body": "Identifies consumer impulse buying and volume promotions as the primary behavioral obstacle to household resource conservation.",
+      "side": "right"
     },
     {
-      "id": "t2-2-2",
-      "start": 945,
-      "end": 1033,
-      "quote": "At home, a short meal plan and a shopping list can help match purchases to actual needs.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Matched solutions",
-      "body": "Each proposal matches a cause: lists limit overbuying, freezing preserves surplus, and clearer instructions address uncertainty. This cause-solution alignment supports coherence.",
-      "side": "left",
-      "tag": "orange"
+      "id": "curated-task2-2-2",
+      "start": 699,
+      "end": 893,
+      "quote": "Another cause is confusion about date labels. Some consumers interpret every printed date as an immediate safety deadline, even when the label is intended to describe quality rather than safety.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Label confusion",
+      "body": "Differentiating between best-before advisory quality dates and use-by safety deadlines prevents the premature disposal of wholesome nutrition.",
+      "side": "left"
     },
     {
-      "id": "t2-2-3",
-      "start": 1485,
-      "end": 1601,
-      "quote": "Public information campaigns should focus on specific decisions rather than simply telling people that waste is bad.",
+      "id": "curated-task2-2-3",
+      "start": 1859,
+      "end": 2005,
+      "quote": "Coordinated improvements in purchasing, storage and labelling would address these causes more effectively than blaming individual consumers alone.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Synthesis",
-      "body": "Explains what a useful campaign would actually teach. The conclusion then synthesises the coordinated response without claiming that consumer education alone solves the problem.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Policy synthesis",
+      "body": "Shifts the solution from moralising consumer guilt towards structural interventions by supermarket retailers and packaging regulators.",
+      "side": "right"
     }
   ]
 }

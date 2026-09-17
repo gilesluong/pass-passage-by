@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-3",
-    "title": "Task 2 · Working from home",
-    "text": "Working from home has become possible for many occupations that mainly involve digital information. This change offers employees greater flexibility, but it can also create difficulties for communication and wellbeing. I believe the advantages outweigh the disadvantages when employers provide clear support and retain opportunities for people to meet in person.\n\nThe most obvious benefit is the removal of a daily commute. Time previously spent travelling can be used for rest, family responsibilities or exercise, which may make working life more sustainable. Remote work can also expand access to employment. A qualified applicant who lives far from a major city may be able to accept a position without moving home. For employers, this creates a wider pool of potential staff. These advantages are particularly valuable when the work can be completed independently and its quality can be assessed through clear results.\n\nThere are nevertheless important drawbacks. New employees may find it harder to learn from experienced colleagues when everyday conversations take place online. Messages can be misunderstood, and arranging a formal meeting for every small question is inefficient. Some workers also struggle to separate work from private life, especially if they lack a quiet room or feel expected to answer messages at all hours. The flexibility of remote work can then become a source of pressure rather than a benefit.\n\nThese problems can be reduced through deliberate working arrangements. Employers should define reasonable contact hours, provide suitable equipment and organise regular opportunities for collaboration. A hybrid schedule may be especially useful for teams that need both focused individual work and shared discussion. In conclusion, remote work can save time and widen access to jobs, giving it considerable advantages. Its success depends on thoughtful management, however, rather than on the assumption that working outside an office automatically improves every employee’s life.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nMore employees now work from home instead of travelling to an office. Do the advantages of this development outweigh the disadvantages?\n\nSupport your answer with reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "admin-nd30-to-trinh",
+    "title": "Tờ trình phê duyệt Đề án chuyển đổi số công tác văn thư",
+    "text": "Kính gửi Ban Lãnh đạo cơ quan: Thực hiện chỉ đạo về việc đẩy mạnh hiện đại hóa nền hành chính và nâng cao năng suất xử lý công việc, Văn phòng kính trình Ban Lãnh đạo xem xét, phê duyệt Đề án Chuyển đổi số toàn diện công tác văn thư, lưu trữ và luân chuyển tài liệu điện tử giai đoạn 2026-2030. Hiện nay, khối lượng văn bản tiếp nhận và phát hành trung bình vượt quá ba mươi nghìn lượt mỗi năm, trong khi quy trình thủ công bộc lộ nhiều điểm nghẽn về tốc độ tra cứu và chi phí in ấn bảo quản.\n\nĐề án đề xuất triển khai cổng tiếp nhận một cửa số hóa toàn trình, trang bị hạ tầng lưu trữ đám mây chuẩn cấp độ an toàn thông tin loại ba, đồng thời tích hợp chữ ký số cá nhân cho một trăm phần trăm cán bộ thụ lý hồ sơ. Hệ thống sẽ áp dụng chuẩn trích xuất siêu dữ liệu mở theo đúng danh mục trường tin quy định tại Thông tư hướng dẫn của Bộ Nội vụ.\n\nTổng mức đầu tư dự kiến được phân bổ hợp lý theo từng phân kỳ hàng năm, ưu tiên đào tạo bồi dưỡng kỹ năng số cho đội ngũ văn thư viên và xây dựng kho lưu trữ tài liệu lịch sử số hóa dự phòng. Sau khi đề án được phê duyệt, Văn phòng sẽ lập kế hoạch đấu thầu và thành lập Tổ công tác triển khai.\n\nKính trình Ban Lãnh đạo xem xét, phê duyệt chủ trương để tổ chức thực hiện các bước tiếp theo đúng trình tự pháp luật hiện hành.",
+    "taskType": "administrative",
+    "prompt": "Soạn thảo Tờ trình đề xuất phê duyệt chủ trương triển khai phần mềm quản lý hồ sơ và ký số theo Nghị định 30/2020/NĐ-CP.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "t2-3-0",
-      "start": 0,
-      "end": 99,
-      "quote": "Working from home has become possible for many occupations that mainly involve digital information.",
+      "id": "admin-nd30-to-trinh-0",
+      "start": 133,
+      "end": 294,
+      "quote": "Văn phòng kính trình Ban Lãnh đạo xem xét, phê duyệt Đề án Chuyển đổi số toàn diện công tác văn thư, lưu trữ và luân chuyển tài liệu điện tử giai đoạn 2026-2030.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position and scope",
-      "body": "Answers the outweigh question explicitly and makes support a condition. A neutral list of pros and cons would not communicate this judgement.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Nội dung tờ trình",
+      "body": "Phần mở đầu tờ trình phải nêu bật tên đề án, mục đích xin phê duyệt và phạm vi thời gian triển khai một cách súc tích và trang trọng.",
+      "side": "left"
     },
     {
-      "id": "t2-3-1",
-      "start": 364,
-      "end": 423,
-      "quote": "The most obvious benefit is the removal of a daily commute.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Developed argument",
-      "body": "Connects saved commuting time to sustainable working life and remote hiring to access. Each benefit is explained, not merely named.",
-      "side": "right",
-      "tag": "green"
+      "id": "admin-nd30-to-trinh-1",
+      "start": 405,
+      "end": 492,
+      "quote": "quy trình thủ công bộc lộ nhiều điểm nghẽn về tốc độ tra cứu và chi phí in ấn bảo quản.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Căn cứ thực tiễn",
+      "body": "Cần cung cấp số liệu định lượng về chi phí giấy mực, diện tích kho lưu trữ và thời gian tra cứu trung bình để tăng tính thuyết phục của tờ trình.",
+      "side": "right"
     },
     {
-      "id": "t2-3-2",
-      "start": 925,
-      "end": 968,
-      "quote": "There are nevertheless important drawbacks.",
+      "id": "admin-nd30-to-trinh-2",
+      "start": 727,
+      "end": 844,
+      "quote": "áp dụng chuẩn trích xuất siêu dữ liệu mở theo đúng danh mục trường tin quy định tại Thông tư hướng dẫn của Bộ Nội vụ.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Counterpoint and response",
-      "body": "Distinguishes collaboration costs from boundary problems at home. These disadvantages are credible and provide a basis for the solutions in the final paragraph.",
-      "side": "left",
-      "tag": "orange"
+      "level": "sentence",
+      "label": "Quy chuẩn dữ liệu",
+      "body": "Dữ liệu văn bản số phải có siêu dữ liệu đồng bộ theo chuẩn quốc gia để đảm bảo khả năng kết nối liên thông với các cơ quan cấp trên.",
+      "side": "left"
     },
     {
-      "id": "t2-3-3",
-      "start": 1431,
-      "end": 1501,
-      "quote": "These problems can be reduced through deliberate working arrangements.",
+      "id": "admin-nd30-to-trinh-3",
+      "start": 1141,
+      "end": 1269,
+      "quote": "Kính trình Ban Lãnh đạo xem xét, phê duyệt chủ trương để tổ chức thực hiện các bước tiếp theo đúng trình tự pháp luật hiện hành.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Synthesis",
-      "body": "Defined contact hours and hybrid collaboration directly respond to the drawbacks. The conclusion restates why the benefits can outweigh them under these conditions.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Kiến nghị phê duyệt",
+      "body": "Đoạn kết tờ trình phải dùng mẫu câu chuẩn mực đề nghị phê duyệt chủ trương hoặc dự toán kinh phí để lãnh đạo có cơ sở ra quyết định.",
+      "side": "right"
     }
   ]
 }

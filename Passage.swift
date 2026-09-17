@@ -377,8 +377,11 @@ final class MarginNoteCard: NSView {
     override var isFlipped: Bool { true }
     private let content: [NSView]
     var activate: (() -> Void)?
-    init(content: [NSView], identifier: String) {
+    var accentColor: NSColor?
+
+    init(content: [NSView], identifier: String, accentColor: NSColor? = nil) {
         self.content = content
+        self.accentColor = accentColor
         super.init(frame: .zero)
         self.identifier = NSUserInterfaceItemIdentifier(identifier)
         for view in content { addSubview(view) }
@@ -390,15 +393,25 @@ final class MarginNoteCard: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? { super.hitTest(point) == nil ? nil : self }
     override func mouseDown(with event: NSEvent) { activate?() }
     override func accessibilityPerformPress() -> Bool { activate?(); return activate != nil }
-    func desiredHeight(width: CGFloat) -> CGFloat { 100 }
+    func desiredHeight(width: CGFloat) -> CGFloat { 34 }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        let isDark = LiquidGlass.isDark(for: self)
+        let bg = isDark ? NSColor(white: 0.16, alpha: 0.85) : NSColor(white: 0.96, alpha: 0.9)
+        let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 8, yRadius: 8)
+        bg.setFill()
+        path.fill()
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: 8)
+    }
+
     override func layout() {
         super.layout()
-        let width = max(60, bounds.width - 24)
-        let rects = [NSRect(x: 12, y: 8, width: width, height: 14),
-                     NSRect(x: 12, y: 26, width: width, height: 20),
-                     NSRect(x: 12, y: 50, width: width, height: 38),
-                     NSRect(x: 12, y: 88, width: width, height: 0)]
-        for (view, rect) in zip(content, rects) { view.frame = rect }
+        let inset: CGFloat = bounds.width > 40 ? 10 : 4
+        let width = max(10, bounds.width - (inset * 2))
+        for view in content {
+            view.frame = NSRect(x: inset, y: (bounds.height - 22) / 2, width: width, height: 22)
+        }
     }
 }
 
@@ -1466,41 +1479,17 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         for n in visibleList.sorted(by: { $0.start < $1.start }) {
             let isLeft = (n.side == "left") && !leftScroll.isHidden
             let targetStack = isLeft ? leftNotes : rightNotes
-            let titleText = n.label
+            let titleText = String(n.label.prefix(22))
             let titleBtn = button(titleText, #selector(noteClicked))
             titleBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
             titleBtn.isBordered = false
             titleBtn.alignment = .left
-            titleBtn.font = .systemFont(ofSize: presentation ? 18 : 15, weight: .semibold)
+            titleBtn.font = .systemFont(ofSize: presentation ? 14 : 12, weight: .medium)
             titleBtn.contentTintColor = noteColor(n)
-            titleBtn.cell?.wraps = true
-            titleBtn.cell?.lineBreakMode = .byWordWrapping
+            titleBtn.cell?.wraps = false
+            titleBtn.cell?.lineBreakMode = .byTruncatingTail
 
-            let kindText = n.tag.map { tagName($0) } ?? "Annotation"
-
-            let isDark = isDarkMode()
-            let kind = NSTextField(wrappingLabelWithString: kindText)
-            kind.maximumNumberOfLines = 2
-            kind.font = .systemFont(ofSize: 9, weight: .bold)
-            kind.textColor = noteColor(n)
-
-            let body = NSTextField(wrappingLabelWithString: n.body + (n.suggestion.map { "\n\nSuggested: " + $0 } ?? ""))
-            body.font = .systemFont(ofSize: presentation ? 15 : 13)
-            body.textColor = isDark ? NSColor(calibratedWhite: 0.88, alpha: 1) : NSColor(calibratedWhite: 0.2, alpha: 1)
-            body.maximumNumberOfLines = 2
-            body.lineBreakMode = .byWordWrapping
-            body.cell?.wraps = true
-            body.cell?.usesSingleLineMode = false
-
-            let previewBtn = NSButton(title: "Read note ↗", target: self, action: #selector(openNotePreview(_:)))
-            previewBtn.isHidden = true
-            previewBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
-            previewBtn.isBordered = false
-            previewBtn.bezelStyle = .regularSquare
-            previewBtn.font = .systemFont(ofSize: 11, weight: .semibold)
-            previewBtn.contentTintColor = noteColor(n)
-
-            let card = MarginNoteCard(content: [kind, titleBtn, body, previewBtn], identifier: n.id)
+            let card = MarginNoteCard(content: [titleBtn], identifier: n.id, accentColor: noteColor(n))
             card.activate = { [weak self, weak titleBtn] in
                 guard let titleBtn = titleBtn else { return }
                 self?.noteClicked(titleBtn)

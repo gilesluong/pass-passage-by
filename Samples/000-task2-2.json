@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-1",
-    "title": "Task 2 · Online learning",
-    "text": "Online courses have become an established part of higher education, raising questions about whether physical classrooms are still necessary. Some people value the flexibility of remote study, while others emphasise direct interaction on campus. In my view, online learning is a useful alternative for some courses, but a blended approach usually offers a stronger university experience.\n\nThe main argument for online education is that it allows students to organise study around other responsibilities. Someone who works full time or cares for a family member may find it difficult to attend lectures at fixed hours. Recorded lessons can remove this obstacle and allow difficult explanations to be reviewed. Online courses can also widen access for people who live far from a university. These benefits are substantial, provided that students have a suitable device, a stable connection and access to academic support when they need it.\n\nHowever, attending university involves more than receiving information. In seminars, students must respond to unfamiliar arguments and explain their ideas to other people. Teachers can notice confusion and adjust a discussion immediately, while students can build relationships through informal conversations before and after class. Practical subjects present an additional difficulty for fully online courses. A nursing student, for example, needs supervised practice with equipment and patients, not merely demonstrations on a screen. Although simulations are useful preparation, they cannot reproduce every aspect of professional work.\n\nI therefore favour a combination of digital and face-to-face teaching. Universities could provide recorded lectures for independent study and reserve classroom time for debate, practical work and individual feedback. This arrangement would retain flexibility without assuming that every educational activity can be transferred online. Ultimately, the method should depend on what students need to learn, rather than on a universal preference for either technology or traditional classrooms.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nSome people believe that online courses can replace classroom teaching at universities. Others believe that attending classes in person is essential. Discuss both views and give your own opinion.\n\nSupport your answer with reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "sop-corp-onboarding",
+    "title": "Quy trình Onboarding & bàn giao trang thiết bị",
+    "text": "Quy trình hội nhập nhân sự mới được thiết kế nhằm mục tiêu đảm bảo nhân viên tiếp nhận đầy đủ công cụ làm việc, thấu hiểu văn hóa doanh nghiệp và nhanh chóng hòa nhập hiệu quả vào các dự án chuyên môn trong tuần làm việc đầu tiên. Bộ phận Nhân sự phối hợp cùng Khối Công nghệ thông tin hoàn thiện việc cấp phát tài khoản nội bộ và bàn giao thiết bị phần cứng trước ngày nhận việc chính thức ít nhất hai mươi bốn giờ.\n\nTrong ngày đầu tiên, nhân viên mới được hướng dẫn hoàn thiện hồ sơ tuyển dụng điện tử, ký cam kết bảo mật thông tin khách hàng và nhận biên bản bàn giao máy tính làm việc có cấu hình chuẩn. Người quản lý trực tiếp chịu trách nhiệm chỉ định một người đồng hành kinh nghiệm để hỗ trợ giải đáp thắc mắc chuyên môn, hướng dẫn các công cụ trao đổi trực tuyến và chia sẻ mục tiêu công việc của nhóm.\n\nSau ba mươi ngày và sáu mươi ngày làm việc, người quản lý tổ chức buổi đánh giá tiến độ định kỳ nhằm rà soát mức độ hoàn thành chỉ tiêu thử việc, lắng nghe phản hồi hai chiều và kịp thời hỗ trợ tháo gỡ các khó khăn phát sinh trong quá trình vận hành.\n\nKết thúc giai đoạn thử việc, căn cứ vào bản tự đánh giá của nhân sự và nhận xét của quản lý bộ phận, Ban Giám đốc sẽ xem xét phê duyệt hợp đồng lao động chính thức. Mọi dữ liệu đánh giá phải được lưu trữ đồng bộ trên cổng quản trị nhân sự nội bộ.",
+    "taskType": "onboarding",
+    "prompt": "Tài liệu hướng dẫn tiếp nhận nhân sự mới, thiết lập môi trường làm việc và bàn giao quyền truy cập hệ thống.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "t2-1-0",
-      "start": 0,
-      "end": 140,
-      "quote": "Online courses have become an established part of higher education, raising questions about whether physical classrooms are still necessary.",
+      "id": "sop-corp-onboarding-0",
+      "start": 286,
+      "end": 416,
+      "quote": "hoàn thiện việc cấp phát tài khoản nội bộ và bàn giao thiết bị phần cứng trước ngày nhận việc chính thức ít nhất hai mươi bốn giờ.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position and scope",
-      "body": "Names both perspectives and states a blended position. The answer must discuss each view; merely listing benefits of online study would leave the task incomplete.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Chuẩn bị hạ tầng",
+      "body": "Việc chủ động cấp tài khoản và thiết bị từ sớm giúp ứng viên có ấn tượng chuyên nghiệp và sẵn sàng tham gia ngay vào ngày đầu tiên.",
+      "side": "left"
     },
     {
-      "id": "t2-1-1",
-      "start": 388,
-      "end": 502,
-      "quote": "The main argument for online education is that it allows students to organise study around other responsibilities.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Developed argument",
-      "body": "The working learner example explains why flexible timing improves access. The final condition about devices and support qualifies that benefit rather than assuming equal access.",
-      "side": "right",
-      "tag": "green"
+      "id": "sop-corp-onboarding-1",
+      "start": 505,
+      "end": 607,
+      "quote": "ký cam kết bảo mật thông tin khách hàng và nhận biên bản bàn giao máy tính làm việc có cấu hình chuẩn.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Cam kết bảo mật",
+      "body": "Ký cam kết NDA và biên bản tài sản là thủ tục pháp lý bắt buộc nhằm xác định ranh giới trách nhiệm khi tiếp cận mã nguồn hoặc dữ liệu khách hàng.",
+      "side": "right"
     },
     {
-      "id": "t2-1-2",
-      "start": 938,
-      "end": 1009,
-      "quote": "However, attending university involves more than receiving information.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Counterpoint and response",
-      "body": "Seminar interaction and supervised nursing practice are distinct reasons for face-to-face learning. The nursing example is relevant because it exposes a limit of recorded demonstrations.",
-      "side": "left",
-      "tag": "orange"
+      "id": "sop-corp-onboarding-2",
+      "start": 649,
+      "end": 729,
+      "quote": "chỉ định một người đồng hành kinh nghiệm để hỗ trợ giải đáp thắc mắc chuyên môn,",
+      "kind": "vocabulary",
+      "level": "sentence",
+      "label": "Người đồng hành",
+      "body": "Mô hình người hướng dẫn kèm cặp giúp giảm thiểu bỡ ngỡ về văn hóa doanh nghiệp và rút ngắn một nửa thời gian làm quen quy trình.",
+      "side": "left"
     },
     {
-      "id": "t2-1-3",
-      "start": 1578,
-      "end": 1648,
-      "quote": "I therefore favour a combination of digital and face-to-face teaching.",
+      "id": "sop-corp-onboarding-3",
+      "start": 871,
+      "end": 958,
+      "quote": "tổ chức buổi đánh giá tiến độ định kỳ nhằm rà soát mức độ hoàn thành chỉ tiêu thử việc,",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Synthesis",
-      "body": "Combines recorded lectures with practical classroom time. This is a reasoned synthesis of the two views, not an unexplained preference for technology.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Đánh giá định kỳ",
+      "body": "Phản hồi thường xuyên theo tuần và mốc 30 ngày giúp phát hiện sai lệch mục tiêu sớm thay vì chờ đợi đến ngày cuối cùng của kỳ thử việc.",
+      "side": "right"
     }
   ]
 }

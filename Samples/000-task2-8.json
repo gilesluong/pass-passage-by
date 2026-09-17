@@ -2,61 +2,57 @@
   "format": "ielts-semantic-breakdown",
   "version": 1,
   "document": {
-    "id": "curated-task2-8",
-    "title": "Task 2 · Practical skills at school",
-    "text": "Whether schools should prioritise practical skills or academic knowledge depends partly on what education is expected to achieve. Supporters of life-skills teaching want pupils to manage everyday responsibilities confidently, whereas others emphasise the intellectual foundations provided by traditional subjects. I believe both are necessary and should be connected rather than treated as competitors.\n\nPractical lessons can prepare young people for decisions they will soon make independently. Understanding a rental agreement, comparing borrowing costs or planning a household budget can prevent avoidable difficulties. These topics are particularly useful for pupils whose families cannot provide detailed guidance. Schools offer a common setting in which everyone can encounter them. However, practical teaching should involve realistic decisions and discussion, not merely instructions that students memorise and forget after an examination.\n\nTraditional subjects also develop abilities that remain useful beyond the classroom. Mathematics helps learners evaluate numerical claims, while history encourages them to examine evidence and distinguish interpretation from fact. Literature can require careful attention to language and perspectives different from one’s own. Removing too much time from these subjects could leave pupils with narrow knowledge of current procedures but fewer tools for understanding unfamiliar problems. Everyday practices may change, yet the ability to reason critically continues to matter.\n\nA sensible approach is to integrate selected practical applications into existing subjects while reserving some dedicated time for responsibilities such as first aid. For example, a mathematics lesson could compare the total costs of different payment plans, requiring pupils to apply the concepts they have studied. Teachers would need suitable materials and training to make this approach effective. In conclusion, practical preparation deserves a stronger place in schools, but not at the expense of a broad academic foundation. Education should equip pupils both to handle immediate responsibilities and to continue learning throughout their lives.",
-    "taskType": "task2",
-    "prompt": "WRITING TASK 2\nAllow about 40 minutes.\n\nSchools should devote more time to practical life skills instead of traditional academic subjects. Discuss both views and give your opinion.\n\nGive reasons and relevant examples. Write at least 250 words.\nPPB! original practice material.",
-    "language": "en"
+    "id": "sop-corp-bao-mat",
+    "title": "Chính sách bảo mật dữ liệu khách hàng và quyền truy cập",
+    "text": "Chính sách bảo mật thông tin nội bộ xác định các nguyên tắc bắt buộc đối với toàn thể cán bộ công nhân viên trong việc thu thập, xử lý, lưu trữ và chuyển giao dữ liệu khách hàng, nhằm tuân thủ chặt chẽ các quy định pháp luật về bảo vệ dữ liệu cá nhân và ngăn ngừa các nguy cơ xâm nhập mạng trái phép. Dữ liệu công ty được phân chia thành ba cấp độ bảo mật: công khai, nội bộ và tối mật.\n\nTất cả tài khoản hệ thống của nhân viên phải kích hoạt xác thực hai yếu tố và tự động khóa màn hình sau năm phút không phát sinh thao tác. Nghiêm cấm tuyệt đối việc sử dụng hộp thư cá nhân, dịch vụ lưu trữ ngoài hoặc thiết bị cá nhân chưa được kiểm duyệt để gửi nhận dữ liệu khách hàng. Quyền truy xuất vào cơ sở dữ liệu sản xuất chỉ được cấp phát có thời hạn theo nguyên tắc đặc quyền tối thiểu.\n\nKhi phát hiện bất kỳ dấu hiệu rò rỉ thông tin hoặc mã độc xâm nhập, nhân viên có nghĩa vụ ngắt kết nối mạng ngay lập tức và báo cáo khẩn cấp cho Đội ứng cứu sự cố an ninh mạng trong vòng ba mươi phút. Đội ứng cứu sẽ cô lập phân vùng bị ảnh hưởng và thực hiện các biện pháp điều tra truy vết nguyên nhân.\n\nCác trường hợp vi phạm chính sách bảo mật tùy theo tính chất và mức độ hậu quả sẽ bị xử lý kỷ luật lao động hoặc chuyển giao cơ quan pháp luật có thẩm quyền xử lý theo quy định.",
+    "taskType": "onboarding",
+    "prompt": "Hướng dẫn tuân thủ bảo vệ dữ liệu cá nhân, phân quyền truy xuất cơ sở dữ liệu và quy trình bảo vệ thông tin mật.",
+    "language": "vi"
   },
   "annotations": [
     {
-      "id": "extra-8-0",
-      "start": 0,
-      "end": 129,
-      "quote": "Whether schools should prioritise practical skills or academic knowledge depends partly on what education is expected to achieve.",
+      "id": "sop-corp-bao-mat-0",
+      "start": 301,
+      "end": 386,
+      "quote": "Dữ liệu công ty được phân chia thành ba cấp độ bảo mật: công khai, nội bộ và tối mật.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Position",
-      "body": "Presents both positions and a clear integrative opinion. The essay must show the value of practical preparation and academic foundations.",
-      "side": "left",
-      "tag": "blue"
+      "level": "sentence",
+      "label": "Phân loại dữ liệu",
+      "body": "Phân tầng cấp độ dữ liệu giúp áp dụng các biện pháp kiểm soát kỹ thuật và mã hóa tương xứng với giá trị nhạy cảm của từng tệp tin.",
+      "side": "left"
     },
     {
-      "id": "extra-8-1",
-      "start": 404,
-      "end": 495,
-      "quote": "Practical lessons can prepare young people for decisions they will soon make independently.",
+      "id": "sop-corp-bao-mat-1",
+      "start": 675,
+      "end": 784,
+      "quote": "Quyền truy xuất vào cơ sở dữ liệu sản xuất chỉ được cấp phát có thời hạn theo nguyên tắc đặc quyền tối thiểu.",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "First argument",
-      "body": "Budgeting and rental agreements make life skills concrete. Equal access to guidance gives a reason for schools, rather than families alone, to teach these skills.",
-      "side": "right",
-      "tag": "green"
+      "level": "sentence",
+      "label": "Quyền tối thiểu",
+      "body": "Nguyên tắc Least Privilege bảo đảm mỗi nhân sự chỉ được cấp quyền vừa đủ để hoàn thành tác vụ được giao, giới hạn tối đa rủi ro nội bộ.",
+      "side": "right"
     },
     {
-      "id": "extra-8-2",
-      "start": 949,
-      "end": 1033,
-      "quote": "Traditional subjects also develop abilities that remain useful beyond the classroom.",
-      "kind": "structure",
-      "level": "paragraph",
-      "label": "Development",
-      "body": "Maths, history and literature illustrate different transferable reasoning skills. This develops the academic side instead of treating it as tradition for its own sake.",
-      "side": "left",
-      "tag": "orange"
+      "id": "sop-corp-bao-mat-2",
+      "start": 876,
+      "end": 986,
+      "quote": "ngắt kết nối mạng ngay lập tức và báo cáo khẩn cấp cho Đội ứng cứu sự cố an ninh mạng trong vòng ba mươi phút.",
+      "kind": "comment",
+      "level": "sentence",
+      "label": "Quy trình ứng phó",
+      "body": "Cô lập thiết bị và báo cáo trong vòng 30 phút là yếu tố sống còn để ngăn chặn sự lây lan của ransomware và bảo toàn chứng cứ số.",
+      "side": "left"
     },
     {
-      "id": "extra-8-3",
-      "start": 1527,
-      "end": 1693,
-      "quote": "A sensible approach is to integrate selected practical applications into existing subjects while reserving some dedicated time for responsibilities such as first aid.",
+      "id": "sop-corp-bao-mat-3",
+      "start": 1133,
+      "end": 1233,
+      "quote": "tùy theo tính chất và mức độ hậu quả sẽ bị xử lý kỷ luật lao động hoặc chuyển giao cơ quan pháp luật",
       "kind": "structure",
-      "level": "paragraph",
-      "label": "Judgement",
-      "body": "The payment-plan lesson demonstrates integration in practice. Teacher preparation is a realistic condition on the proposed compromise.",
-      "side": "right",
-      "tag": "purple"
+      "level": "sentence",
+      "label": "Chế tài xử lý",
+      "body": "Xác định rõ hậu quả pháp lý răn đe các hành vi chia sẻ dữ liệu trái phép ra bên ngoài hoặc sử dụng dữ liệu khách hàng cho mục đích riêng.",
+      "side": "right"
     }
   ]
 }
