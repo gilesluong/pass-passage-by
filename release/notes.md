@@ -1,9 +1,10 @@
-## Pass Passage By! 1.9.3
+## Pass Passage By! 1.9.4
 
-- Added "Structured Documents & SOP Studio" shelf directly on the Home showcase with live cards for Vietnamese Administrative Decisions (Nghị định 30/2020/NĐ-CP) and Corporate SOP Onboarding.
-- Added direct creation options under "New document…" and File menu: create "Văn bản hành chính (NĐ 30)" or "Quy chế & SOP Onboarding" with complete pre-filled semantic blocks, guided notes, and prompts.
-- Expanded reading type tags with native Vietnamese labels: "Văn bản hành chính", "SOP & Onboarding", and "Diễn thuyết".
-- Strict SwiftLint compliance and 100% test pass rate across all suites.
+- Architectural separation between Margin Annotations and Inline Comments:
+  - Annotations (✦): Dedicated for objective structural analysis, administrative legal clauses (NĐ 30), academic thesis, and vocabulary citations. Rendered as solid Liquid Glass margin cards with connectors.
+  - Comments (💬): Dedicated for mentor review, feedback, and reader thoughts. Accessible via selection popover (⌥⌘M). Rendered with purple dashed borders and distinct "💬 COMMENT · PHẢN HỒI" badges.
+  - Separate popover creation interfaces and tailored quick pills for each mode.
+- 100% strict SwiftLint compliance and test pass rate.
 
 Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized.
 

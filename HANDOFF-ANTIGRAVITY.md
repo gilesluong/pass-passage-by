@@ -1,4 +1,4 @@
-# Current: Pass Passage By! 1.9.3 (Structured Studio Shelves & Native Templates) — 17 September 2026
+# Current: Pass Passage By! 1.9.4 (Annotation vs Comment Separation) — 17 September 2026
 
 ## Product Vision & Core Philosophy (From User)
 Pass Passage By! is evolving from an IELTS writing assistant into a **world-class Close Reading & Structured Document Studio**:
@@ -17,10 +17,25 @@ Pass Passage By! is evolving from an IELTS writing assistant into a **world-clas
 2. **Dedicated Hotkey & Ergonomic Gesture System**:
    - **Strict Modifier Isolation**: Holding `fn` isolates sentence-level hover highlighting (`pointerMode == "Hold fn"`), strictly separated from `Option`.
    - **Direct-to-Definition Zoom**: Jumping directly between essay overview and Apple Dictionary-formatted lexical definitions.
-   - **Responsive Liquid Glass Annotations**: Compact 3-line margin notes with scrollable popover previews and `Option-Command-M` quick comments.
+   - **Responsive Liquid Glass Annotations vs Comments**: Clear functional and visual separation between Margin Annotations and Selection Comments.
 3. **Low-Cost / Zero Recurring Subscription Bridge**:
    - Users already subscribe to ChatGPT Plus or Gemini Advanced ($20/month); they will not pay another $20/month for a standalone AI reader.
    - PPB acts as the intermediate visual canvas, skill & MCP harness, leveraging on-device Apple Intelligence, native Apple dictionaries, and BYO AI agents via local stdio MCP at $0 developer server cost and $0 user subscription.
+
+---
+
+## 1.9.4 Implementation Details: Separation of Annotations vs Comments
+- **Architectural & Functional Distinction**:
+  - **Annotations (✦ Chú giải cấu trúc & thể thức)**:
+    - Sống ở **2 bên lề văn bản (Margin Columns)**.
+    - Đại diện cho các yếu tố khách quan của văn bản: Thể thức NĐ 30, căn cứ pháp lý, thesis statement, trích dẫn khoa học (DOI preview), thuật ngữ.
+    - Hiển thị dạng card Liquid Glass viền liền (solid), huy hiệu màu sắc phân loại, có đường connector nối thẳng vào vị trí neo trong văn bản.
+    - Kích hoạt qua: `insertAnnotation()` (Edit $\rightarrow$ Annotation {…}), mở popover chế độ "✦ New Margin Annotation" với quick pills: Task, Cohesion, Vocabulary, Clause, Argument.
+  - **Comments (💬 Bình luận phản hồi & trao đổi)**:
+    - Là **Pop-up Liquid Glass nổi** khi bôi đen văn bản hoặc bấm `⌥⌘M` ("Comment  ⌥⌘M").
+    - Đại diện cho tương tác chủ quan: Lời phê của người chấm / mentor / reviewer, ghi chú thắc mắc cá nhân.
+    - Ở lề văn bản: Hiển thị với huy hiệu `"💬 COMMENT · PHẢN HỒI"`, viền tím nét đứt (dashed border) và tiền tố `"💬 "`.
+    - Kích hoạt qua: `comment()` (`⌥⌘M` hoặc nút nổi "Comment"), mở popover chế độ "💬 New Comment / Review" với các phím tắt nhanh: Feedback, Clarity, Logic, Need Citation, Action Required.
 
 ---
 

@@ -376,8 +376,10 @@ class MarginCanvas: NSView {
 final class MarginNoteCard: NSView {
     override var isFlipped: Bool { true }
     private let content: [NSView]
-    init(content: [NSView], identifier: String) {
+    var isComment: Bool = false
+    init(content: [NSView], identifier: String, isComment: Bool = false) {
         self.content = content
+        self.isComment = isComment
         super.init(frame: .zero)
         self.identifier = NSUserInterfaceItemIdentifier(identifier)
         wantsLayer = true
@@ -398,7 +400,16 @@ final class MarginNoteCard: NSView {
     }
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
-        LiquidGlass.drawCard(in: bounds, isDark: LiquidGlass.isDark(for: self), radius: LiquidGlass.smallCornerRadius)
+        let isDark = LiquidGlass.isDark(for: self)
+        LiquidGlass.drawCard(in: bounds, isDark: isDark, radius: LiquidGlass.smallCornerRadius)
+        if isComment {
+            let stroke = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: LiquidGlass.smallCornerRadius, yRadius: LiquidGlass.smallCornerRadius)
+            let dash: [CGFloat] = [4.0, 3.0]
+            stroke.setLineDash(dash, count: 2, phase: 0)
+            stroke.lineWidth = 1.2
+            (isDark ? NSColor.systemPurple.withAlphaComponent(0.6) : NSColor.systemPurple.withAlphaComponent(0.4)).setStroke()
+            stroke.stroke()
+        }
     }
 }
 
@@ -1403,12 +1414,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         for n in visibleList.sorted(by: { $0.start < $1.start }) {
             let isLeft = (n.side == "left") && (window.contentView?.bounds.width ?? 1000) >= 1050
             let targetStack = isLeft ? leftNotes : rightNotes
+            let isComment = n.kind == "comment"
 
-            let titleBtn = button(n.label, #selector(noteClicked))
+            let titleText = isComment ? "💬 " + n.label : n.label
+            let titleBtn = button(titleText, #selector(noteClicked))
             titleBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
             titleBtn.isBordered = false
             titleBtn.alignment = .left
-            titleBtn.font = .systemFont(ofSize: presentation ? 18 : 15, weight: .semibold)
+            titleBtn.font = .systemFont(ofSize: presentation ? 18 : 15, weight: isComment ? .medium : .semibold)
             titleBtn.contentTintColor = noteColor(n)
             titleBtn.cell?.wraps = true
             titleBtn.cell?.lineBreakMode = .byWordWrapping
@@ -1423,8 +1436,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let isIELTS = data.document.taskType.hasPrefix("task")
 
             let kindText: String = {
-                if isResearchSource {
+                if isComment {
+                    return "💬 COMMENT · PHẢN HỒI"
+                } else if isResearchSource {
                     return "✦ RESEARCH SOURCE · PREVIEW"
+                } else if n.kind == "structure" && (data.document.taskType == "administrative") {
+                    return "NĐ 30 · THỂ THỨC HÀNH CHÍNH"
+                } else if n.kind == "structure" && (data.document.taskType == "onboarding") {
+                    return "SOP · QUY CHẾ DOANH NGHIỆP"
                 } else if isIELTS {
                     if n.label.localizedCaseInsensitiveContains("response") || n.label.localizedCaseInsensitiveContains("task") {
                         return "IELTS · TASK RESPONSE"
@@ -1449,9 +1468,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let kind = NSTextField(wrappingLabelWithString: kindText)
             kind.maximumNumberOfLines = 2
             kind.font = .systemFont(ofSize: 9, weight: .bold)
-            kind.textColor = isResearchSource
-                ? LiquidGlass.researchAccent(isDark: isDark)
-                : noteColor(n)
+            kind.textColor = isComment
+                ? (isDark ? NSColor(calibratedRed: 0.85, green: 0.70, blue: 1.0, alpha: 1) : NSColor.systemPurple)
+                : (isResearchSource ? LiquidGlass.researchAccent(isDark: isDark) : noteColor(n))
 
             let body = NSTextField(wrappingLabelWithString: n.body + (n.suggestion.map { "\n\nSuggested: " + $0 } ?? ""))
             body.font = .systemFont(ofSize: presentation ? 15 : 13)
@@ -1461,14 +1480,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             body.cell?.wraps = true
             body.cell?.usesSingleLineMode = false
 
-            let previewBtn = NSButton(title: "Read note ↗", target: self, action: #selector(openNotePreview(_:)))
+            let previewBtn = NSButton(title: isComment ? "View comment ↗" : "Read note ↗", target: self, action: #selector(openNotePreview(_:)))
             previewBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
             previewBtn.isBordered = false
             previewBtn.bezelStyle = .regularSquare
             previewBtn.font = .systemFont(ofSize: 11, weight: .semibold)
             previewBtn.contentTintColor = noteColor(n)
 
-            let card = MarginNoteCard(content: [kind, titleBtn, body, previewBtn], identifier: n.id)
+            let card = MarginNoteCard(content: [kind, titleBtn, body, previewBtn], identifier: n.id, isComment: isComment)
             targetStack.addArrangedSubview(card)
 
         }
@@ -1910,10 +1929,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     }
     @objc func insertLink() { wrapMarkup("[", end: "](https://)") }
     @objc func insertAnnotation() {
-        guard opened, !presentation else{return}
+        guard opened, !presentation else { return }
         let range = selectedRangeInDocument()
-        guard range.length > 0 else{showAlert("Select the text to annotate first.");return}
-        comment()
+        guard range.length > 0 else { showAlert("Select the text to annotate first."); return }
+        guard let lm = editor.layoutManager, let tc = editor.textContainer else { return }
+        let local = NSRange(location: range.location - visible.location, length: range.length)
+        let glyphRange = lm.glyphRange(forCharacterRange: local, actualCharacterRange: nil)
+        let rect = lm.boundingRect(forGlyphRange: glyphRange, in: tc)
+        openCommentPopover(existing: nil, targetRect: rect, view: editor, mode: "annotation")
     }
     @objc func insertHeading() {
         guard opened, !presentation else { return }
@@ -2181,7 +2204,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         openCommentPopover(existing: nil, targetRect: rect, view: editor)
     }
 
-    func openCommentPopover(existing: Note?, targetRect: NSRect, view: NSView) {
+    func openCommentPopover(existing: Note?, targetRect: NSRect, view: NSView, mode: String = "comment") {
         commentPopover?.close();floatingCommentButton?.isHidden = true
         let p = NSPopover()
         p.behavior = .transient
@@ -2197,22 +2220,39 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let vc = NSViewController()
         let popView = NSView(frame: NSRect(x: 0, y: 0, width: 320, height: 360))
 
-        let titleLabel = NSTextField(labelWithString: existing == nil ? "New Annotation" : "Edit Annotation")
-        commentLabel = NSTextField(string:existing?.label ?? "Annotation");commentLabel.placeholderString = "Title"
-        commentTag = NSPopUpButton();for tag in tagColors {commentTag.addItem(withTitle:tagName(tag));commentTag.lastItem?.representedObject = tag;commentTag.lastItem?.image = NSImage(systemSymbolName:"flag.fill",accessibilityDescription:tag)?.withSymbolConfiguration(.init(paletteColors:[tagColor(tag)]))}
+        let isComment = existing?.kind == "comment" || (existing == nil && mode == "comment")
+        let titleText: String = {
+            if isComment {
+                return existing == nil ? "💬 New Comment / Review" : "💬 Edit Comment"
+            } else {
+                return existing == nil ? "✦ New Margin Annotation" : "✦ Edit Annotation"
+            }
+        }()
+        let titleLabel = NSTextField(labelWithString: titleText)
+        let defaultLabel = isComment ? "Feedback" : "Annotation"
+        commentLabel = NSTextField(string: existing?.label ?? defaultLabel)
+        commentLabel.placeholderString = isComment ? "Comment Title (e.g. Mentor Feedback, Note)" : "Annotation Title (e.g. Legal Basis, Thesis)"
+        commentTag = NSPopUpButton()
+        for tag in tagColors {
+            commentTag.addItem(withTitle: tagName(tag))
+            commentTag.lastItem?.representedObject = tag
+            commentTag.lastItem?.image = NSImage(systemSymbolName: "flag.fill", accessibilityDescription: tag)?.withSymbolConfiguration(.init(paletteColors: [tagColor(tag)]))
+        }
         commentLabel.delegate = self
-        commentTag.target = self;commentTag.action = #selector(annotationChanged)
-        commentTag.selectItem(at:tagColors.firstIndex(of:existing?.tag ?? "blue") ?? 0)
+        commentTag.target = self
+        commentTag.action = #selector(annotationChanged)
+        commentTag.selectItem(at: tagColors.firstIndex(of: existing?.tag ?? (isComment ? "purple" : "blue")) ?? 0)
         titleLabel.font = currentHeadlineFont(size: 14)
 
         commentKind = NSPopUpButton()
         commentKind.addItems(withTitles: ["comment", "correction", "vocabulary", "structure"])
-        commentKind.selectItem(withTitle: existing?.kind ?? "comment")
-        commentKind.target = self;commentKind.action = #selector(annotationChanged)
+        commentKind.selectItem(withTitle: existing?.kind ?? (isComment ? "comment" : "structure"))
+        commentKind.target = self
+        commentKind.action = #selector(annotationChanged)
 
         commentField = NSTextView(frame: NSRect(x: 0, y: 0, width: 280, height: 90))
         commentField.string = existing?.body ?? ""
-        commentField.font = .systemFont(ofSize:15)
+        commentField.font = .systemFont(ofSize: 15)
         commentField.isRichText = false
         commentField.delegate = self
         commentField.autoresizingMask = [.width]
@@ -2224,27 +2264,66 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         s.hasVerticalScroller = true
         s.heightAnchor.constraint(equalToConstant: 140).isActive = true
 
-        let delBtn = button("Remove annotation", #selector(deleteComment))
+        let delBtn = button(isComment ? "Remove comment" : "Remove annotation", #selector(deleteComment))
         delBtn.isHidden = (existing == nil)
         let actions = stack([delBtn])
 
-        let pills = stack([
-            stack([button("Task",#selector(quickPillTask)),button("Cohesion",#selector(quickPillCoherence)),button("Vocabulary",#selector(quickPillVocab))]),
-            stack([button("Source",#selector(quickPillSource)),button("Argument",#selector(quickPillArgument)),button("Correction",#selector(quickPillCorrection))])
-        ],vertical:true)
+        let pills: NSStackView = {
+            if isComment {
+                return stack([
+                    stack([button("Feedback", #selector(quickPillFeedback)), button("Clarity", #selector(quickPillClarity)), button("Logic", #selector(quickPillLogic))]),
+                    stack([button("Source", #selector(quickPillSource)), button("Correction", #selector(quickPillCorrection)), button("Action", #selector(quickPillAction))])
+                ], vertical: true)
+            } else {
+                return stack([
+                    stack([button("Task", #selector(quickPillTask)), button("Cohesion", #selector(quickPillCoherence)), button("Vocabulary", #selector(quickPillVocab))]),
+                    stack([button("Clause", #selector(quickPillClause)), button("Argument", #selector(quickPillArgument)), button("Correction", #selector(quickPillCorrection))])
+                ], vertical: true)
+            }
+        }()
         pills.spacing = 6
 
-        let all = stack([titleLabel, commentLabel, stack([commentKind,commentTag]), pills, s, actions], vertical: true)
+        let all = stack([titleLabel, commentLabel, stack([commentKind, commentTag]), pills, s, actions], vertical: true)
         all.alignment = .width
         all.spacing = 8
         attach(all, to: popView, inset: 12)
 
-        popView.setFrameSize(NSSize(width:320,height:all.fittingSize.height + 24))
+        popView.setFrameSize(NSSize(width: 320, height: all.fittingSize.height + 24))
         vc.view = popView
-        p.contentViewController = vc
         commentPopover = p
         p.show(relativeTo: targetRect, of: view, preferredEdge: .maxY)
         p.contentViewController?.view.window?.makeFirstResponder(commentField)
+    }
+
+    @objc func quickPillFeedback() {
+        commentLabel.stringValue = "Mentor Feedback"
+        commentKind.selectItem(withTitle: "comment")
+        commentTag.selectItem(at: tagColors.firstIndex(of: "purple") ?? 0)
+        annotationChanged()
+    }
+    @objc func quickPillClarity() {
+        commentLabel.stringValue = "Clarity & Phrasing"
+        commentKind.selectItem(withTitle: "comment")
+        commentTag.selectItem(at: tagColors.firstIndex(of: "blue") ?? 0)
+        annotationChanged()
+    }
+    @objc func quickPillLogic() {
+        commentLabel.stringValue = "Check Reasoning"
+        commentKind.selectItem(withTitle: "comment")
+        commentTag.selectItem(at: tagColors.firstIndex(of: "orange") ?? 0)
+        annotationChanged()
+    }
+    @objc func quickPillAction() {
+        commentLabel.stringValue = "Action Required"
+        commentKind.selectItem(withTitle: "comment")
+        commentTag.selectItem(at: tagColors.firstIndex(of: "red") ?? 0)
+        annotationChanged()
+    }
+    @objc func quickPillClause() {
+        commentLabel.stringValue = "Căn cứ & Điều khoản"
+        commentKind.selectItem(withTitle: "structure")
+        commentTag.selectItem(at: tagColors.firstIndex(of: "orange") ?? 0)
+        annotationChanged()
     }
 
     @objc func quickPillTask(){commentLabel.stringValue = "Task Response";commentKind.selectItem(withTitle:"comment");commentTag.selectItem(at:tagColors.firstIndex(of:"blue") ?? 0);annotationChanged()}
