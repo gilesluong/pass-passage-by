@@ -114,7 +114,8 @@ final class AppleTVSidebarItem: NSButton {
         addSubview(iconImageView)
         addSubview(titleLabelView)
     }
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
@@ -190,7 +191,7 @@ final class AppleTVProfileView: NSView {
         wantsLayer = true
 
         avatarCircle.wantsLayer = true
-        avatarCircle.layer?.cornerRadius = 14
+        if let layer = avatarCircle.layer { LiquidGlass.configureLayer(layer, radius: 14, shadow: false) }
         avatarCircle.layer?.masksToBounds = true
         avatarCircle.layer?.backgroundColor = NSColor(red: 0.16, green: 0.20, blue: 0.28, alpha: 1.0).cgColor
 
@@ -221,7 +222,8 @@ final class AppleTVProfileView: NSView {
         addSubview(settingsButton)
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     @objc func openDirectSettings(_ sender: NSButton) {
         (NSApp.delegate as? Passage)?.showSettings(sender)
@@ -302,9 +304,7 @@ final class AppleTVPrimaryCTA: NSButton {
         bg.setFill()
         path.fill()
 
-        NSColor(white: 1.0, alpha: 0.3).setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        LiquidGlass.drawSpecularRim(in: bounds, isDark: LiquidGlass.isDark(for: self), radius: radius)
 
         super.draw(dirtyRect)
     }
@@ -340,9 +340,7 @@ final class AppleTVCircleButton: NSButton {
         NSColor(white: 1.0, alpha: alpha).setFill()
         path.fill()
 
-        NSColor(white: 1.0, alpha: 0.30).setStroke()
-        path.lineWidth = 1
-        path.stroke()
+        LiquidGlass.drawSpecularRim(in: bounds, isDark: LiquidGlass.isDark(for: self), radius: radius)
 
         super.draw(dirtyRect)
     }
@@ -361,20 +359,23 @@ struct PartnerSlide {
     let accentColor: NSColor
 }
 
+enum HomeScrollAxis { case undecided, horizontal, vertical }
+
 struct HomeSwipeGesture {
-    var horizontal: Bool? = nil
+    var axis: HomeScrollAxis = .undecided
+    var horizontal: Bool { axis == .horizontal }
     var advanced = false
     var distance: CGFloat = 0
     var lastTime: TimeInterval = 0
     mutating func consume(x:CGFloat,y:CGFloat,time:TimeInterval,began:Bool,unphased:Bool,momentum:Bool) -> Int {
-        if began || (unphased && !momentum && time-lastTime>0.3) {horizontal=nil;advanced=false;distance=0}
-        lastTime=time
-        if horizontal == nil && max(abs(x),abs(y))>0 {horizontal=abs(x)>abs(y)}
+        if began || (unphased && !momentum && time - lastTime > 0.3) {axis = .undecided;advanced = false;distance = 0}
+        lastTime = time
+        if axis == .undecided && max(abs(x),abs(y)) > 0 {axis = abs(x) > abs(y) ? .horizontal : .vertical}
         guard horizontal == true, !momentum, !advanced else{return 0}
         distance += x
-        guard abs(distance)>20 else{return 0}
-        advanced=true
-        return distance<0 ? 1 : -1
+        guard abs(distance) > 20 else{return 0}
+        advanced = true
+        return distance < 0 ? 1 : -1
     }
 }
 
@@ -465,7 +466,8 @@ final class PartnerShowcaseCarousel: NSView {
         }
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     func setupSlides(_ list: [PartnerSlide]) {
         slides = list
@@ -505,10 +507,9 @@ final class PartnerShowcaseCarousel: NSView {
     private var swipe = HomeSwipeGesture()
     override var acceptsFirstResponder: Bool { true }
     override func scrollWheel(with event:NSEvent) {
-        let step=swipe.consume(x:event.scrollingDeltaX,y:event.scrollingDeltaY,time:event.timestamp,
-            began:event.phase == .began,unphased:event.phase.isEmpty,momentum:!event.momentumPhase.isEmpty)
+        let step = swipe.consume(x:event.scrollingDeltaX,y:event.scrollingDeltaY,time:event.timestamp,began:event.phase == .began,unphased:event.phase.isEmpty,momentum:!event.momentumPhase.isEmpty)
         if swipe.horizontal != true {super.scrollWheel(with:event);return}
-        if step>0 {nextClicked()} else if step<0 {prevClicked()}
+        if step > 0 {nextClicked()} else if step < 0 {prevClicked()}
     }
 
     override func keyDown(with event: NSEvent) {
@@ -534,11 +535,11 @@ final class PartnerShowcaseCarousel: NSView {
         guard currentIndex >= 0 && currentIndex < slides.count else { return }
         let slide = slides[currentIndex]
         do {
-            let bytes=try Data(contentsOf:URL(fileURLWithPath:slide.path))
-            let doc=try JSONDecoder().decode(Breakdown.self,from:bytes)
-            if let passage=openTarget as? Passage {
+            let bytes = try Data(contentsOf:URL(fileURLWithPath:slide.path))
+            let doc = try JSONDecoder().decode(Breakdown.self,from:bytes)
+            if let passage = openTarget as? Passage {
                 try LibraryStore.save(doc,to:passage.saveURL.deletingLastPathComponent().appendingPathComponent("Library"))
-                bookmarkButton.toolTip="Saved to My writing";bookmarkButton.title="✓"
+                bookmarkButton.toolTip = "Saved to My writing";bookmarkButton.title = "✓"
             }
         } catch {(openTarget as? Passage)?.showAlert(error.localizedDescription)}
     }
@@ -587,21 +588,21 @@ final class PartnerShowcaseCarousel: NSView {
 
     override func layout() {
         super.layout()
-        let pad:CGFloat=42,w=max(230,bounds.width-pad*2),textWidth=min(470,w)
-        let bottom=bounds.height-62
-        partnerBadge.frame=NSRect(x:pad,y:bottom-224,width:textWidth,height:20)
-        titleLabel.font=NSFont(name:"Georgia-Bold",size:bounds.width<600 ? 25:32)
-        titleLabel.maximumNumberOfLines=3;titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.frame=NSRect(x:pad,y:bottom-196,width:textWidth,height:88)
-        appleMetaLabel.frame=NSRect(x:pad,y:bottom-104,width:textWidth,height:20)
-        excerptLabel.frame=NSRect(x:pad,y:bottom-78,width:textWidth,height:44)
-        pedagogyLabel.isHidden=true;laurelLabel.isHidden=true;tagsStack.isHidden=true;ctaSubtitle.isHidden=true
-        actionButton.frame=NSRect(x:pad,y:bottom-16,width:214,height:38)
-        bookmarkButton.frame=NSRect(x:pad+226,y:bottom-16,width:38,height:38)
-        let dotW=CGFloat(dotButtons.count)*16
-        dotsContainer.frame=NSRect(x:(bounds.width-dotW)/2,y:bounds.height-25,width:dotW,height:16)
-        prevButton.frame=NSRect(x:7,y:bounds.height/2-14,width:28,height:28)
-        nextButton.frame=NSRect(x:bounds.width-35,y:bounds.height/2-14,width:28,height:28)
+        let pad:CGFloat = 42,w = max(230,bounds.width - pad * 2),textWidth = min(470,w)
+        let bottom = bounds.height - 62
+        partnerBadge.frame = NSRect(x:pad,y:bottom - 224,width:textWidth,height:20)
+        titleLabel.font = NSFont(name:"Georgia-Bold",size:bounds.width < 600 ? 25 : 32)
+        titleLabel.maximumNumberOfLines = 3;titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.frame = NSRect(x:pad,y:bottom - 196,width:textWidth,height:88)
+        appleMetaLabel.frame = NSRect(x:pad,y:bottom - 104,width:textWidth,height:20)
+        excerptLabel.frame = NSRect(x:pad,y:bottom - 78,width:textWidth,height:44)
+        pedagogyLabel.isHidden = true;laurelLabel.isHidden = true;tagsStack.isHidden = true;ctaSubtitle.isHidden = true
+        actionButton.frame = NSRect(x:pad,y:bottom - 16,width:214,height:38)
+        bookmarkButton.frame = NSRect(x:pad + 226,y:bottom - 16,width:38,height:38)
+        let dotW = CGFloat(dotButtons.count) * 16
+        dotsContainer.frame = NSRect(x:(bounds.width - dotW) / 2,y:bounds.height - 25,width:dotW,height:16)
+        prevButton.frame = NSRect(x:7,y:bounds.height / 2 - 14,width:28,height:28)
+        nextButton.frame = NSRect(x:bounds.width - 35,y:bounds.height / 2 - 14,width:28,height:28)
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -616,9 +617,9 @@ final class PartnerShowcaseCarousel: NSView {
         ])
         grad?.draw(in: bounds, angle: -45)
 
-        if let image=coverImage {
-            let scale=max(bounds.width/image.size.width,bounds.height/image.size.height)
-            let dest=NSRect(x:(bounds.width-image.size.width*scale)/2,y:(bounds.height-image.size.height*scale)/2,width:image.size.width*scale,height:image.size.height*scale)
+        if let image = coverImage {
+            let scale = max(bounds.width / image.size.width,bounds.height / image.size.height)
+            let dest = NSRect(x:(bounds.width - image.size.width * scale) / 2,y:(bounds.height - image.size.height * scale) / 2,width:image.size.width * scale,height:image.size.height * scale)
             image.draw(in:dest,from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)
             NSColor.black.withAlphaComponent(0.30).setFill();bounds.fill()
         }
@@ -657,7 +658,8 @@ final class WritingCategoryBar: NSView {
         updatePills()
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     private func updatePills() {
         for (i, btn) in pillButtons.enumerated() {
@@ -679,16 +681,22 @@ final class WritingCategoryBar: NSView {
 
     override func layout() {
         super.layout()
-        titleLabel.isHidden=bounds.width<700
-        titleLabel.frame=NSRect(x:4,y:8,width:85,height:20)
-        var curX:CGFloat=titleLabel.isHidden ? 0:95
-        var y:CGFloat=4
+        titleLabel.isHidden = bounds.width < 700
+        titleLabel.frame = NSRect(x:4,y:8,width:85,height:20)
+        var curX:CGFloat = titleLabel.isHidden ? 0 : 95
+        var y:CGFloat = 4
         for btn in pillButtons {
-            let btnW=min(bounds.width,(btn.title as NSString).size(withAttributes:[.font:btn.font ?? NSFont.systemFont(ofSize:12)]).width+24)
-            if curX+btnW>bounds.width {curX=0;y+=34}
-            btn.frame=NSRect(x:curX,y:y,width:btnW,height:28);curX+=btnW+8
+            let btnW = min(bounds.width,(btn.title as NSString).size(withAttributes:[.font:btn.font ?? NSFont.systemFont(ofSize:12)]).width + 24)
+            if curX + btnW > bounds.width {curX = 0;y += 34}
+            btn.frame = NSRect(x:curX,y:y,width:btnW,height:28);curX += btnW + 8
         }
     }
+}
+
+struct ReadingCardCredit: Decodable {
+    let title: String
+    let authors: String
+    let tags: [String]?
 }
 
 final class HomeCard: NSView {
@@ -738,7 +746,7 @@ final class HomeCard: NSView {
     init(title: String, excerpt: String, annotation: String, categoryTag: String = "PRACTICE ESSAY", categoryType: String = "ielts", target: AnyObject, action: Selector, path: String) {
         super.init(frame: .zero)
         self.categoryType = categoryType
-        searchableText = title+" "+excerpt+" "+annotation+" "+categoryTag
+        searchableText = title + " " + excerpt + " " + annotation + " " + categoryTag
         wantsLayer = true
         if let l = layer { LiquidGlass.configureLayer(l) }
 
@@ -752,17 +760,17 @@ final class HomeCard: NSView {
         heading.stringValue = title
         heading.font = .systemFont(ofSize: 16, weight: .semibold)
         heading.textColor = .labelColor
-        heading.maximumNumberOfLines=0
+        heading.maximumNumberOfLines = 0
         heading.lineBreakMode = .byWordWrapping
 
         detail.stringValue = excerpt
         detail.font = NSFont(name: "Georgia", size: 13) ?? .systemFont(ofSize: 13)
         detail.textColor = .secondaryLabelColor
-        detail.maximumNumberOfLines=3
+        detail.maximumNumberOfLines = 3
         detail.lineBreakMode = .byWordWrapping
 
         badge.stringValue = bText
-        badge.font = .systemFont(ofSize: 10.5, weight: .semibold)
+        badge.font = .systemFont(ofSize: 12, weight: .regular)
 
         note.stringValue = nText
         note.font = .systemFont(ofSize: 11.5, weight: .medium)
@@ -797,7 +805,7 @@ final class HomeCard: NSView {
         for view in cardViews { addSubview(view) }
         setAccessibilityElement(true);setAccessibilityRole(.button)
         setAccessibilityLabel(title);setAccessibilityHelp("Open document")
-        heading.isSelectable=false;detail.isSelectable=false;badge.isSelectable=false;note.isSelectable=false
+        heading.isSelectable = false;detail.isSelectable = false;badge.isSelectable = false;note.isSelectable = false
     }
 
     @objc private func handleDOIClick() {
@@ -812,17 +820,18 @@ final class HomeCard: NSView {
         self.init(title: title, excerpt: excerpt, annotation: annotation, categoryTag: "PRACTICE ESSAY", categoryType: "ielts", target: target, action: action, path: path)
     }
 
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     private func textHeight(_ field:NSTextField,width:CGFloat) -> CGFloat {
-        ceil((field.stringValue as NSString).boundingRect(with:NSSize(width:width,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:field.font ?? NSFont.systemFont(ofSize:13)]).height)+8
+        ceil((field.stringValue as NSString).boundingRect(with:NSSize(width:width,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:field.font ?? NSFont.systemFont(ofSize:13)]).height) + 8
     }
     func preferredHeight(width:CGFloat) -> CGFloat {
-        let w=max(80,width-40)
-        return 80+textHeight(heading,width:w)+textHeight(badge,width:w)+textHeight(note,width:w)+48
+        let w = max(80,width - 40)
+        return 80 + textHeight(heading,width:w) + textHeight(badge,width:w) + textHeight(note,width:w) + 48
     }
     override var acceptsFirstResponder: Bool {true}
-    override func hitTest(_ point:NSPoint) -> NSView? {super.hitTest(point) == nil ? nil:self}
+    override func hitTest(_ point:NSPoint) -> NSView? {super.hitTest(point) == nil ? nil : self}
     override func mouseUp(with event:NSEvent) {
         if bounds.contains(convert(event.locationInWindow,from:nil)) {activateCard()}
     }
@@ -831,31 +840,30 @@ final class HomeCard: NSView {
     }
     override func accessibilityPerformPress() -> Bool {activateCard();return true}
     private func activateCard() {
-        guard let action=open.action else{return}
+        guard let action = open.action else{return}
         NSApp.sendAction(action,to:open.target,from:open)
     }
     override func layout() {
         super.layout()
-        let w=max(80,bounds.width-40)
-        categoryBadge.frame=NSRect(x:20,y:18,width:w,height:16)
-        let titleH=textHeight(heading,width:w)
-        heading.frame=NSRect(x:20,y:44,width:w,height:titleH)
-        let authorH=textHeight(badge,width:w)
-        badge.frame=NSRect(x:20,y:heading.frame.maxY+8,width:w,height:authorH)
-        detail.frame=NSRect(x:20,y:badge.frame.maxY+12,width:w,height:42)
-        note.isHidden=false
-        note.frame=NSRect(x:20,y:detail.frame.maxY+12,width:w,height:textHeight(note,width:w))
-        open.isHidden=true;doiButton?.isHidden=true;rankLabel.isHidden=true
+        let w = max(80,bounds.width - 40)
+        categoryBadge.frame = NSRect(x:20,y:18,width:w,height:16)
+        let titleH = textHeight(heading,width:w)
+        heading.frame = NSRect(x:20,y:44,width:w,height:titleH)
+        let authorH = textHeight(badge,width:w)
+        badge.frame = NSRect(x:20,y:heading.frame.maxY + 8,width:w,height:authorH)
+        detail.frame = NSRect(x:20,y:badge.frame.maxY + 12,width:w,height:42)
+        note.isHidden = false
+        note.frame = NSRect(x:20,y:detail.frame.maxY + 12,width:w,height:textHeight(note,width:w))
+        open.isHidden = true;doiButton?.isHidden = true;rankLabel.isHidden = true
     }
 
     override func draw(_ dirtyRect: NSRect) {
         let isDark = LiquidGlass.isDark(for: self)
 
         // Liquid Glass card fill + gradient specular rim with hover elevation
-        (isDark ? NSColor(white:isHovered ? 0.22:0.17,alpha:1):NSColor(white:isHovered ? 0.96:1,alpha:1)).setFill()
-        NSBezierPath(roundedRect:bounds.insetBy(dx:0.5,dy:0.5),xRadius:12,yRadius:12).fill()
-        (isDark ? NSColor.white:NSColor.black).withAlphaComponent(0.08).setStroke()
-        NSBezierPath(roundedRect:bounds.insetBy(dx:0.5,dy:0.5),xRadius:12,yRadius:12).stroke()
+        (isDark ? NSColor(white:isHovered ? 0.22 : 0.17,alpha:1) : NSColor(white:isHovered ? 0.96 : 1,alpha:1)).setFill()
+        NSBezierPath(roundedRect:bounds.insetBy(dx:0.5,dy:0.5),xRadius:LiquidGlass.smallCornerRadius,yRadius:LiquidGlass.smallCornerRadius).fill()
+        LiquidGlass.drawSpecularRim(in: bounds.insetBy(dx: 0.5, dy: 0.5), isDark: isDark, radius: LiquidGlass.smallCornerRadius)
 
         rankLabel.textColor = isDark ? NSColor(white: 1.0, alpha: 0.16) : NSColor(white: 0.0, alpha: 0.12)
         heading.textColor = .labelColor
@@ -872,20 +880,11 @@ final class HomeCard: NSView {
         }()
 
         categoryBadge.textColor = accent
-        badge.textColor = accent
-        note.textColor = isDark ? NSColor(calibratedWhite: 0.82, alpha: 1.0) : NSColor(calibratedWhite: 0.25, alpha: 1.0)
+        badge.textColor = .secondaryLabelColor
+        note.textColor = accent
 
-        let pStyle = NSMutableParagraphStyle()
-        pStyle.alignment = .center
-        let btnTitle = (categoryType == "research") ? "Read research  →" : "Read annotations  →"
-        open.attributedTitle = NSAttributedString(
-            string: btnTitle,
-            attributes: [
-                .foregroundColor: isDark ? NSColor.white : accent,
-                .font: NSFont.systemFont(ofSize: 12, weight: .semibold),
-                .paragraphStyle: pStyle
-            ]
-        )
+
+
     }
 }
 
@@ -915,7 +914,8 @@ final class HomeSectionHeader: NSView {
 
         for v in [tagBadge, titleLabel, subtitleLabel] { addSubview(v) }
     }
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 
     override func layout() {
         super.layout()
@@ -929,8 +929,8 @@ final class HomeDashboardSection {
     let key: String
     let header: HomeSectionHeader
     var cards: [HomeCard]
-    let shelf=HomeShelfScrollView()
-    let strip=MarginCanvas()
+    let shelf = HomeShelfScrollView()
+    let strip = MarginCanvas()
     var isHidden: Bool = false {
         didSet {
             header.isHidden = isHidden
@@ -943,7 +943,7 @@ final class HomeDashboardSection {
         self.key = key
         self.header = header
         self.cards = cards
-        shelf.drawsBackground=false;shelf.hasHorizontalScroller=true;shelf.autohidesScrollers=true;shelf.documentView=strip
+        shelf.drawsBackground = false;shelf.hasHorizontalScroller = true;shelf.autohidesScrollers = true;shelf.documentView = strip
         for card in cards {strip.addSubview(card)}
     }
 }
@@ -953,32 +953,33 @@ final class HomePageClipView: NSClipView {
     override func scroll(to point:NSPoint) {super.scroll(to:NSPoint(x:0,y:point.y))}
     override func setBoundsOrigin(_ point:NSPoint) {super.setBoundsOrigin(NSPoint(x:0,y:point.y))}
     override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
-        var rect=super.constrainBoundsRect(proposedBounds);rect.origin.x=0;return rect
+        var rect = super.constrainBoundsRect(proposedBounds);rect.origin.x = 0;return rect
     }
 }
 // Vertical gestures over a shelf go straight to the page, not its inner clip.
 final class HomeShelfScrollView: NSScrollView {
-    private var horizontal: Bool? = nil
+    private var axis: HomeScrollAxis = .undecided
+    var horizontal: Bool { axis == .horizontal }
     private var lastEventTime: TimeInterval = 0
     override func scrollWheel(with event:NSEvent) {
-        if event.phase == .began || (event.phase.isEmpty && event.momentumPhase.isEmpty && event.timestamp-lastEventTime > 0.3) {horizontal=nil}
-        lastEventTime=event.timestamp
-        if horizontal == nil && max(abs(event.scrollingDeltaX),abs(event.scrollingDeltaY)) > 0 {
-            horizontal=abs(event.scrollingDeltaX)>abs(event.scrollingDeltaY)
+        if event.phase == .began || (event.phase.isEmpty && event.momentumPhase.isEmpty && event.timestamp - lastEventTime > 0.3) {axis = .undecided}
+        lastEventTime = event.timestamp
+        if axis == .undecided && max(abs(event.scrollingDeltaX),abs(event.scrollingDeltaY)) > 0 {
+            axis = abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) ? .horizontal : .vertical
         }
         if horizontal == true {super.scrollWheel(with:event)}
         else {
-            var ancestor=superview
-            while let view=ancestor {
-                if let page=view as? HomePageScrollView {page.scrollWheel(with:event);return}
-                ancestor=view.superview
+            var ancestor = superview
+            while let view = ancestor {
+                if let page = view as? HomePageScrollView {page.scrollWheel(with:event);return}
+                ancestor = view.superview
             }
         }
     }
 }
 final class HomePageScrollView: NSScrollView {
     override func scrollWheel(with event:NSEvent) {
-        guard abs(event.scrollingDeltaY)>=abs(event.scrollingDeltaX) else{return}
+        guard abs(event.scrollingDeltaY) >= abs(event.scrollingDeltaX) else{return}
         super.scrollWheel(with:event)
     }
 }
@@ -1020,7 +1021,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         let query = sender.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         applyFilter(query: query)
         enclosingScrollView?.contentView.scroll(to:.zero)
-        if let parent=enclosingScrollView {parent.reflectScrolledClipView(parent.contentView)}
+        if let parent = enclosingScrollView {parent.reflectScrolledClipView(parent.contentView)}
     }
 
     func applyFilter(query: String) {
@@ -1038,22 +1039,22 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         carousel?.isHidden = true
         categoryBar?.isHidden = true
 
-        let terms=query.split(whereSeparator:{$0.isWhitespace}).map(String.init)
+        let terms = query.split(whereSeparator:{$0.isWhitespace}).map(String.init)
         let matches = allCards.filter { item in
             terms.allSatisfy{item.card.searchableText.localizedStandardContains($0)}
         }
         for sec in sections {
-            sec.isHidden=false
+            sec.isHidden = false
             for card in sec.cards {card.isHidden = !matches.contains(where:{$0.card === card})}
-            let visibleCount=sec.cards.filter{!$0.isHidden}.count
-            sec.header.tagBadge.stringValue="\(visibleCount) " + (visibleCount == 1 ? "DOCUMENT" : "DOCUMENTS")
-            let empty=visibleCount == 0
-            sec.header.isHidden=empty;sec.shelf.isHidden=empty
+            let visibleCount = sec.cards.filter{!$0.isHidden}.count
+            sec.header.tagBadge.stringValue = "\(visibleCount) " + (visibleCount == 1 ? "DOCUMENT" : "DOCUMENTS")
+            let empty = visibleCount == 0
+            sec.header.isHidden = empty;sec.shelf.isHidden = empty
             sec.shelf.contentView.scroll(to:.zero)
         }
-        header.first.flatMap{$0 as? NSTextField}?.stringValue="Search results"
-        (header.count>1 ? header[1] as? NSTextField:nil)?.stringValue="\(matches.count) " + (matches.count == 1 ? "document" : "documents") + " matching “\(query)”"
-        footer.forEach{$0.isHidden=true}
+        header.first.flatMap{$0 as? NSTextField}?.stringValue = "Search results"
+        (header.count > 1 ? header[1] as? NSTextField : nil)?.stringValue = "\(matches.count) " + (matches.count == 1 ? "document" : "documents") + " matching “\(query)”"
+        footer.forEach{$0.isHidden = true}
 
         cards = matches.map { $0.card }
         needsLayout = true
@@ -1061,9 +1062,9 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
 
     func filterCards(categoryIndex: Int) {
         selectedCategoryIndex = categoryIndex
-        header.first.flatMap{$0 as? NSTextField}?.stringValue = categoryIndex==0 ? "Discover" : ["Discover","IELTS Writing","Research","Essays"][categoryIndex]
-        (header.count>1 ? header[1] as? NSTextField:nil)?.stringValue="Read closely. Find your next perspective."
-        footer.forEach{$0.isHidden=false}
+        header.first.flatMap{$0 as? NSTextField}?.stringValue = categoryIndex == 0 ? "Discover" : ["Discover","IELTS Writing","Research","Essays"][categoryIndex]
+        (header.count > 1 ? header[1] as? NSTextField : nil)?.stringValue = "Read closely. Find your next perspective."
+        footer.forEach{$0.isHidden = false}
         searchField.stringValue = ""
         sidebarSearch?.isSelected = false
         carousel?.isHidden = categoryIndex != 0
@@ -1096,7 +1097,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
             }
         } else {
             for sec in sections {
-                sec.header.tagBadge.stringValue="\(sec.cards.count) DOCUMENTS"
+                sec.header.tagBadge.stringValue = "\(sec.cards.count) DOCUMENTS"
                 if let filter = catFilter {
                     sec.isHidden = (sec.key != filter)
                 } else {
@@ -1136,8 +1137,8 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         let side: CGFloat = compact ? 200 : 240
         let sideW = side - 16
         let sideH = max(400, clip.bounds.height - 40)
-        sidebar.wantsLayer=true;sidebar.layer?.backgroundColor=NSColor.windowBackgroundColor.withAlphaComponent(0.94).cgColor;sidebar.layer?.cornerRadius=12
-        sidebar.frame = NSRect(x: 12, y: clip.bounds.minY + 20, width: sideW+8, height: sideH)
+        sidebar.wantsLayer = true;sidebar.layer?.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.94).cgColor;if let layer = sidebar.layer { LiquidGlass.configureLayer(layer, radius: 12, shadow: false) }
+        sidebar.frame = NSRect(x: 12, y: clip.bounds.minY + 20, width: sideW + 8, height: sideH)
 
         let profileHeight: CGFloat = 42
         let profileY = sideH - profileHeight - 6
@@ -1148,7 +1149,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         super.layout()
         guard let clip = superview else { return }
         let width = max(600, clip.bounds.width)
-        if frame.width != width {frame.size.width=width}
+        if frame.width != width {frame.size.width = width}
         let compact = width < 960
         let side: CGFloat = compact ? 200 : 240
         let contentWidth = width - side - 56
@@ -1190,7 +1191,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         }
 
         for b in sidebarRecentButtons {
-            b.isHidden=curY+28 > clip.bounds.height-120
+            b.isHidden = curY + 28 > clip.bounds.height - 120
             if b.isHidden {continue}
             b.frame = NSRect(x: 0, y: curY, width: sideW, height: 26)
             curY += 28
@@ -1209,12 +1210,12 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
 
         var curMainY: CGFloat = 68
         if let carousel = carousel, !carousel.isHidden {
-            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: max(340,min(440,contentWidth*0.52)))
+            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: max(340,min(440,contentWidth * 0.52)))
             curMainY += carousel.frame.height + 20
         }
 
         if let categoryBar = categoryBar, !categoryBar.isHidden {
-            let height:CGFloat=contentWidth<700 ? 72:36
+            let height:CGFloat = contentWidth < 700 ? 72 : 36
             categoryBar.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: height)
             curMainY += height + 24
         }
@@ -1237,27 +1238,27 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
             curMainY = bottom
         } else {
             for sec in sections {
-                let visibleCards=sec.cards.filter{!$0.isHidden}
-                guard !sec.isHidden,!visibleCards.isEmpty else {sec.shelf.isHidden=true;continue}
-                sec.shelf.isHidden=false
-                sec.header.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:68);curMainY+=76
+                let visibleCards = sec.cards.filter{!$0.isHidden}
+                guard !sec.isHidden,!visibleCards.isEmpty else {sec.shelf.isHidden = true;continue}
+                sec.shelf.isHidden = false
+                sec.header.frame = NSRect(x:0,y:curMainY,width:contentWidth,height:68);curMainY += 76
                 let searching = !searchField.stringValue.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty
-                let tileWidth=min(370,contentWidth-12)
-                let columns=searching ? max(1,Int(contentWidth/(tileWidth+16))):visibleCards.count
-                let cellWidth=searching ? (contentWidth-CGFloat(columns-1)*16)/CGFloat(columns):tileWidth
-                let rows=searching ? (visibleCards.count+columns-1)/columns:1
-                let rowHeight=(visibleCards.map{$0.preferredHeight(width:cellWidth)}.max() ?? 260)+16
-                let height=CGFloat(rows)*rowHeight
-                sec.shelf.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:height)
-                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i%columns)*(cellWidth+16),y:CGFloat(i/columns)*rowHeight,width:cellWidth,height:rowHeight-16)}
-                sec.strip.frame=NSRect(x:0,y:0,width:searching ? contentWidth:max(contentWidth,CGFloat(visibleCards.count)*(tileWidth+16)-16),height:height-4)
-                curMainY+=height+28
+                let tileWidth = min(370,contentWidth - 12)
+                let columns = searching ? max(1,Int(contentWidth / (tileWidth + 16))) : visibleCards.count
+                let cellWidth = searching ? (contentWidth - CGFloat(columns - 1) * 16) / CGFloat(columns) : tileWidth
+                let rows = searching ? (visibleCards.count + columns - 1) / columns : 1
+                let rowHeight = (visibleCards.map{$0.preferredHeight(width:cellWidth)}.max() ?? 260) + 16
+                let height = CGFloat(rows) * rowHeight
+                sec.shelf.frame = NSRect(x:0,y:curMainY,width:contentWidth,height:height)
+                for (i,card) in visibleCards.enumerated(){card.frame = NSRect(x:CGFloat(i % columns) * (cellWidth + 16),y:CGFloat(i / columns) * rowHeight,width:cellWidth,height:rowHeight - 16)}
+                sec.strip.frame = NSRect(x:0,y:0,width:searching ? contentWidth : max(contentWidth,CGFloat(visibleCards.count) * (tileWidth + 16) - 16),height:height - 4)
+                curMainY += height + 28
             }
         }
 
         emptyResults.isHidden = !cards.filter{!$0.isHidden}.isEmpty
-        emptyResults.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:50)
-        if !emptyResults.isHidden {curMainY+=70}
+        emptyResults.frame = NSRect(x:0,y:curMainY,width:contentWidth,height:50)
+        if !emptyResults.isHidden {curMainY += 70}
         let bottom = curMainY + 10
         if !footer.isEmpty {
             let btnW = min(300, contentWidth)
@@ -1267,7 +1268,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
             footer[1].frame = NSRect(x: 0, y: bottom + 52, width: contentWidth, height: 22)
         }
 
-        let totalH = max(clip.bounds.height-40, curMainY + 120)
+        let totalH = max(clip.bounds.height - 40, curMainY + 120)
         main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: totalH)
         frame.size.height = totalH + 40
     }
@@ -1277,16 +1278,17 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         main.addSubview(emptyResults);emptyResults.font = .systemFont(ofSize:15);emptyResults.textColor = .secondaryLabelColor
         searchField.placeholderString = "Search writing..."
         searchField.font = .systemFont(ofSize: 13)
-        searchField.delegate=self
-        searchField.sendsWholeSearchString=false
-        searchField.sendsSearchStringImmediately=true
+        searchField.delegate = self
+        searchField.sendsWholeSearchString = false
+        searchField.sendsSearchStringImmediately = true
         searchField.target = self
         searchField.action = #selector(searchTextChanged(_:))
         sidebar.addSubview(searchField)
         addSubview(main)
         addSubview(sidebar)
     }
-    required init?(coder: NSCoder) { fatalError() }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("This view is created programmatically") }
 }
 
 extension Passage {
@@ -1299,9 +1301,9 @@ extension Passage {
 
         let dashboard = HomeDashboard(frame: root.bounds)
         let scroll = HomePageScrollView()
-        scroll.contentView=HomePageClipView()
+        scroll.contentView = HomePageClipView()
         scroll.horizontalScrollElasticity = .none
-        scroll.hasHorizontalScroller=false
+        scroll.hasHorizontalScroller = false
         scroll.drawsBackground = false
         scroll.contentView.drawsBackground = false
         scroll.hasVerticalScroller = true
@@ -1418,7 +1420,7 @@ extension Passage {
             b.bezelStyle = .regularSquare
             b.isBordered = false
             b.wantsLayer = true
-            b.layer?.cornerRadius = 6
+            if let layer = b.layer { LiquidGlass.configureLayer(layer, radius: 6, shadow: false) }
             let pStyle = NSMutableParagraphStyle()
             pStyle.alignment = .left
             pStyle.lineBreakMode = .byTruncatingTail
@@ -1481,14 +1483,14 @@ extension Passage {
         let p2Path = resourceDirectory.appendingPathComponent("Reading/structure.json").path
         let p3Path = resourceDirectory.appendingPathComponent("Samples/000-task2-1.json").path
 
-        let pinned=showcaseDocuments()
-        let defaults=[p1Path,p2Path,p3Path].compactMap {path -> (Breakdown,String)? in
-            guard let bytes=try? Data(contentsOf:URL(fileURLWithPath:path)),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,path)
+        let pinned = showcaseDocuments()
+        let defaults = [p1Path,p2Path,p3Path].compactMap {path -> (Breakdown,String)? in
+            guard let bytes = try? Data(contentsOf:URL(fileURLWithPath:path)),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,path)
         }
-        let slides=(pinned.isEmpty ? defaults:pinned).map {doc,path in
-            PartnerSlide(partnerName:"",educator:"",badgeText:pinned.isEmpty ? "FEATURED READING":"PINNED TO YOUR SHOWCASE",title:featuredTitle(doc),excerpt:truncateWords(readingPreview(doc.document.text),maxChars:150),pedagogyHighlight:"",tags:[readingType(doc.document.taskType),"\(doc.annotations.count) margin notes"],path:path,isResearch:doc.document.taskType=="research",accentColor:NSColor(calibratedRed:0.80,green:0.89,blue:0.76,alpha:1))
+        let slides = (pinned.isEmpty ? defaults : pinned).map {doc,path in
+            PartnerSlide(partnerName:"",educator:"",badgeText:pinned.isEmpty ? "FEATURED READING" : "PINNED TO YOUR SHOWCASE",title:featuredTitle(doc),excerpt:truncateWords(readingPreview(doc.document.text),maxChars:150),pedagogyHighlight:"",tags:[readingType(doc.document.taskType),"\(doc.annotations.count) margin notes"],path:path,isResearch:doc.document.taskType == "research",accentColor:NSColor(calibratedRed:0.80,green:0.89,blue:0.76,alpha:1))
         }
-        carousel.coverImage=NSImage(contentsOf:resourceDirectory.appendingPathComponent("Assets/reading-cover.png"))
+        carousel.coverImage = NSImage(contentsOf:resourceDirectory.appendingPathComponent("Assets/reading-cover.png"))
         carousel.setupSlides(slides)
         dashboard.carousel = carousel
         dashboard.main.addSubview(carousel)
@@ -1502,29 +1504,35 @@ extension Passage {
         dashboard.main.addSubview(categoryBar)
 
         // Shelves always describe the document they open.
-        let sampleURLs=((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Samples"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension=="json"}.sorted{$0.lastPathComponent<$1.lastPathComponent}
-        let sampleDocs=sampleURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes=try? Data(contentsOf:url),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
-        let localDocs=LibraryStore.records(in:saveURL.deletingLastPathComponent().appendingPathComponent("Library")).map{($0.document,$0.url)}
-        let readingURLs=((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Reading"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension=="json" && $0.lastPathComponent != "manifest.json"}.sorted{$0.lastPathComponent<$1.lastPathComponent}
-        let readings=readingURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes=try? Data(contentsOf:url),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
-        let groups:[(String,String,String,[(Breakdown,URL)])]=[
-            ("research","Research, close up","Open-access selections · credited authors · CC BY",readings.filter{$0.0.document.taskType=="research"}+localDocs.filter{$0.0.document.taskType=="research"}),
-            ("essays","The craft of writing","Read the original advice, explore the margin notes",readings.filter{$0.0.document.taskType=="discursive"}),
+        let sampleURLs = ((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Samples"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension == "json"}.sorted{$0.lastPathComponent < $1.lastPathComponent}
+        let sampleDocs = sampleURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes = try? Data(contentsOf:url),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
+        let localDocs = LibraryStore.records(in:saveURL.deletingLastPathComponent().appendingPathComponent("Library")).map{($0.document,$0.url)}
+        let readingURLs = ((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Reading"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension == "json" && $0.lastPathComponent != "manifest.json"}.sorted{$0.lastPathComponent < $1.lastPathComponent}
+        let readings = readingURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes = try? Data(contentsOf:url),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
+        let groups:[(String,String,String,[(Breakdown,URL)])] = [
+            ("research","Research, close up","Open-access selections · credited authors · CC BY",readings.filter{$0.0.document.taskType == "research"} + localDocs.filter{$0.0.document.taskType == "research"}),
+            ("essays","The craft of writing","Read the original advice, explore the margin notes",readings.filter{$0.0.document.taskType == "discursive"}),
             ("ielts","IELTS Writing","20 original practice essays · Task 1 and Task 2",sampleDocs),
             ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research"})]
         for (key,title,subtitle,documents) in groups where !documents.isEmpty {
-            let header=HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
+            let header = HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
             dashboard.main.addSubview(header)
-            var cards:[HomeCard]=[]
+            var cards:[HomeCard] = []
             for (doc,url) in documents {
-                let card=HomeCard(title:doc.document.title,excerpt:truncateWords(readingPreview(doc.document.text),maxChars:140),annotation:"\(doc.annotations.count) margin notes · \(max(1,doc.document.text.split(whereSeparator:{$0.isWhitespace}).count/200)) min read",categoryTag:readingType(doc.document.taskType),categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
-                card.searchableText=doc.document.title+" "+doc.document.text+" "+(doc.document.prompt ?? "")+" "+doc.annotations.map{$0.label+" "+$0.body}.joined(separator:" ")
+                let creditsURL = resourceDirectory.appendingPathComponent("Reading/manifest.json")
+                let credits = (try? Data(contentsOf: creditsURL)).flatMap { try? JSONDecoder().decode([ReadingCardCredit].self, from: $0) } ?? []
+                let credit = credits.first { $0.title == doc.document.title }
+                let topic = doc.document.title.components(separatedBy: "·").last?.components(separatedBy: "—").first?.trimmingCharacters(in: .whitespaces) ?? "Writing"
+                let author = credit?.authors ?? (key == "ielts" ? "Pass Passage By! · Original practice" : "Personal document")
+                let tags = credit?.tags ?? (key == "ielts" ? [topic, readingType(doc.document.taskType)] : [readingType(doc.document.taskType)])
+                let card = HomeCard(title:doc.document.title,excerpt:truncateWords(readingPreview(doc.document.text),maxChars:140),annotation:author + "\n" + tags.joined(separator: "  ·  "),categoryTag:readingType(doc.document.taskType),categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
+                card.searchableText = doc.document.title + " " + doc.document.text + " " + (doc.document.prompt ?? "") + " " + doc.annotations.map{$0.label + " " + $0.body}.joined(separator:" ")
                 cards.append(card);dashboard.allCards.append((card:card,category:key))
             }
-            let section=HomeDashboardSection(key:key,header:header,cards:cards)
+            let section = HomeDashboardSection(key:key,header:header,cards:cards)
             dashboard.main.addSubview(section.shelf);dashboard.sections.append(section)
         }
-        dashboard.cards=dashboard.allCards.map{$0.card}
+        dashboard.cards = dashboard.allCards.map{$0.card}
         let exploreBtn = GlassPillButton(title: "", target: self, action: #selector(showExampleLibrary))
         exploreBtn.bezelStyle = .regularSquare
         exploreBtn.isBordered = false
@@ -1567,12 +1575,12 @@ extension Passage {
         dashboard.sidebarSearch?.isSelected = true
         window.makeFirstResponder(dashboard.searchField)
     }
-    @objc func showAgentTools(){let panel=makeAgentWindow();infoWindow=panel;panel.center();panel.makeKeyAndOrderFront(nil)}
+    @objc func showAgentTools(){let panel = makeAgentWindow();infoWindow = panel;panel.center();panel.makeKeyAndOrderFront(nil)}
     func makeAgentWindow()->NSWindow {
-        let panel=NSWindow(contentRect:NSRect(x:0,y:0,width:720,height:650),styleMask:[.titled,.closable],backing:.buffered,defer:false);panel.title="Connect your agent";panel.isReleasedWhenClosed=false
-        let page=MarginCanvas(frame:NSRect(x:0,y:0,width:720,height:650));panel.contentView=page
-        func label(_ text:String,_ y:CGFloat,_ size:CGFloat=13){let v=NSTextField(wrappingLabelWithString:text);v.font = .systemFont(ofSize:size);v.frame=NSRect(x:28,y:y,width:664,height:40);page.addSubview(v)}
-        func action(_ title:String,_ selector:Selector,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat){let b=button(title,selector);b.frame=NSRect(x:x,y:y,width:w,height:32);page.addSubview(b)}
+        let panel = NSWindow(contentRect:NSRect(x:0,y:0,width:720,height:650),styleMask:[.titled,.closable],backing:.buffered,defer:false);panel.title = "Connect your agent";panel.isReleasedWhenClosed = false
+        let page = MarginCanvas(frame:NSRect(x:0,y:0,width:720,height:650));panel.contentView = page
+        func label(_ text:String,_ y:CGFloat,_ size:CGFloat = 13){let v = NSTextField(wrappingLabelWithString:text);v.font = .systemFont(ofSize:size);v.frame = NSRect(x:28,y:y,width:664,height:40);page.addSubview(v)}
+        func action(_ title:String,_ selector:Selector,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat){let b = button(title,selector);b.frame = NSRect(x:x,y:y,width:w,height:32);page.addSubview(b)}
         label("Your agent. Your documents.",22,25)
         label("Connect an MCP-capable agent, or exchange files with the AI app you already use.",64)
         label("CONNECTION",114,11)
@@ -1583,24 +1591,24 @@ extension Passage {
         action("Share current writing",#selector(shareAgentContext),28,224,192)
         action("Clear shared context",#selector(clearAgentContext),232,224,190)
         label("REQUEST",278,11)
-        let topic=NSTextView(frame:NSRect(x:0,y:0,width:640,height:86));topic.isRichText=false;topic.font = .systemFont(ofSize:15);topic.textContainerInset=NSSize(width:10,height:10);topic.string=prefs.string(forKey:"agentBrief") ?? "Explain the argument and annotate useful vocabulary in Vietnamese. Preserve the original writing.";agentBrief=topic
-        let scroll=NSScrollView(frame:NSRect(x:28,y:304,width:664,height:94));scroll.hasVerticalScroller=true;scroll.wantsLayer=true;scroll.layer?.cornerRadius=8;topic.isVerticallyResizable=true;topic.autoresizingMask=[.width];topic.textContainer?.widthTracksTextView=true;scroll.documentView=topic;page.addSubview(scroll)
-        let task=NSPopUpButton(frame:NSRect(x:28,y:412,width:200,height:28));task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Research & Academic Paper","Discursive Essay","Other writing"]);agentTask=task;page.addSubview(task)
-        let skills=NSPopUpButton(frame:NSRect(x:244,y:412,width:448,height:28));agentSkills=skills;page.addSubview(skills);reloadAgentSkills()
-        let context=NSButton(checkboxWithTitle:"Include current writing in copied brief",target:nil,action:nil);context.frame=NSRect(x:28,y:450,width:390,height:24);context.isEnabled=opened;agentContext=context;page.addSubview(context)
+        let topic = NSTextView(frame:NSRect(x:0,y:0,width:640,height:86));topic.isRichText = false;topic.font = .systemFont(ofSize:15);topic.textContainerInset = NSSize(width:10,height:10);topic.string = prefs.string(forKey:"agentBrief") ?? "Explain the argument and annotate useful vocabulary in Vietnamese. Preserve the original writing.";agentBrief = topic
+        let scroll = NSScrollView(frame:NSRect(x:28,y:304,width:664,height:94));scroll.hasVerticalScroller = true;scroll.wantsLayer = true;if let layer = scroll.layer { LiquidGlass.configureLayer(layer, radius: 8, shadow: false) };topic.isVerticallyResizable = true;topic.autoresizingMask = [.width];topic.textContainer?.widthTracksTextView = true;scroll.documentView = topic;page.addSubview(scroll)
+        let task = NSPopUpButton(frame:NSRect(x:28,y:412,width:200,height:28));task.addItems(withTitles:["IELTS Task 2","IELTS Task 1","Research & Academic Paper","Discursive Essay","Other writing"]);agentTask = task;page.addSubview(task)
+        let skills = NSPopUpButton(frame:NSRect(x:244,y:412,width:448,height:28));agentSkills = skills;page.addSubview(skills);reloadAgentSkills()
+        let context = NSButton(checkboxWithTitle:"Include current writing in copied brief",target:nil,action:nil);context.frame = NSRect(x:28,y:450,width:390,height:24);context.isEnabled = opened;agentContext = context;page.addSubview(context)
         action("Copy brief",#selector(copyAgentBrief),28,496,150)
         action("Open Inbox",#selector(openAgentInbox),194,496,150)
         action("Import result…",#selector(importAgentResult),360,496,160)
-        let status=NSTextField(wrappingLabelWithString:"Only explicitly shared snapshots are available through MCP. The agent uses its own account; subscription support depends on the agent app. No API key or model download in PPB.");status.font = .systemFont(ofSize:12);status.textColor = .secondaryLabelColor;status.frame=NSRect(x:28,y:552,width:664,height:68);agentStatus=status;page.addSubview(status)
+        let status = NSTextField(wrappingLabelWithString:"Only explicitly shared snapshots are available through MCP. The agent uses its own account; subscription support depends on the agent app. No API key or model download in PPB.");status.font = .systemFont(ofSize:12);status.textColor = .secondaryLabelColor;status.frame = NSRect(x:28,y:552,width:664,height:68);agentStatus = status;page.addSubview(status)
         return panel
     }
     func reloadAgentSkills(){
-        guard let popup=agentSkills else{return};popup.removeAllItems();popup.addItem(withTitle:"PPB! annotated writing (built in)")
-        let folder=saveURL.deletingLastPathComponent().appendingPathComponent("Skills")
-        for url in ((try? FileManager.default.contentsOfDirectory(at:folder,includingPropertiesForKeys:nil)) ?? []).sorted(by:{$0.lastPathComponent<$1.lastPathComponent}) where url.pathExtension.lowercased()=="md" {
-            let filename=url.deletingPathExtension().lastPathComponent
-            let title=filename.count>37 && UUID(uuidString:String(filename.prefix(36))) != nil ? String(filename.dropFirst(37)):filename
-            popup.addItem(withTitle:title);popup.lastItem?.representedObject=url
+        guard let popup = agentSkills else{return};popup.removeAllItems();popup.addItem(withTitle:"PPB! annotated writing (built in)")
+        let folder = saveURL.deletingLastPathComponent().appendingPathComponent("Skills")
+        for url in ((try? FileManager.default.contentsOfDirectory(at:folder,includingPropertiesForKeys:nil)) ?? []).sorted(by:{$0.lastPathComponent < $1.lastPathComponent}) where url.pathExtension.lowercased() == "md" {
+            let filename = url.deletingPathExtension().lastPathComponent
+            let title = filename.count > 37 && UUID(uuidString:String(filename.prefix(36))) != nil ? String(filename.dropFirst(37)) : filename
+            popup.addItem(withTitle:title);popup.lastItem?.representedObject = url
         }
     }
     func agentInstruction()->String {
@@ -1614,26 +1622,26 @@ extension Passage {
             default: return "unknown"
             }
         }()
-        var text="Create an annotated writing document for Pass Passage By!. Task type: \(kind).\n\nREQUEST\n"+(agentBrief?.string ?? "")
+        var text = "Create an annotated writing document for Pass Passage By!. Task type: \(kind).\n\nREQUEST\n" + (agentBrief?.string ?? "")
         if kind == "research" {
             text += "\n\nACADEMIC RESEARCH & DOI GUIDELINES: Include structured DOI references (e.g. doi:10.1016/... or https://doi.org/...) and academic source annotations with abstract summaries."
         } else if kind == "discursive" {
             text += "\n\nARGUMENT FLOW GUIDELINES: Explicitly annotate thesis statement, concessions, counter-arguments, and dialectical synthesis."
         }
-        if agentContext?.state == .on,opened {text += "\n\nCURRENT ESSAY (preserve unless revision is requested)\n"+data.document.text}
-        if let url=agentSkills?.selectedItem?.representedObject as? URL,let skill=try? String(contentsOf:url,encoding:.utf8){text += "\n\nUSER-SELECTED FEEDBACK SKILL\n"+skill}
-        for name in ["SKILL.md","schema.json"] {let url=resourceDirectory.appendingPathComponent("AgentKit/"+name);if let contract=try? String(contentsOf:url,encoding:.utf8){text += "\n\nPPB IMPORT CONTRACT — \(name)\n"+contract}}
+        if agentContext?.state == .on,opened {text += "\n\nCURRENT ESSAY (preserve unless revision is requested)\n" + data.document.text}
+        if let url = agentSkills?.selectedItem?.representedObject as? URL,let skill = try? String(contentsOf:url,encoding:.utf8){text += "\n\nUSER-SELECTED FEEDBACK SKILL\n" + skill}
+        for name in ["SKILL.md","schema.json"] {let url = resourceDirectory.appendingPathComponent("AgentKit/" + name);if let contract = try? String(contentsOf:url,encoding:.utf8){text += "\n\nPPB IMPORT CONTRACT — \(name)\n" + contract}}
         text += "\n\nReturn essay.md and annotations.json. For bridge.py and example.json, use the exported skill kit if available; otherwise follow the schema exactly and compute offsets in UTF-16 code units. Validate every quote. Do not claim to have imported the result."
         return text
     }
     @objc func copyAgentBrief(){
         prefs.set(agentBrief?.string,forKey:"agentBrief");NSPasteboard.general.clearContents();NSPasteboard.general.setString(agentInstruction(),forType:.string)
-        agentStatus?.stringValue="Copied request, selected skill and import schema. Paste into your agent."
+        agentStatus?.stringValue = "Copied request, selected skill and import schema. Paste into your agent."
     }
     @objc func importAgentResult(){
-        let panel=NSOpenPanel();panel.allowedContentTypes=[.json];panel.begin { [weak self] result in
-            guard let self=self,result == .OK,let url=panel.url else{return}
-            do {if self.opened {self.saveDraft()};try self.loadJSON(Data(contentsOf:url));self.infoWindow?.close();self.openWorkspace()}catch{self.showAlert("Invalid annotated result: "+error.localizedDescription)}
+        let panel = NSOpenPanel();panel.allowedContentTypes = [.json];panel.begin { [weak self] result in
+            guard let self = self,result == .OK,let url = panel.url else{return}
+            do {if self.opened {self.saveDraft()};try self.loadJSON(Data(contentsOf:url));self.infoWindow?.close();self.openWorkspace()}catch{self.showAlert("Invalid annotated result: " + error.localizedDescription)}
         }
     }
 }

@@ -1,7 +1,7 @@
 import Cocoa
 import QuartzCore
 // Native adaptation of transitions.dev: short text swap, reversible page motion.
-enum BrandMotion { static let textSwap=0.15; static let page=0.25 }
+enum BrandMotion { static let textSwap = 0.15; static let page = 0.25 }
 
 // MARK: - Apple Liquid Glass Design Tokens (macOS 27 HIG)
 enum LiquidGlass {
@@ -20,6 +20,7 @@ enum LiquidGlass {
     static let shadowOpacity: Float = 0.12
 
     static func isDark(for view: NSView) -> Bool {
+        // swiftlint:disable:next raw_appearance_check
         view.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
     }
 
@@ -39,18 +40,21 @@ enum LiquidGlass {
     // MARK: - Accent Colors
     static func accent(isDark: Bool) -> NSColor {
         isDark
+            // swiftlint:disable:next hardcoded_accent_blue
             ? NSColor(calibratedRed: 0.38, green: 0.78, blue: 1.0, alpha: 1.0)
             : NSColor.systemBlue
     }
 
     static func researchAccent(isDark: Bool) -> NSColor {
         isDark
+            // swiftlint:disable:next hardcoded_accent_orange
             ? NSColor(calibratedRed: 1.0, green: 0.65, blue: 0.2, alpha: 1.0)
             : NSColor.systemOrange
     }
 
     static func essayAccent(isDark: Bool) -> NSColor {
         isDark
+            // swiftlint:disable:next hardcoded_accent_purple
             ? NSColor(calibratedRed: 0.75, green: 0.5, blue: 1.0, alpha: 1.0)
             : NSColor.systemPurple
     }
@@ -119,9 +123,9 @@ enum LiquidGlass {
             bottomColor = NSColor.black.withAlphaComponent(0.03).cgColor
         }
 
-        let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-                                   colors: [topColor, bottomColor] as CFArray,
-                                   locations: [0.0, 1.0])!
+        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                                        colors: [topColor, bottomColor] as CFArray,
+                                        locations: [0.0, 1.0]) else { ctx.restoreGState(); return }
         ctx.drawLinearGradient(gradient,
                                start: CGPoint(x: rect.midX, y: rect.minY),
                                end: CGPoint(x: rect.midX, y: rect.maxY),
@@ -135,13 +139,13 @@ final class PaperBackdrop:NSView {
  required init?(coder:NSCoder){super.init(coder:coder);registerForDraggedTypes([.fileURL])}
  override func draggingEntered(_ sender:NSDraggingInfo)->NSDragOperation {.copy}
  override func performDragOperation(_ sender:NSDraggingInfo)->Bool {
-  guard let urls=sender.draggingPasteboard.readObjects(forClasses:[NSURL.self],options:[.urlReadingFileURLsOnly:true]) as? [URL], !urls.isEmpty else{return false}
+  guard let urls = sender.draggingPasteboard.readObjects(forClasses:[NSURL.self],options:[.urlReadingFileURLsOnly:true]) as? [URL], !urls.isEmpty else{return false}
   receiveFiles?(urls);return true
  }
- var decorated=false {didSet{needsDisplay=true}}
- var backgroundImage: NSImage? {didSet{needsDisplay=true}}
+ var decorated = false {didSet{needsDisplay = true}}
+ var backgroundImage: NSImage? {didSet{needsDisplay = true}}
  override func draw(_ dirtyRect:NSRect){
-  let dark=LiquidGlass.isDark(for: self)
+  let dark = LiquidGlass.isDark(for: self)
   let bg = dark ? NSColor(calibratedRed:0.11,green:0.12,blue:0.15,alpha:1) : NSColor(calibratedRed:0.96,green:0.96,blue:0.97,alpha:1)
   bg.setFill()
   dirtyRect.fill()
@@ -160,8 +164,8 @@ final class PaperBackdrop:NSView {
   guard decorated else{return}
   (dark ? NSColor.white : NSColor(calibratedRed:0.12,green:0.35,blue:0.33,alpha:1)).withAlphaComponent(0.045).setStroke()
   for index in 0..<6 {
-   let rect=NSRect(x:bounds.maxX-300+CGFloat(index)*28,y:bounds.midY-170+CGFloat(index)*10,width:470,height:470)
-   let path=NSBezierPath(roundedRect:rect,xRadius:150,yRadius:150);path.lineWidth=1;path.stroke()
+   let rect = NSRect(x:bounds.maxX - 300 + CGFloat(index) * 28,y:bounds.midY - 170 + CGFloat(index) * 10,width:470,height:470)
+   let path = NSBezierPath(roundedRect:rect,xRadius:150,yRadius:150);path.lineWidth = 1;path.stroke()
   }
  }
 }

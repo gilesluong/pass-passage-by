@@ -29,10 +29,10 @@ enum PassageMarkup {
         return result
     }
     static func notes(_ text: String) -> [Note] {
-        let source=text as NSString
+        let source = text as NSString
         return spans(text).filter {$0.kind == "annotation"}.enumerated().map { i,span in
-            let quote=source.substring(with:span.range)
-            return Note(id:"inline-\(span.range.location)",start:span.range.location,end:NSMaxRange(span.range),quote:quote,kind:"comment",level:"sentence",label:"Annotation",body:String(quote.dropFirst().dropLast()),side:i % 2 == 0 ? "left":"right")
+            let quote = source.substring(with:span.range)
+            return Note(id:"inline-\(span.range.location)",start:span.range.location,end:NSMaxRange(span.range),quote:quote,kind:"comment",level:"sentence",label:"Annotation",body:String(quote.dropFirst().dropLast()),side:i % 2 == 0 ? "left" : "right")
         }
     }
     static func orderedNotes(_ text: String, existing: [Note]) -> [Note] {
@@ -40,23 +40,23 @@ enum PassageMarkup {
     }
     struct Edit { let range: NSRange; let replacement: String; let selection: NSRange }
     static func toggle(_ text: String, selection: NSRange, start: String, end: String) -> Edit {
-        let source=text as NSString, prefix=start as NSString, suffix=end as NSString
-        let selected=source.substring(with:selection)
-        if !end.isEmpty, selected.hasPrefix(start), selected.hasSuffix(end), selection.length >= prefix.length+suffix.length {
-            let inner=(selected as NSString).substring(with:NSRange(location:prefix.length,length:selection.length-prefix.length-suffix.length))
+        let source = text as NSString, prefix = start as NSString, suffix = end as NSString
+        let selected = source.substring(with:selection)
+        if !end.isEmpty, selected.hasPrefix(start), selected.hasSuffix(end), selection.length >= prefix.length + suffix.length {
+            let inner = (selected as NSString).substring(with:NSRange(location:prefix.length,length:selection.length - prefix.length - suffix.length))
             return Edit(range:selection,replacement:inner,selection:NSRange(location:selection.location,length:(inner as NSString).length))
         }
-        if !end.isEmpty, selection.location>=prefix.length, NSMaxRange(selection)+suffix.length<=source.length,
-           source.substring(with:NSRange(location:selection.location-prefix.length,length:prefix.length))==start,
-           source.substring(with:NSRange(location:NSMaxRange(selection),length:suffix.length))==end {
-            let range=NSRange(location:selection.location-prefix.length,length:selection.length+prefix.length+suffix.length)
+        if !end.isEmpty, selection.location >= prefix.length, NSMaxRange(selection) + suffix.length <= source.length,
+           source.substring(with:NSRange(location:selection.location - prefix.length,length:prefix.length)) == start,
+           source.substring(with:NSRange(location:NSMaxRange(selection),length:suffix.length)) == end {
+            let range = NSRange(location:selection.location - prefix.length,length:selection.length + prefix.length + suffix.length)
             return Edit(range:range,replacement:selected,selection:NSRange(location:range.location,length:selection.length))
         }
-        return Edit(range:selection,replacement:start+selected+end,selection:NSRange(location:selection.location+prefix.length,length:selection.length))
+        return Edit(range:selection,replacement:start + selected + end,selection:NSRange(location:selection.location + prefix.length,length:selection.length))
     }
     static func route(_ preset: String, paragraph: Bool = true, sentence: Bool = true) -> [Int] {
         if preset == "Student" { return [0,3] }
-        if preset == "Custom" { return [0] + (paragraph ? [1]:[]) + (sentence ? [2]:[]) + [3] }
+        if preset == "Custom" { return [0] + (paragraph ? [1] : []) + (sentence ? [2] : []) + [3] }
         return [0,1,2,3]
     }
 }

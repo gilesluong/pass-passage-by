@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"
+bash lint.sh
 PPB_STAGE="$(mktemp -d /tmp/ppb-build.XXXXXX)"
 PPB_APP="$PPB_STAGE/Pass Passage By!.app"
 PPB_SPARKLE="Vendor/Sparkle-2.10.0/Sparkle.xcframework/macos-arm64_x86_64"

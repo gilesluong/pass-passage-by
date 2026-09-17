@@ -1,3 +1,13 @@
+# Current: Pass Passage By! 1.9.1 (15) — 17 September 2026
+
+Continues Antigravity 1.9.0. Full-title clickable reading cards, authors and topical tags from Reading/manifest.json (no Essay schema changes). Centered task disclosure collapses to zero height; simplified editor toolbar; bounded margin cards and scrollable full-note previews. Preserve user-provided home background and existing dictionary/gesture behavior.
+
+Validation: test.sh and test-layout.sh passed; strict SwiftLint reports zero warnings/errors. Native accessibility confirms whole-card opening and complete task removal when collapsed. Stage Manager screenshots return thumbnails, so full-size visual and gesture QA is not certified. Live preview click could not confirm note popover opening; follow up manually. Build now invokes lint.sh (requires SwiftLint, tested with 0.65.1). Four narrow lint exceptions are only canonical appearance/accent implementations in Brand.swift. No broad rule suppression or frozen schema change.
+
+Release prepared for Sparkle. Never manually overwrite the installed app. No AI model downloads on hotspot. Existing local copies of bundled readings can appear alongside originals in shelves; catalog deduplication is a follow-up.
+
+---
+
 # Current: Pass Passage By! 1.8.1 (13) — 17 September 2026
 
 Fixes from user feedback: nested shelves forward vertical scroll directly to HomePageScrollView; carousel locks gesture axis and accepts at most one transition per gesture, ignoring momentum. There was no auto-advance timer; repeated inertia was the cause. All New Document types now create blank writing and no preset prompt. The obsolete baked-in IELTS/discursive examples have been removed from creation handlers; bundled samples remain.

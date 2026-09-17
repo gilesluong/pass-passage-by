@@ -31,6 +31,16 @@ final class TestPassage:Passage {
             let original=app.data.document.text
             app.toggleTaskBrief();app.root.layoutSubtreeIfNeeded();app.updateConnectors()
             precondition(app.data.document.text==original,"Toggling the task cannot change essay anchors")
+            if app.briefHidden { precondition(app.taskBrief.isHidden && app.taskBriefHeight?.constant == 0) }
+            let toggle = app.briefToggleButton!
+            let toggleRect = app.root.convert(toggle.bounds, from: toggle)
+            precondition(abs(toggleRect.midX - app.root.bounds.midX) < 2, "Task chevron must be centered")
+            for canvas in [app.leftNotes,app.rightNotes] {
+                for card in canvas.subviews where !card.isHidden {
+                    precondition(card.frame.maxX <= canvas.bounds.width)
+                    for child in card.subviews {precondition(child.frame.maxX <= card.bounds.width)}
+                }
+            }
         }
         app.setLevel(3)
         app.root.layoutSubtreeIfNeeded()
@@ -81,6 +91,15 @@ final class TestPassage:Passage {
         let dashboard=homeScroll.documentView as! HomeDashboard
         dashboard.layoutSubtreeIfNeeded()
         try render(app.root,to:"/tmp/ppb-home-layout.png")
+        for section in dashboard.sections {
+            for card in section.cards {
+                card.layoutSubtreeIfNeeded()
+                precondition(card.heading.maximumNumberOfLines == 0)
+                precondition(card.open.isHidden)
+                precondition(!card.badge.stringValue.contains("margin notes"))
+                precondition(card.note.frame.maxY <= card.bounds.height)
+            }
+        }
         app.prefs.set(false,forKey:"dark")
         app.window.appearance = NSAppearance(named:.aqua)
         app.applyAppearance()

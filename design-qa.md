@@ -13,3 +13,7 @@ Verification: model/markup/Unicode, 20 IELTS anchors, PDF, MCP, OCR and AppKit l
 Native interaction: typing interpolated immediately found the workplace research article, as expected. Settings and Home controls were inspected through accessibility. Current screenshot capture returns a Stage Manager thumbnail or a blank miniature, so a complete full-size visual audit of every window and real trackpad stress test cannot be claimed. Offscreen Home rendering identified title clipping and Markdown excerpt artifacts; both were corrected. Offscreen Settings rendering does not accurately reproduce native controls and was not used as visual approval.
 
 Remaining: full-size multi-display/Stage Manager visual QA, dense annotation stress, per-document carousel artwork and actual third-party MCP-host onboarding. Settings are not claimed to have received a new full redesign in this release.
+
+
+## 1.9.1 verification
+Strict SwiftLint: zero warnings/errors. Native suites pass task zero-height collapse, centered disclosure, bounded note children, full-title cards and existing regressions. Accessibility verifies direct card opening and hidden task removal. Full-size Stage Manager screenshots and live note-popover activation remain unverified; do not claim complete visual certification.
