@@ -23,7 +23,7 @@ PYKIT
 mkdir -p "$PPB_APP/Contents/Resources/Reading"
 cp Reading/*.json Reading/LICENSES.md "$PPB_APP/Contents/Resources/Reading/"
 mkdir -p "$PPB_APP/Contents/Resources/Assets"
-cp Assets/reading-cover.png "$PPB_APP/Contents/Resources/Assets/"
+cp Assets/reading-cover.png Assets/home-background.jpg "$PPB_APP/Contents/Resources/Assets/"
 cp example.breakdown.json ABOUT.txt PRIVACY.txt TERMS.txt "$PPB_APP/Contents/Resources/"
 swiftc -module-cache-path /tmp/passage-swift-cache -target arm64-apple-macosx13.0 -swift-version 5 -O -parse-as-library Passage.swift Model.swift Markup.swift Home.swift Capture.swift Library.swift ReadingControls.swift AgentConnection.swift Brand.swift Updater.swift Share.swift -F "$PPB_SPARKLE" -framework Sparkle -Xlinker -rpath -Xlinker @executable_path/../Frameworks -o "$PPB_APP/Contents/MacOS/Passage" -framework Vision -Xlinker -weak_framework -Xlinker FoundationModels -framework Cocoa -framework CoreServices -framework PDFKit
 swift -module-cache-path /tmp/passage-swift-cache Icon.swift /tmp/Passage.iconset

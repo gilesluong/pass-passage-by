@@ -748,8 +748,8 @@ final class HomeCard: NSView {
         heading.stringValue = title
         heading.font = .systemFont(ofSize: 16, weight: .semibold)
         heading.textColor = .labelColor
-        heading.maximumNumberOfLines=3
-        heading.lineBreakMode = .byTruncatingTail
+        heading.maximumNumberOfLines=0
+        heading.lineBreakMode = .byWordWrapping
 
         detail.stringValue = excerpt
         detail.font = NSFont(name: "Georgia", size: 13) ?? .systemFont(ofSize: 13)
@@ -763,7 +763,7 @@ final class HomeCard: NSView {
         note.stringValue = nText
         note.font = .systemFont(ofSize: 11.5, weight: .medium)
         note.textColor = .secondaryLabelColor
-        note.lineBreakMode = .byTruncatingTail
+        note.lineBreakMode = .byWordWrapping
 
         open.target = target
         open.action = action
@@ -791,6 +791,9 @@ final class HomeCard: NSView {
         }
 
         for view in cardViews { addSubview(view) }
+        setAccessibilityElement(true);setAccessibilityRole(.button)
+        setAccessibilityLabel(title);setAccessibilityHelp("Open document")
+        heading.isSelectable=false;detail.isSelectable=false;badge.isSelectable=false;note.isSelectable=false
     }
 
     @objc private func handleDOIClick() {
@@ -807,31 +810,38 @@ final class HomeCard: NSView {
 
     required init?(coder: NSCoder) { fatalError() }
 
+    private func textHeight(_ field:NSTextField,width:CGFloat) -> CGFloat {
+        ceil((field.stringValue as NSString).boundingRect(with:NSSize(width:width,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:field.font ?? NSFont.systemFont(ofSize:13)]).height)+8
+    }
+    func preferredHeight(width:CGFloat) -> CGFloat {
+        let w=max(80,width-40)
+        return 80+textHeight(heading,width:w)+textHeight(badge,width:w)+textHeight(note,width:w)+48
+    }
+    override var acceptsFirstResponder: Bool {true}
+    override func hitTest(_ point:NSPoint) -> NSView? {super.hitTest(point) == nil ? nil:self}
+    override func mouseUp(with event:NSEvent) {
+        if bounds.contains(convert(event.locationInWindow,from:nil)) {activateCard()}
+    }
+    override func keyDown(with event:NSEvent) {
+        if event.keyCode == 36 || event.keyCode == 49 {activateCard()} else {super.keyDown(with:event)}
+    }
+    override func accessibilityPerformPress() -> Bool {activateCard();return true}
+    private func activateCard() {
+        guard let action=open.action else{return}
+        NSApp.sendAction(action,to:open.target,from:open)
+    }
     override func layout() {
         super.layout()
-        let pad: CGFloat = 20
-        let w = bounds.width - pad * 2
-        if let r = rankNumber {
-            rankLabel.stringValue = "\(r)"
-            rankLabel.frame = NSRect(x: bounds.width - pad - 50, y: 8, width: 50, height: 42)
-            rankLabel.isHidden = false
-            categoryBadge.frame = NSRect(x: pad, y: 14, width: w - 54, height: 16)
-        } else {
-            rankLabel.isHidden = true
-            categoryBadge.frame = NSRect(x: pad, y: 14, width: w, height: 16)
-        }
-        heading.frame = NSRect(x: pad, y: 36, width: w, height: 60)
-        detail.frame = NSRect(x: pad, y: 102, width: w, height: 42)
-        badge.frame = NSRect(x: pad, y: 150, width: w, height: 30)
-        note.isHidden = true
-
-        if let doiBtn = doiButton {
-            let doiW: CGFloat = 68
-            open.frame = NSRect(x: pad, y: bounds.height - 42, width: w - doiW - 10, height: 28)
-            doiBtn.frame = NSRect(x: bounds.width - pad - doiW, y: bounds.height - 42, width: doiW, height: 28)
-        } else {
-            open.frame = NSRect(x: pad, y: bounds.height - 42, width: min(210, w), height: 28)
-        }
+        let w=max(80,bounds.width-40)
+        categoryBadge.frame=NSRect(x:20,y:18,width:w,height:16)
+        let titleH=textHeight(heading,width:w)
+        heading.frame=NSRect(x:20,y:44,width:w,height:titleH)
+        let authorH=textHeight(badge,width:w)
+        badge.frame=NSRect(x:20,y:heading.frame.maxY+8,width:w,height:authorH)
+        detail.frame=NSRect(x:20,y:badge.frame.maxY+12,width:w,height:42)
+        note.isHidden=false
+        note.frame=NSRect(x:20,y:detail.frame.maxY+12,width:w,height:textHeight(note,width:w))
+        open.isHidden=true;doiButton?.isHidden=true;rankLabel.isHidden=true
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -972,6 +982,7 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
     override var isFlipped: Bool { true }
     var sidebar = MarginCanvas(), main = MarginCanvas()
     var header: [NSView] = [], cards: [HomeCard] = [], footer: [NSView] = []
+    var backgroundImageView = NSImageView()
     var carousel: PartnerShowcaseCarousel?
     var categoryBar: WritingCategoryBar?
     let searchField = NSSearchField()
@@ -1228,13 +1239,14 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
                 sec.shelf.isHidden=false
                 sec.header.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:68);curMainY+=76
                 let searching = !searchField.stringValue.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty
-                let tileWidth=min(310,contentWidth-12)
+                let tileWidth=min(370,contentWidth-12)
                 let columns=searching ? max(1,Int(contentWidth/(tileWidth+16))):visibleCards.count
                 let cellWidth=searching ? (contentWidth-CGFloat(columns-1)*16)/CGFloat(columns):tileWidth
                 let rows=searching ? (visibleCards.count+columns-1)/columns:1
-                let height=CGFloat(rows)*246
+                let rowHeight=(visibleCards.map{$0.preferredHeight(width:cellWidth)}.max() ?? 260)+16
+                let height=CGFloat(rows)*rowHeight
                 sec.shelf.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:height)
-                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i%columns)*(cellWidth+16),y:CGFloat(i/columns)*246,width:cellWidth,height:230)}
+                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i%columns)*(cellWidth+16),y:CGFloat(i/columns)*rowHeight,width:cellWidth,height:rowHeight-16)}
                 sec.strip.frame=NSRect(x:0,y:0,width:searching ? contentWidth:max(contentWidth,CGFloat(visibleCards.count)*(tileWidth+16)-16),height:height-4)
                 curMainY+=height+28
             }
@@ -1255,10 +1267,23 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         let totalH = max(clip.bounds.height-40, curMainY + 120)
         main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: totalH)
         frame.size.height = totalH + 40
+        backgroundImageView.frame = bounds
     }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
+        // Home screen background image
+        backgroundImageView.imageScaling = .scaleProportionallyUpOrDown
+        backgroundImageView.imageAlignment = .alignCenter
+        backgroundImageView.alphaValue = 0.18
+        if let resDir = Bundle.main.resourceURL ?? (ProcessInfo.processInfo.environment["PPB_RESOURCES"].flatMap { URL(fileURLWithPath: $0) }) {
+            let bgPath = resDir.appendingPathComponent("Assets/home-background.jpg")
+            if let img = NSImage(contentsOf: bgPath) { backgroundImageView.image = img }
+        }
+        if backgroundImageView.image == nil {
+            let devPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("Assets/home-background.jpg")
+            if let img = NSImage(contentsOf: devPath) { backgroundImageView.image = img }
+        }
         main.addSubview(emptyResults);emptyResults.font = .systemFont(ofSize:15);emptyResults.textColor = .secondaryLabelColor
         searchField.placeholderString = "Search writing..."
         searchField.font = .systemFont(ofSize: 13)
@@ -1270,6 +1295,8 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         sidebar.addSubview(searchField)
         addSubview(main)
         addSubview(sidebar)
+        backgroundImageView.autoresizingMask = [.width, .height]
+        addSubview(backgroundImageView, positioned: .below, relativeTo: main)
     }
     required init?(coder: NSCoder) { fatalError() }
 }

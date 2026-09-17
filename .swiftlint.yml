@@ -1,0 +1,154 @@
+# SwiftLint — macOS 27 Liquid Glass Style Enforcement
+# Pass Passage By! (com.passage.editor)
+
+included:
+  - Brand.swift
+  - Home.swift
+  - Passage.swift
+  - Model.swift
+  - Markup.swift
+  - Library.swift
+  - ReadingControls.swift
+  - Capture.swift
+  - Share.swift
+  - Updater.swift
+  - AgentConnection.swift
+  - Icon.swift
+
+excluded:
+  - Vendor
+  - dist
+  - release
+  - .git
+
+# Enforce strict Liquid Glass design patterns
+custom_rules:
+  # ── Liquid Glass: Centralized Dark Mode ──
+  raw_appearance_check:
+    name: "Use LiquidGlass.isDark(for:) instead of raw appearance check"
+    regex: 'effectiveAppearance\.bestMatch'
+    message: "Use LiquidGlass.isDark(for: self) instead of effectiveAppearance.bestMatch. Centralized dark mode detection."
+    severity: warning
+    match_kinds:
+      - identifier
+      - argument
+
+  # ── Liquid Glass: No Hardcoded Corner Radius ──
+  hardcoded_corner_radius:
+    name: "Use LiquidGlass.cornerRadius instead of hardcoded values"
+    regex: 'cornerRadius\s*=\s*(18|10|14)'
+    message: "Use LiquidGlass.cornerRadius / .smallCornerRadius / .pillCornerRadius instead of literal values."
+    severity: warning
+
+  # ── Liquid Glass: Continuous Corner Curves Required ──
+  missing_continuous_corners:
+    name: "Missing continuous corner curve for Liquid Glass"
+    regex: 'layer\?\.cornerRadius\s*='
+    message: "Set layer?.cornerCurve = .continuous alongside cornerRadius for Apple squircle (Liquid Glass HIG)."
+    severity: warning
+
+  # ── Liquid Glass: Centralized Accent Colors ──
+  hardcoded_accent_blue:
+    name: "Use LiquidGlass.accent() instead of hardcoded blue"
+    regex: 'NSColor\(calibratedRed:\s*0\.38,\s*green:\s*0\.78,\s*blue:\s*1\.0'
+    message: "Use LiquidGlass.accent(isDark:) instead of hardcoded accent blue."
+    severity: warning
+
+  hardcoded_accent_orange:
+    name: "Use LiquidGlass.researchAccent() instead of hardcoded orange"
+    regex: 'NSColor\(calibratedRed:\s*1\.0,\s*green:\s*0\.65,\s*blue:\s*0\.2'
+    message: "Use LiquidGlass.researchAccent(isDark:) instead of hardcoded accent orange."
+    severity: warning
+
+  hardcoded_accent_purple:
+    name: "Use LiquidGlass.essayAccent() instead of hardcoded purple"
+    regex: 'NSColor\(calibratedRed:\s*0\.75,\s*green:\s*0\.5,\s*blue:\s*1\.0'
+    message: "Use LiquidGlass.essayAccent(isDark:) instead of hardcoded accent purple."
+    severity: warning
+
+  # ── Liquid Glass: No Flat Border Strokes ──
+  flat_border_stroke:
+    name: "Use LiquidGlass.drawSpecularRim() instead of flat stroke"
+    regex: 'setStroke\(\)\s*\n\s*path\.lineWidth\s*=\s*1\s*\n\s*path\.stroke\(\)'
+    message: "Replace flat 1px stroke with LiquidGlass.drawSpecularRim() for gradient specular borders."
+    severity: warning
+
+  # ── Frozen Contract: Model.swift ──
+  frozen_format_const:
+    name: "Frozen contract: format must remain ielts-semantic-breakdown"
+    regex: 'format\s*!=\s*"(?!ielts-semantic-breakdown)'
+    message: "FROZEN CONTRACT: format must be 'ielts-semantic-breakdown'. Do not change."
+    severity: error
+    included: "Model\\.swift"
+
+  frozen_version_const:
+    name: "Frozen contract: version must remain 1"
+    regex: 'version\s*!=\s*(?!1\b)'
+    message: "FROZEN CONTRACT: version must be 1. Do not change."
+    severity: error
+    included: "Model\\.swift"
+
+# Standard SwiftLint rules tuned for this project
+opt_in_rules:
+  - closure_body_length
+  - collection_alignment
+  - contains_over_filter_count
+  - discouraged_optional_boolean
+  - empty_collection_literal
+  - empty_string
+  - fallthrough
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - last_where
+  - multiline_parameters
+  - operator_usage_whitespace
+  - overridden_super_call
+  - prefer_self_in_static_references
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+  - unavailable_function
+  - unowned_variable_capture
+  - vertical_parameter_alignment_on_call
+  - yoda_condition
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - type_body_length
+  - file_length
+  - function_body_length
+  - cyclomatic_complexity
+  - nesting
+  - identifier_name
+  - force_cast
+  - large_tuple
+  - function_parameter_count
+  - opening_brace
+  - statement_position
+  - colon
+  - comma
+  - control_statement
+  - todo
+  - shorthand_operator
+  - unused_closure_parameter
+  - multiple_closures_with_trailing_closure
+  - closure_parameter_position
+  - trailing_comma
+  - type_name
+  - void_return
+  - vertical_whitespace
+  - redundant_string_enum_value
+  - redundant_optional_initialization
+  - redundant_discardable_let
+  - no_space_in_method_call
+  - leading_whitespace
+  - syntactic_sugar
+  - for_where
+  - implicit_getter
+  - switch_case_alignment
+  - return_arrow_whitespace
+
+reporter: "xcode"
