@@ -17,7 +17,7 @@ final class TestPassage:Passage {
         let prefs=UserDefaults(suiteName:name)!
         defer {prefs.removePersistentDomain(forName:name)}
         app.prefs=prefs
-        prefs.register(defaults:["size":22.0,"spacing":1.5,"lineWidth":820.0,"paragraphSpacing":32.0,"notes":true,"briefSize":19.0,"font":"Georgia","theme":"Paper"])
+        prefs.register(defaults:["size":22.0,"spacing":1.5,"lineWidth":820.0,"paragraphSpacing":32.0,"notes":true,"briefSize":19.0,"font":"Georgia","theme":"Paper","dark":false])
         app.window=NSWindow(contentRect:NSRect(x:0,y:0,width:1200,height:800),styleMask:[.titled,.resizable],backing:.buffered,defer:false)
         app.applyAppearance() // Verify pre-root appearance safety without launching UI or Sparkle.
         app.data=try JSONDecoder().decode(Breakdown.self,from:Data(contentsOf:URL(fileURLWithPath:CommandLine.arguments[1])))
@@ -76,12 +76,13 @@ final class TestPassage:Passage {
         let settings=app.makePreferencesWindow()
         for button in app.preferencesNavigation {
             app.selectPreferencesSection(button);settings.contentView!.layoutSubtreeIfNeeded()
+            let slug=button.title.lowercased().replacingOccurrences(of:" ",with:"-")
+            try render(settings.contentView!,to:"/tmp/ppb-settings-\(slug).png")
             if button.title=="Tags" {
                 let page=app.preferencesTabs!.selectedTabViewItem!.view!
                 let fields=page.subviews.compactMap{$0 as? NSStackView}.flatMap{$0.arrangedSubviews}.compactMap{$0 as? NSTextField}.filter{$0.isEditable}
                 precondition(fields.count==7)
                 for field in fields {precondition(field.frame.width>=260,"Tag names must not collapse")}
-                try render(settings.contentView!,to:"/tmp/ppb-settings-layout.png")
             }
         }
         app.prefs.set(true,forKey:"dark")
