@@ -1,6 +1,6 @@
 # Current: Pass Passage By! 1.8.0 (12) — 17 September 2026
 
-Prepared update: horizontal page lock, live full-text search, direct task editing, tighter Discover cards and four open-license PLOS reading selections. See design-qa.md for verified behavior and visual QA limits. Release/installation verification is recorded below after publishing.
+Prepared update: horizontal page lock, live full-text search, direct task editing, tighter Discover cards and four open-license PLOS reading selections. See design-qa.md for verified behavior and visual QA limits. Release v1.8.0 is public. The installed app upgraded from 1.7.0 through Sparkle and relaunched successfully; Info.plist reports 1.8.0 (12), and the executable SHA-256 matches the release build.
 
 Reading/assemble.py regenerates JSON offline from checked-in official PLOS XML. Reading/LICENSES.md preserves authors, DOI, license and selection details. Review article license is CC BY with no version specified in the source; do not invent a version. User text, library, bundle ID and data paths remain unchanged. Do not manually overwrite the installed app; use Sparkle only. No Llama or Apple Intelligence downloads on hotspot.
 
