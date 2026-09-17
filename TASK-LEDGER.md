@@ -1,6 +1,6 @@
 # Active delivery ledger — 17 September 2026
 
-Read this file first when resuming. Long-term vision: PRODUCT-VISION.md. Stable release baseline: 1.9.4 (18); source already contains unreleased comment separation. Do not overwrite installed app.
+Read this file first when resuming. Long-term vision: PRODUCT-VISION.md. Stable release baseline: 1.9.5 (19); source contains complete ZCode-style clean UI, structured comments inspector, tag presets, and portable presentation sidecar. Do not overwrite installed app.
 
 ## Current batch (user: clean ZCode-style UI and continue outstanding work)
 1. DONE — Neutral shell, compact editor header, document-details disclosure, readable editable prompt and restrained native motion.
@@ -10,7 +10,7 @@ Read this file first when resuming. Long-term vision: PRODUCT-VISION.md. Stable 
 3. DONE — Comments inspector polish: CommentCardSurface rounded cards with colored tag header, accent-bar anchored quote and 13pt body (Comments.swift). Verified: lint clean, test.sh PASS, test-layout.sh PASS incl. legacy kind=comment preservation, no margin duplication (NativeLayoutTests asserts margin excludes discussion notes), /tmp/ppb-comments-layout.png.
    Also: settings renders now capture every section to /tmp/ppb-settings-*.png with light appearance; popup/checkbox controls still draw blank in offscreen PDF captures (known artifact, layout constraints are asserted programmatically).
 4. DONE — Review Home/Settings density, remove remaining decorative chrome and misleading copy; implement Tag Palette Presets under Settings → Tags (NĐ 30, SOP Onboarding, IELTS Writing, Mặc định) with live updates and test assertions (Passage.swift, Home.swift, NativeLayoutTests.swift). Verified: lint clean, test.sh PASS, test-layout.sh PASS.
-5. NEXT — Strict lint, core/native tests, light/dark renders, build, new Sparkle release only after portability gate passes; refresh source ZIP and handoff.
+5. DONE — Strict lint, core/native tests, light/dark renders, build, new Sparkle release 1.9.5 (19) prepared in dist/updates/1.9.5 with Ed25519 signature; refresh source ZIP and handoff.
 
 ## Guardrails
 Update this ledger after each completed task with files, checks and next action. Never describe future collaboration or the full Notion-level roadmap as finished. Remote collaboration, Developer ID/notarization and real external MCP host validation have dependencies beyond this UI batch. No AI model downloads. Do not erase legacy notes or infer their purpose from `kind=comment`.
