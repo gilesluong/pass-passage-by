@@ -253,6 +253,10 @@ extension Passage {
     func scanFiles(_ urls:[URL]){do{showScan(try LocalOCR.load(urls))}catch{showAlert(error.localizedDescription)}}
     func showScan(_ pages:[CapturedPage]){scanReview?.close();let review = ScanReview(passage:self,pages:pages);scanReview = review;review.window?.center();review.showWindow(nil)}
     func receiveDroppedFiles(_ urls:[URL]) {
+        if urls.count == 1,urls[0].hasDirectoryPath {
+            do {try importWritingBundle(urls[0])}catch{showAlert(error.localizedDescription)}
+            return
+        }
         if urls.count == 1,["json","md","markdown","txt"].contains(urls[0].pathExtension.lowercased()) {
             let item = NSButton();item.identifier = .init(urls[0].path);openRecent(item)
         } else {scanFiles(urls)}

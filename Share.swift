@@ -9,7 +9,7 @@ final class ExportPage:NSView {
     required init?(coder:NSCoder){fatalError("This view is created programmatically")}
     override func draw(_ dirtyRect:NSRect){NSColor.white.setFill();bounds.fill();drawContent()}
 }
-func annotatedPDF(_ document:Breakdown)->PDFDocument {
+func annotatedPDF(_ document:Breakdown,surfaces:[String:NoteSurface] = [:])->PDFDocument {
     let result = PDFDocument()
     let text = document.document.text as NSString
     let storage = NSTextStorage(string:document.document.text,attributes:[.font:NSFont(name:"Georgia",size:17) ?? NSFont.systemFont(ofSize:17),.foregroundColor:NSColor.black])
@@ -17,7 +17,12 @@ func annotatedPDF(_ document:Breakdown)->PDFDocument {
     storage.addAttribute(.paragraphStyle,value:style,range:NSRange(location:0,length:storage.length))
     let manager = NSLayoutManager();storage.addLayoutManager(manager)
     let notes = PassageMarkup.orderedNotes(document.document.text,existing:document.annotations)
-    for note in notes {storage.addAttributes([.underlineStyle:NSUnderlineStyle.single.rawValue,.underlineColor:NSColor.systemBlue],range:NSRange(location:note.start,length:note.end - note.start))}
+    let marginNotes = notes.filter {surfaces[$0.id] != .comment}
+    let commentNotes = notes.filter {surfaces[$0.id] == .comment}
+    for note in notes {
+        let comment = surfaces[note.id] == .comment
+        storage.addAttributes([.underlineStyle:NSUnderlineStyle.single.rawValue,.underlineColor:comment ? NSColor.systemPurple : NSColor.systemBlue],range:NSRange(location:note.start,length:note.end - note.start))
+    }
     var previous = 0
     repeat {
         let container = NSTextContainer(containerSize:NSSize(width:490,height:920));container.lineFragmentPadding = 0;manager.addTextContainer(container)
@@ -29,7 +34,7 @@ func annotatedPDF(_ document:Breakdown)->PDFDocument {
             documentTitle.draw(at:NSPoint(x:235,y:45),withAttributes:[.font:NSFont.systemFont(ofSize:19,weight:.semibold),.foregroundColor:NSColor.black])
             manager.drawBackground(forGlyphRange:glyphs,at:NSPoint(x:235,y:110));manager.drawGlyphs(forGlyphRange:glyphs,at:NSPoint(x:235,y:110))
             var bottoms:[Bool:CGFloat] = [true:110,false:110]
-            for note in notes where NSIntersectionRange(chars,NSRange(location:note.start,length:note.end - note.start)).length > 0 {
+            for note in marginNotes where NSIntersectionRange(chars,NSRange(location:note.start,length:note.end - note.start)).length > 0 {
                 let left = note.side == "left"
                 let intersection = NSIntersectionRange(chars,NSRange(location:note.start,length:note.end - note.start))
                 let range = manager.glyphRange(forCharacterRange:intersection,actualCharacterRange:nil)
@@ -51,9 +56,14 @@ func annotatedPDF(_ document:Breakdown)->PDFDocument {
         if let pdf = PDFDocument(data:view.dataWithPDF(inside:view.bounds)),let page = pdf.page(at:0){result.insert(page,at:result.pageCount)}
         if NSMaxRange(glyphs) <= previous{break};previous = NSMaxRange(glyphs)
     } while previous < manager.numberOfGlyphs && text.length > 0
-    if !notes.isEmpty {
-        let details = notes.enumerated().map { index,n in "\(index + 1). \(n.label)\n“\(n.quote)”\n\(n.body)" + (n.suggestion.map{"\nSuggested: " + $0} ?? "") }.joined(separator:"\n\n")
+    if !marginNotes.isEmpty {
+        let details = marginNotes.enumerated().map { index,n in "\(index + 1). \(n.label)\n“\(n.quote)”\n\(n.body)" + (n.suggestion.map{"\nSuggested: " + $0} ?? "") }.joined(separator:"\n\n")
         let appendix = annotatedPDF(.plain(details,title:"Annotation details"))
+        for index in 0..<appendix.pageCount {if let page = appendix.page(at:index){result.insert(page,at:result.pageCount)}}
+    }
+    if !commentNotes.isEmpty {
+        let details = commentNotes.enumerated().map { index,n in "💬 \(index + 1). \(n.label)\n“\(n.quote)”\n\(n.body)" }.joined(separator:"\n\n")
+        let appendix = annotatedPDF(.plain(details,title:"Comments · feedback & discussion"))
         for index in 0..<appendix.pageCount {if let page = appendix.page(at:index){result.insert(page,at:result.pageCount)}}
     }
     for image in document.images ?? [] {if let native = NSImage(data:image.data),let page = PDFPage(image:native){result.insert(page,at:result.pageCount)}}
@@ -61,20 +71,46 @@ func annotatedPDF(_ document:Breakdown)->PDFDocument {
 }
 
 extension Passage {
+    var commentSurfaces:[String:NoteSurface] {
+        var map:[String:NoteSurface] = [:]
+        for note in data.annotations where isDiscussion(note) {map[note.id] = .comment}
+        return map
+    }
+
     @objc func showSharePreview(){
         guard opened else{return}
         saveDraft()
-        let pdf = annotatedPDF(data)
-        let controller = ShareController(document:data,pdf:pdf)
+        let pdf = annotatedPDF(data,surfaces:commentSurfaces)
+        let controller = ShareController(document:data,pdf:pdf,surfaces:commentSurfaces)
         shareController = controller;controller.showWindow(nil);controller.window?.center()
+    }
+
+    /// Reopen an exported bundle folder (essay.md + annotations.json + optional presentation.json).
+    func importWritingBundle(_ folder:URL)throws {
+        let annotations = folder.appendingPathComponent("annotations.json")
+        guard FileManager.default.fileExists(atPath:annotations.path) else {throw ModelError.invalid}
+        if opened {saveDraft()}
+        try loadJSON(try Data(contentsOf:annotations))
+        let presentation = folder.appendingPathComponent("presentation.json")
+        if let bytes = try? Data(contentsOf:presentation),
+           let payload = try? JSONSerialization.jsonObject(with:bytes) as? [String:Any],
+           (payload["format"] as? String) == "ppb-note-surfaces/v1",
+           let map = payload["surfaces"] as? [String:String] {
+            for (noteID,raw) in map where raw == NoteSurface.comment.rawValue {
+                notePresentation.set(.comment,documentID:data.document.id,noteID:noteID)
+            }
+        }
+        NSDocumentController.shared.noteNewRecentDocumentURL(annotations)
+        openWorkspace()
     }
 }
 final class ShareController:NSWindowController {
     let essay:Breakdown;let pdf:PDFDocument
+    let surfaces:[String:NoteSurface]
     var sharingPicker:NSSharingServicePicker?
     let preview = PDFView();let format = NSPopUpButton()
-    init(document:Breakdown,pdf:PDFDocument){
-        self.essay = document;self.pdf = pdf
+    init(document:Breakdown,pdf:PDFDocument,surfaces:[String:NoteSurface] = [:]){
+        self.essay = document;self.pdf = pdf;self.surfaces = surfaces
         let window = NSWindow(contentRect:NSRect(x:0,y:0,width:920,height:780),styleMask:[.titled,.closable,.resizable],backing:.buffered,defer:false)
         super.init(window:window);window.title = "Share · " + document.document.title;window.isReleasedWhenClosed = false
         format.addItems(withTitles:["PDF · with annotations","Markdown + JSON"])
@@ -95,6 +131,11 @@ final class ShareController:NSWindowController {
             try Data(essay.document.text.utf8).write(to:url.appendingPathComponent("essay.md"),options:.atomic)
             let encoder = JSONEncoder();encoder.outputFormatting = [.prettyPrinted,.sortedKeys]
             try encoder.encode(essay).write(to:url.appendingPathComponent("annotations.json"),options:.atomic)
+            let commentIDs = essay.annotations.filter {surfaces[$0.id] == .comment}.map {$0.id}
+            if !commentIDs.isEmpty {
+                let payload:[String:Any] = ["format":"ppb-note-surfaces/v1","document":essay.document.id,"surfaces":Dictionary(uniqueKeysWithValues:commentIDs.map{($0,NoteSurface.comment.rawValue)})]
+                try JSONSerialization.data(withJSONObject:payload,options:[.prettyPrinted,.sortedKeys]).write(to:url.appendingPathComponent("presentation.json"),options:.atomic)
+            }
         }
     }
     @objc func exportDocument(){let panel = NSSavePanel();panel.nameFieldStringValue = format.indexOfSelectedItem == 0 ? essay.document.title + ".pdf" : essay.document.title + "-bundle";panel.beginSheetModal(for:window ?? NSWindow()){response in guard response == .OK,let url = panel.url else{return};do{try self.write(to:url)}catch{NSAlert(error:error).runModal()}}}

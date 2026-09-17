@@ -8,7 +8,7 @@ swiftc -module-cache-path /tmp/passage-swift-cache Model.swift Markup.swift Mark
 python3 - <<'PY'
 from pathlib import Path
 import json
-Path('/tmp/PPBPDFCore.swift').write_text(Path('Share.swift').read_text().split('extension Passage')[0])
+Path('/tmp/PPBPDFCore.swift').write_text(Path('NotePresentation.swift').read_text()+Path('Share.swift').read_text().split('extension Passage')[0])
 files=list(Path('Samples').glob('*.json'));assert len(files)==20
 for file in files:
  d=json.loads(file.read_text());text=d['document']['text'];assert len(text.split()) >= (250 if d["document"]["taskType"]=="task2" else 150)
