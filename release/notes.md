@@ -1,9 +1,7 @@
-## Reading, search and navigation fixes
+## Smoother gestures and truly new documents
 
-- Fixed horizontal page drift when swiping. The sidebar stays in place; document shelves still scroll horizontally.
-- Search updates as you type and matches full document text, task prompts and margin annotations. Results use a grid with matching counts and an empty state.
-- Click the task prompt to edit it directly; edits save automatically. Add task remains available for documents without a prompt.
-- Refined Discover hierarchy, card density, featured titles, excerpts and sidebar selection; removed decorative clutter and nonfunctional section arrows.
-- Added four credited CC BY research/writing selections from PLOS, with 20 teaching annotations. The existing 20 IELTS practice essays remain available.
+- Vertical scrolling over document cards is routed to the homepage instead of competing with the horizontal shelf.
+- Carousel gestures lock to the initial direction. One swipe advances one slide; momentum cannot advance another slide. There is no automatic carousel timer.
+- Creating IELTS, research or discursive writing now starts with an empty body, no preset task and no annotations. Samples remain in the reading library.
 
-Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized. No AI model downloads.
+Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized.

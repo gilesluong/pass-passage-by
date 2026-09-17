@@ -1,3 +1,11 @@
+# Current: Pass Passage By! 1.8.1 (13) — 17 September 2026
+
+Fixes from user feedback: nested shelves forward vertical scroll directly to HomePageScrollView; carousel locks gesture axis and accepts at most one transition per gesture, ignoring momentum. There was no auto-advance timer; repeated inertia was the cause. All New Document types now create blank writing and no preset prompt. The obsolete baked-in IELTS/discursive examples have been removed from creation handlers; bundled samples remain.
+
+Build and native regression tests pass, including horizontal swipe/momentum, vertical axis lock, and blank creation for all three typed documents. Installed update must use Sparkle, never manual overwrite. Release verification to follow. Full-size Stage Manager gesture QA remains a limitation of the current screenshot tool.
+
+---
+
 # Current: Pass Passage By! 1.8.0 (12) — 17 September 2026
 
 Prepared update: horizontal page lock, live full-text search, direct task editing, tighter Discover cards and four open-license PLOS reading selections. See design-qa.md for verified behavior and visual QA limits. Release v1.8.0 is public. The installed app upgraded from 1.7.0 through Sparkle and relaunched successfully; Info.plist reports 1.8.0 (12), and the executable SHA-256 matches the release build.

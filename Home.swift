@@ -357,6 +357,23 @@ struct PartnerSlide {
     let accentColor: NSColor
 }
 
+struct HomeSwipeGesture {
+    var horizontal: Bool? = nil
+    var advanced = false
+    var distance: CGFloat = 0
+    var lastTime: TimeInterval = 0
+    mutating func consume(x:CGFloat,y:CGFloat,time:TimeInterval,began:Bool,unphased:Bool,momentum:Bool) -> Int {
+        if began || (unphased && !momentum && time-lastTime>0.3) {horizontal=nil;advanced=false;distance=0}
+        lastTime=time
+        if horizontal == nil && max(abs(x),abs(y))>0 {horizontal=abs(x)>abs(y)}
+        guard horizontal == true, !momentum, !advanced else{return 0}
+        distance += x
+        guard abs(distance)>20 else{return 0}
+        advanced=true
+        return distance<0 ? 1 : -1
+    }
+}
+
 final class PartnerShowcaseCarousel: NSView {
     override var isFlipped: Bool { true }
 
@@ -481,31 +498,13 @@ final class PartnerShowcaseCarousel: NSView {
         currentIndex = (currentIndex + 1) % slides.count
     }
 
-    private var accumulatedDeltaX: CGFloat = 0
-    private var lastSwipeTime: TimeInterval = 0
-
+    private var swipe = HomeSwipeGesture()
     override var acceptsFirstResponder: Bool { true }
-
-    override func scrollWheel(with event: NSEvent) {
-        if event.phase == .began {
-            accumulatedDeltaX = 0
-        }
-        accumulatedDeltaX += event.scrollingDeltaX
-        let now = Date().timeIntervalSinceReferenceDate
-        if abs(accumulatedDeltaX) > 20 && (now - lastSwipeTime > 0.35) {
-            lastSwipeTime = now
-            if accumulatedDeltaX < 0 {
-                nextClicked()
-            } else {
-                prevClicked()
-            }
-            accumulatedDeltaX = 0
-            return
-        }
-        if event.phase == .ended || event.phase == .cancelled {
-            accumulatedDeltaX = 0
-        }
-        if abs(event.scrollingDeltaY)>abs(event.scrollingDeltaX) {super.scrollWheel(with:event)}
+    override func scrollWheel(with event:NSEvent) {
+        let step=swipe.consume(x:event.scrollingDeltaX,y:event.scrollingDeltaY,time:event.timestamp,
+            began:event.phase == .began,unphased:event.phase.isEmpty,momentum:!event.momentumPhase.isEmpty)
+        if swipe.horizontal != true {super.scrollWheel(with:event);return}
+        if step>0 {nextClicked()} else if step<0 {prevClicked()}
     }
 
     override func keyDown(with event: NSEvent) {
@@ -916,7 +915,7 @@ final class HomeDashboardSection {
     let key: String
     let header: HomeSectionHeader
     var cards: [HomeCard]
-    let shelf=NSScrollView()
+    let shelf=HomeShelfScrollView()
     let strip=MarginCanvas()
     var isHidden: Bool = false {
         didSet {
@@ -941,6 +940,26 @@ final class HomePageClipView: NSClipView {
     override func setBoundsOrigin(_ point:NSPoint) {super.setBoundsOrigin(NSPoint(x:0,y:point.y))}
     override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
         var rect=super.constrainBoundsRect(proposedBounds);rect.origin.x=0;return rect
+    }
+}
+// Vertical gestures over a shelf go straight to the page, not its inner clip.
+final class HomeShelfScrollView: NSScrollView {
+    private var horizontal: Bool? = nil
+    private var lastEventTime: TimeInterval = 0
+    override func scrollWheel(with event:NSEvent) {
+        if event.phase == .began || (event.phase.isEmpty && event.momentumPhase.isEmpty && event.timestamp-lastEventTime > 0.3) {horizontal=nil}
+        lastEventTime=event.timestamp
+        if horizontal == nil && max(abs(event.scrollingDeltaX),abs(event.scrollingDeltaY)) > 0 {
+            horizontal=abs(event.scrollingDeltaX)>abs(event.scrollingDeltaY)
+        }
+        if horizontal == true {super.scrollWheel(with:event)}
+        else {
+            var ancestor=superview
+            while let view=ancestor {
+                if let page=view as? HomePageScrollView {page.scrollWheel(with:event);return}
+                ancestor=view.superview
+            }
+        }
     }
 }
 final class HomePageScrollView: NSScrollView {

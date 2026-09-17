@@ -782,17 +782,17 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
         let menu = NSMenu(title: "New Document")
 
-        let ieltsItem = NSMenuItem(title: "IELTS Task 2 Practice Essay", action: #selector(newIELTSEssay), keyEquivalent: "")
+        let ieltsItem = NSMenuItem(title: "IELTS Essay", action: #selector(newIELTSEssay), keyEquivalent: "")
         ieltsItem.target = self
         ieltsItem.image = NSImage(systemSymbolName: "graduationcap", accessibilityDescription: "IELTS")
         menu.addItem(ieltsItem)
 
-        let researchItem = NSMenuItem(title: "Academic Research Study (with DOI)", action: #selector(newResearchPaper), keyEquivalent: "")
+        let researchItem = NSMenuItem(title: "Research Document", action: #selector(newResearchPaper), keyEquivalent: "")
         researchItem.target = self
         researchItem.image = NSImage(systemSymbolName: "atom", accessibilityDescription: "Research")
         menu.addItem(researchItem)
 
-        let discursiveItem = NSMenuItem(title: "Discursive Essay (Argument Flow)", action: #selector(newDiscursiveEssay), keyEquivalent: "")
+        let discursiveItem = NSMenuItem(title: "Discursive Essay", action: #selector(newDiscursiveEssay), keyEquivalent: "")
         discursiveItem.target = self
         discursiveItem.image = NSImage(systemSymbolName: "text.quote", accessibilityDescription: "Essay")
         menu.addItem(discursiveItem)
@@ -808,82 +808,16 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         menu.popUp(positioning: nil, at: point, in: view)
     }
 
-    @objc func newIELTSEssay() {
-        if opened { saveDraft() }; writingLibrary?.close()
-        let prompt = "Some people believe that unpaid community service should be a compulsory part of high school programmes. To what extent do you agree or disagree?"
-        let starterText = """
-In contemporary society, whether volunteer work should be made a compulsory component of the secondary school curriculum remains contentious. While critics argue that mandatory obligations overburden students already facing intense academic competition, I contend that community engagement provides essential civic lessons and personal maturity that classroom instruction cannot offer alone.
-
-To begin with, high school students today endure considerable pressure from standardized exams and college entrance requirements. Compelling them to perform unpaid community service may encroach upon critical revision time. Nevertheless, when structured thoughtfully, service activities serve as an active reprieve from sedentary study, fostering collaboration and leadership in practical settings.
-
-Furthermore, direct involvement in charitable organizations cultivates empathy. Interacting with diverse demographics—such as the elderly in hospice care or underprivileged children—enables young individuals to comprehend complex social issues firsthand.
-
-In conclusion, although the demands of academic life are undeniably heavy, integrating community service into high school education equips adolescents with a balanced perspective on civic duty.
-"""
-        var b = Breakdown.plain(starterText, title: "IELTS Task 2: Community Service")
-        b.document.prompt = prompt
-        b.document.taskType = "task2"
-        data = b
-        past = []
-        future = []
+    private func createBlankDocument(title:String, type:String) {
+        if opened {saveDraft()}; writingLibrary?.close()
+        data = .plain("", title:title)
+        data.document.taskType=type
+        past=[];future=[]
         openWorkspace()
     }
-
-    @objc func newResearchPaper() {
-        if opened { saveDraft() }; writingLibrary?.close()
-        let prompt = "Add a research question and the source material you want to review."
-        let starterText = """
-# Research notes
-
-## Question
-State the question and scope of your investigation.
-
-## Evidence
-Paste a source passage here. Keep its wording and distinguish evidence from interpretation.
-
-## Source record
-Author, title, year:
-Verified URL / doi:
-
-## Method and limitations
-Describe the actual study design and what the evidence cannot establish.
-
-## Your interpretation
-Explain how the source supports or challenges your argument.
-"""
-        var b = Breakdown.plain(starterText, title: "Research notes")
-        b.document.prompt = prompt
-        b.document.taskType = "research"
-        data = b
-        past = []
-        future = []
-        openWorkspace()
-    }
-
-    @objc func newDiscursiveEssay() {
-        if opened { saveDraft() }; writingLibrary?.close()
-        let prompt = "Does technological automation enhance human creativity, or does it erode authentic intellectual craftsmanship?"
-        let starterText = """
-Introduction & Thesis Statement
-The rapid ascent of automated generative systems has ignited profound debates concerning the future of intellectual labor. While detractors caution that reliance on algorithmic generation may erode artisanal discipline and critical thinking, I argue that thoughtful automation acts as a cognitive scaffolding, liberating creators from repetitive synthesis to focus on dialectical creativity and nuanced inquiry.
-
-The Case for Artisanal Preservation
-Skeptics maintain that craftsmanship is forged through friction. The meticulous process of drafting prose, verifying evidence, and refining arguments cultivates deep cognitive resilience. When automated tools instantly deliver pre-packaged summaries, students and authors risk forfeiting the rigorous discernment that authentic problem-solving demands.
-
-The Counter-Perspective: Scaffolding and Synthesis
-Conversely, history demonstrates that technological instruments consistently elevate creative ambition. Just as the printing press democratized literacy without abolishing philosophical rigor, intelligent writing platforms relieve researchers of mechanical lookup friction. Rather than replacing intellect, structured tools expose rhetorical patterns and semantic connections that would otherwise remain obscured.
-
-Synthesis & Conclusion
-Ultimately, the value of automation lies not in passive delegation, but in active partnership. By leveraging algorithmic tools to manage compositional logistics, writers can devote their analytical faculties to higher-order synthesis and moral discernment.
-"""
-        var b = Breakdown.plain(starterText, title: "Discursive: Automation and Creativity")
-        b.document.prompt = prompt
-        b.document.taskType = "discursive"
-        data = b
-        past = []
-        future = []
-        openWorkspace()
-    }
+    @objc func newIELTSEssay() {createBlankDocument(title:"Untitled IELTS Essay",type:"task2")}
+    @objc func newResearchPaper() {createBlankDocument(title:"Untitled Research",type:"research")}
+    @objc func newDiscursiveEssay() {createBlankDocument(title:"Untitled Essay",type:"discursive")}
 
     @objc func newEssay() {
         if opened {saveDraft()};writingLibrary?.close()

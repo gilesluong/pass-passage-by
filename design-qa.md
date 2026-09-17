@@ -1,3 +1,7 @@
+# 1.8.1 interaction correction
+
+User screenshots and feedback exposed nested scroll competition and repeated carousel advances. Shelves now forward vertical gestures to the page; carousel direction is locked and momentum never advances a second slide. Native regression tests assert horizontal advance, inertia suppression, axis lock, and all typed new-document flows produce empty text/prompt/annotations. Full physical-trackpad stress testing remains unverified.
+
 # Design verification — 1.8.0 (12)
 
 User screenshot: horizontal page drift concealed the sidebar. The page clip now fixes x=0 for constraints, direct scrolling and bounds changes; shelves retain their independent horizontal scrolling.
