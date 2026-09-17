@@ -1,3 +1,9 @@
+# Latest implementation — vision + first annotation/comment separation slice
+
+See PRODUCT-VISION.md and the new first section of NEXT-STEPS.md. Native Comments inspector implemented; explicit local presentation routing preserves legacy note data; compact click-to-edit margin annotations; broken popover content controller fixed. Strict lint and test suites pass; preview builds. No public release/version change. Surface routing is local UserDefaults only, so portable export/MCP metadata and conversion undo are next prerequisites. Do not claim collaboration, production migration, or complete editor overhaul. Build/test scripts include Comments.swift and NotePresentation.swift. Model.swift and sample schemas untouched.
+
+---
+
 # Latest direction — 17 September 2026, evening (after 1.9.4)
 
 Read NEXT-STEPS.md first. User clarified that annotation is short informal margin context/state, not necessarily objective. Comment is richer feedback and future discussion. Current 1.9.4 still renders both in margins; border changes do not fulfill the separation. Prioritize data-preserving presentation split, then complete editor reliability and neutral workspace UI. Home wallpaper loading is removed in this pass; source asset retained. No claim of full editor redesign or working collaboration. AGENTS.md updated to supersede the previous objective/subjective distinction. Template/tag/Loom work is deferred behind editor fundamentals.

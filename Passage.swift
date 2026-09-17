@@ -376,40 +376,29 @@ class MarginCanvas: NSView {
 final class MarginNoteCard: NSView {
     override var isFlipped: Bool { true }
     private let content: [NSView]
-    var isComment: Bool = false
-    init(content: [NSView], identifier: String, isComment: Bool = false) {
+    var activate: (() -> Void)?
+    init(content: [NSView], identifier: String) {
         self.content = content
-        self.isComment = isComment
         super.init(frame: .zero)
         self.identifier = NSUserInterfaceItemIdentifier(identifier)
-        wantsLayer = true
-        if let layer = layer { LiquidGlass.configureLayer(layer, radius: LiquidGlass.smallCornerRadius, shadow: false) }
         for view in content { addSubview(view) }
+        setAccessibilityRole(.button)
+        setAccessibilityLabel("Edit margin annotation")
     }
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("Use init(content:identifier:)") }
-    func desiredHeight(width: CGFloat) -> CGFloat { 154 }
+    override func hitTest(_ point: NSPoint) -> NSView? { super.hitTest(point) == nil ? nil : self }
+    override func mouseDown(with event: NSEvent) { activate?() }
+    override func accessibilityPerformPress() -> Bool { activate?(); return activate != nil }
+    func desiredHeight(width: CGFloat) -> CGFloat { 100 }
     override func layout() {
         super.layout()
         let width = max(60, bounds.width - 24)
-        let rects = [NSRect(x: 12, y: 12, width: width, height: 24),
-                     NSRect(x: 12, y: 38, width: width, height: 36),
-                     NSRect(x: 12, y: 78, width: width, height: 44),
-                     NSRect(x: 12, y: 126, width: width, height: 20)]
+        let rects = [NSRect(x: 12, y: 8, width: width, height: 14),
+                     NSRect(x: 12, y: 26, width: width, height: 20),
+                     NSRect(x: 12, y: 50, width: width, height: 38),
+                     NSRect(x: 12, y: 88, width: width, height: 0)]
         for (view, rect) in zip(content, rects) { view.frame = rect }
-    }
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        let isDark = LiquidGlass.isDark(for: self)
-        LiquidGlass.drawCard(in: bounds, isDark: isDark, radius: LiquidGlass.smallCornerRadius)
-        if isComment {
-            let stroke = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: LiquidGlass.smallCornerRadius, yRadius: LiquidGlass.smallCornerRadius)
-            let dash: [CGFloat] = [4.0, 3.0]
-            stroke.setLineDash(dash, count: 2, phase: 0)
-            stroke.lineWidth = 1.2
-            (isDark ? NSColor.systemPurple.withAlphaComponent(0.6) : NSColor.systemPurple.withAlphaComponent(0.4)).setStroke()
-            stroke.stroke()
-        }
     }
 }
 
@@ -536,6 +525,11 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     let appUpdates = AppUpdates()
     var preferencesWindow: NSWindow?
     var settings: NSPopover?
+    var commentsPane = NSView()
+    var commentsWidth: NSLayoutConstraint?
+    var commentsVisible = false
+    var commentsEditing = false
+    var editingSurface = NoteSurface.annotation
     var commentPopover: NSPopover?
     var hoverSourcePopover: NSPopover?
     var lastHoverNoteId: String?
@@ -950,7 +944,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let briefToggle = button("Task Prompt", #selector(toggleTaskBrief), symbol: briefHidden ? "chevron.down" : "chevron.up")
         briefToggleButton = briefToggle
         let scanBtn = button("Scan",#selector(captureDocument),symbol:"camera")
-        let noteBtn = button("Note",#selector(comment),symbol:"plus.bubble")
+        let noteBtn = button("Comments",#selector(toggleComments),symbol:"bubble.left.and.bubble.right")
         let notesBtn = button("Library",#selector(showWritingLibrary),symbol:"folder")
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
         let topTrailing = stack([briefEdit, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
@@ -1094,7 +1088,11 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         ])
 
         // Main Center Stack
-        let center = stack([leftScroll, editorContainer, rightScroll, dictionaryPane])
+        commentsPane = NSView()
+        commentsEditing = false
+        commentsVisible = false
+        commentsWidth = commentsPane.widthAnchor.constraint(equalToConstant: 300)
+        let center = stack([leftScroll, editorContainer, rightScroll, dictionaryPane, commentsPane])
         centerStack = center
         center.spacing = 0
         center.distribution = .fill
@@ -1105,7 +1103,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         dictWidth = dictionaryPane.widthAnchor.constraint(equalToConstant: 340)
         wordHeight = editorContainer.heightAnchor.constraint(equalToConstant: 140)
 
-        paneHeightConstraints = [editorContainer.heightAnchor.constraint(equalTo: center.heightAnchor), leftScroll.heightAnchor.constraint(equalTo: center.heightAnchor), rightScroll.heightAnchor.constraint(equalTo: center.heightAnchor), dictionaryPane.heightAnchor.constraint(equalTo: center.heightAnchor)]
+        paneHeightConstraints = [commentsPane.heightAnchor.constraint(equalTo: center.heightAnchor), editorContainer.heightAnchor.constraint(equalTo: center.heightAnchor), leftScroll.heightAnchor.constraint(equalTo: center.heightAnchor), rightScroll.heightAnchor.constraint(equalTo: center.heightAnchor), dictionaryPane.heightAnchor.constraint(equalTo: center.heightAnchor)]
         NSLayoutConstraint.activate(paneHeightConstraints)
 
         exitPresentation = button("End presentation", #selector(togglePresentation))
@@ -1152,6 +1150,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func textView(_ textView: NSTextView, shouldChangeTextIn affectedCharRange: NSRange, replacementString: String?) -> Bool {
         guard textView === editor, !updating, let replacement = replacementString else { return true }
+        if commentsEditing { closeComment() }
         snapshot()
         let range = NSRange(location: visible.location + affectedCharRange.location, length: affectedCharRange.length)
         data.replace(range, with: replacement)
@@ -1240,6 +1239,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         header.stringValue = ["•  E S S A Y", "•  P A R A G R A P H", "•  S E N T E N C E", "•  W O R D"][level]
         titleField.stringValue = data.document.title
 
+        adaptLayout()
         styleText()
         renderNotes()
 
@@ -1407,87 +1407,53 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         for v in leftNotes.arrangedSubviews { leftNotes.removeArrangedSubview(v); v.removeFromSuperview() }
         for v in rightNotes.arrangedSubviews { rightNotes.removeArrangedSubview(v); v.removeFromSuperview() }
 
+        renderComments()
         let visibleList = displayedNotes.filter {
-            !$0.body.isEmpty && $0.start < NSMaxRange(visible) && $0.end > visible.location
+            !isDiscussion($0) && !$0.body.isEmpty && $0.start < NSMaxRange(visible) && $0.end > visible.location
         }
 
         for n in visibleList.sorted(by: { $0.start < $1.start }) {
-            let isLeft = (n.side == "left") && (window.contentView?.bounds.width ?? 1000) >= 1050
+            let isLeft = (n.side == "left") && !leftScroll.isHidden
             let targetStack = isLeft ? leftNotes : rightNotes
-            let isComment = n.kind == "comment"
-
-            let titleText = isComment ? "💬 " + n.label : n.label
+            let titleText = n.label
             let titleBtn = button(titleText, #selector(noteClicked))
             titleBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
             titleBtn.isBordered = false
             titleBtn.alignment = .left
-            titleBtn.font = .systemFont(ofSize: presentation ? 18 : 15, weight: isComment ? .medium : .semibold)
+            titleBtn.font = .systemFont(ofSize: presentation ? 18 : 15, weight: .semibold)
             titleBtn.contentTintColor = noteColor(n)
             titleBtn.cell?.wraps = true
             titleBtn.cell?.lineBreakMode = .byWordWrapping
 
-            let isResearchSource = n.label.localizedCaseInsensitiveContains("source")
-                || n.label.localizedCaseInsensitiveContains("citation")
-                || n.label.localizedCaseInsensitiveContains("doi")
-                || n.label.localizedCaseInsensitiveContains("reference")
-                || n.kind == "citation"
-                || (!(n.sourceStyle ?? "").isEmpty)
-
-            let isIELTS = data.document.taskType.hasPrefix("task")
-
-            let kindText: String = {
-                if isComment {
-                    return "💬 COMMENT · PHẢN HỒI"
-                } else if isResearchSource {
-                    return "✦ RESEARCH SOURCE · PREVIEW"
-                } else if n.kind == "structure" && (data.document.taskType == "administrative") {
-                    return "NĐ 30 · THỂ THỨC HÀNH CHÍNH"
-                } else if n.kind == "structure" && (data.document.taskType == "onboarding") {
-                    return "SOP · QUY CHẾ DOANH NGHIỆP"
-                } else if isIELTS {
-                    if n.label.localizedCaseInsensitiveContains("response") || n.label.localizedCaseInsensitiveContains("task") {
-                        return "IELTS · TASK RESPONSE"
-                    } else if n.label.localizedCaseInsensitiveContains("cohesion") || n.label.localizedCaseInsensitiveContains("flow") || n.kind == "structure" {
-                        return "IELTS · COHESION & FLOW"
-                    } else if n.kind == "vocabulary" || n.label.localizedCaseInsensitiveContains("vocab") {
-                        return "IELTS · LEXICAL RESOURCE"
-                    } else if n.kind == "correction" || n.label.localizedCaseInsensitiveContains("grammar") {
-                        return "IELTS · GRAMMATICAL RANGE"
-                    }
-                } else {
-                    if n.label.localizedCaseInsensitiveContains("thesis") {
-                        return "ESSAY · THESIS STATEMENT"
-                    } else if n.label.localizedCaseInsensitiveContains("argument") || n.label.localizedCaseInsensitiveContains("flow") {
-                        return "ESSAY · ARGUMENT FLOW"
-                    }
-                }
-                return n.tag.map { tagName($0).uppercased() } ?? n.kind.uppercased()
-            }()
+            let kindText = n.tag.map { tagName($0) } ?? "Annotation"
 
             let isDark = isDarkMode()
             let kind = NSTextField(wrappingLabelWithString: kindText)
             kind.maximumNumberOfLines = 2
             kind.font = .systemFont(ofSize: 9, weight: .bold)
-            kind.textColor = isComment
-                ? (isDark ? NSColor(calibratedRed: 0.85, green: 0.70, blue: 1.0, alpha: 1) : NSColor.systemPurple)
-                : (isResearchSource ? LiquidGlass.researchAccent(isDark: isDark) : noteColor(n))
+            kind.textColor = noteColor(n)
 
             let body = NSTextField(wrappingLabelWithString: n.body + (n.suggestion.map { "\n\nSuggested: " + $0 } ?? ""))
             body.font = .systemFont(ofSize: presentation ? 15 : 13)
             body.textColor = isDark ? NSColor(calibratedWhite: 0.88, alpha: 1) : NSColor(calibratedWhite: 0.2, alpha: 1)
-            body.maximumNumberOfLines = 3
+            body.maximumNumberOfLines = 2
             body.lineBreakMode = .byWordWrapping
             body.cell?.wraps = true
             body.cell?.usesSingleLineMode = false
 
-            let previewBtn = NSButton(title: isComment ? "View comment ↗" : "Read note ↗", target: self, action: #selector(openNotePreview(_:)))
+            let previewBtn = NSButton(title: "Read note ↗", target: self, action: #selector(openNotePreview(_:)))
+            previewBtn.isHidden = true
             previewBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
             previewBtn.isBordered = false
             previewBtn.bezelStyle = .regularSquare
             previewBtn.font = .systemFont(ofSize: 11, weight: .semibold)
             previewBtn.contentTintColor = noteColor(n)
 
-            let card = MarginNoteCard(content: [kind, titleBtn, body, previewBtn], identifier: n.id, isComment: isComment)
+            let card = MarginNoteCard(content: [kind, titleBtn, body, previewBtn], identifier: n.id)
+            card.activate = { [weak self, weak titleBtn] in
+                guard let titleBtn = titleBtn else { return }
+                self?.noteClicked(titleBtn)
+            }
             targetStack.addArrangedSubview(card)
 
         }
@@ -1524,7 +1490,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let tc = editor.textContainer
 
         // Map notes in visible range
-        for n in displayedNotes.sorted(by: { $0.start < $1.start }) where !n.body.isEmpty {
+        for n in displayedNotes.sorted(by: { $0.start < $1.start }) where !n.body.isEmpty && !isDiscussion(n) {
             let overlap = NSIntersectionRange(visible, NSRange(location: n.start, length: n.end - n.start))
             guard overlap.length > 0, let lm = lm, let tc = tc else { continue }
             let localRange = NSRange(location: overlap.location - visible.location, length: overlap.length)
@@ -1535,7 +1501,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let glyphPoint = NSPoint(x:textRect.minX + editor.textContainerOrigin.x,y:textRect.midY + editor.textContainerOrigin.y)
             let textPtInContainer = connectorView.convert(glyphPoint, from: editor)
             guard connectorView.bounds.contains(textPtInContainer) else {continue}
-            let isLeft = (n.side == "left") && (window.contentView?.bounds.width ?? 1000) >= 1050
+            let isLeft = (n.side == "left") && !leftScroll.isHidden
 
             // Locate note card view in left/right stack
             let targetStack = isLeft ? leftNotes : rightNotes
@@ -1886,7 +1852,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     func adaptLayout() {
         guard opened, let c = centerStack else{return}
         let width = (window.contentView?.bounds.width ?? 1000)
-        let narrow = width < 1050
+        commentsPane.isHidden = !commentsVisible || level == 3 || presentation
+        commentsWidth?.isActive = !commentsPane.isHidden
+        let inspectorWidth: CGFloat = commentsPane.isHidden ? 0 : 300
+        let narrow = width - inspectorWidth < 1050
         NSLayoutConstraint.deactivate(paneHeightConstraints)
         leftWidth?.isActive = false;rightWidth?.isActive = false;dictWidth?.isActive = false;wordHeight?.isActive = false
         if level == 3 {
@@ -1897,14 +1866,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             definition.textContainerInset = NSSize(width:20,height:14)
         }else{
             c.orientation = .horizontal;c.alignment = .top
-            let show = prefs.bool(forKey:"notes")
+            let show = prefs.bool(forKey:"notes") && (inspectorWidth == 0 || width >= 1100)
             leftScroll.isHidden = !show || narrow;rightScroll.isHidden = !show
             dictionaryPane.isHidden = true
             leftWidth?.constant = 210;rightWidth?.constant = narrow ? 225 : 210
             if !leftScroll.isHidden{leftWidth?.isActive = true}
             if !rightScroll.isHidden{rightWidth?.isActive = true}
             NSLayoutConstraint.activate(paneHeightConstraints)
-            let available = max(360,width - (show ? (narrow ? 225 : 420) : 0) - 48)
+            let available = max(360,width - inspectorWidth - (show ? (narrow ? 225 : 420) : 0) - 48)
             let inset = max(28,(available - prefs.double(forKey: "lineWidth")) / 2)
             editor.textContainerInset = NSSize(width:inset,height:level == 0 ? 28 : 48)
         }
@@ -2064,7 +2033,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             return
         }
         let docOffset = visible.location + idx
-        if let note = displayedNotes.first(where: { docOffset >= $0.start && docOffset <= $0.end }) {
+        if let note = displayedNotes.first(where: { !isDiscussion($0) && docOffset >= $0.start && docOffset < $0.end }) {
             if lastHoverNoteId != note.id {
                 lastHoverNoteId = note.id
                 showHoverPreview(for: note, at: point)
@@ -2205,6 +2174,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     }
 
     func openCommentPopover(existing: Note?, targetRect: NSRect, view: NSView, mode: String = "comment") {
+        if commentsEditing { closeComment() }
         commentPopover?.close();floatingCommentButton?.isHidden = true
         let p = NSPopover()
         p.behavior = .transient
@@ -2220,12 +2190,13 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let vc = NSViewController()
         let popView = NSView(frame: NSRect(x: 0, y: 0, width: 320, height: 360))
 
-        let isComment = existing?.kind == "comment" || (existing == nil && mode == "comment")
+        let isComment = existing.map { isDiscussion($0) } ?? (mode == "comment")
+        editingSurface = isComment ? .comment : .annotation
         let titleText: String = {
             if isComment {
-                return existing == nil ? "💬 New Comment / Review" : "💬 Edit Comment"
+                return existing == nil ? "New comment" : "Edit comment"
             } else {
-                return existing == nil ? "✦ New Margin Annotation" : "✦ Edit Annotation"
+                return existing == nil ? "New annotation" : "Edit annotation"
             }
         }()
         let titleLabel = NSTextField(labelWithString: titleText)
@@ -2266,7 +2237,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
         let delBtn = button(isComment ? "Remove comment" : "Remove annotation", #selector(deleteComment))
         delBtn.isHidden = (existing == nil)
-        let actions = stack([delBtn])
+        let move = button(isComment ? "Move to margin" : "Move to comments", #selector(moveNoteSurface))
+        move.isHidden = existing == nil || editingInline
+        let actions = stack([move, delBtn], vertical: true)
 
         let pills: NSStackView = {
             if isComment {
@@ -2283,13 +2256,20 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }()
         pills.spacing = 6
 
-        let all = stack([titleLabel, commentLabel, stack([commentKind, commentTag]), pills, s, actions], vertical: true)
+        _ = pills
+        let all = stack(isComment ? [titleLabel, s, actions] : [titleLabel, commentTag, s, actions], vertical: true)
         all.alignment = .width
         all.spacing = 8
         attach(all, to: popView, inset: 12)
 
         popView.setFrameSize(NSSize(width: 320, height: all.fittingSize.height + 24))
         vc.view = popView
+        p.contentViewController = vc
+        if isComment {
+            popView.heightAnchor.constraint(equalToConstant: 250).isActive = true
+            installCommentEditor(popView)
+            return
+        }
         commentPopover = p
         p.show(relativeTo: targetRect, of: view, preferredEdge: .maxY)
         p.contentViewController?.view.window?.makeFirstResponder(commentField)
@@ -2337,6 +2317,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     @objc func closeComment() {
         commentPopover?.close()
         commentPopover = nil
+        commentsEditing = false
+        annotationSave?.cancel()
+        saveDraft()
+        renderNotes()
     }
 
     @objc func deleteComment() {
@@ -2391,11 +2375,12 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             suggestion: old?.suggestion,
             side: old?.side ?? defaultSide,
             status: old?.status,
-            tag: commentTag.selectedItem?.representedObject as? String, sourceStyle: editingInline ? "brace" : nil
+            tag: commentTag.selectedItem?.representedObject as? String, sourceStyle: editingInline ? "brace" : old?.sourceStyle
         )
         data.annotations.removeAll { $0.id == note.id }
         data.annotations.append(note)
         editingNoteId = note.id
+        notePresentation.set(editingSurface, documentID: data.document.id, noteID: note.id)
         annotationSave?.cancel()
         let save = DispatchWorkItem { [weak self] in self?.saveDraft() };annotationSave = save
         DispatchQueue.main.asyncAfter(deadline:.now() + 0.3,execute:save)

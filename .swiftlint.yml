@@ -2,6 +2,8 @@
 # Pass Passage By! (com.passage.editor)
 
 included:
+  - NotePresentation.swift
+  - Comments.swift
   - Brand.swift
   - Home.swift
   - Passage.swift

@@ -51,13 +51,16 @@ All agents must respect the following constraints to prevent regressions:
 - **Annotation vs Comment — updated user direction (17 September, evening)**:
   - Annotation: a short contextual note, reminder, state or observation in the margin. It need not be objective or legal/structural. Keep it lightweight.
   - Comment: richer feedback and eventual human/agent discussion, shown in a dedicated inspector/thread surface, not another full margin card.
-  - Version 1.9.4 only distinguishes border/color/labels; the shared margin renderer is NOT a completed separation.
+  - Released 1.9.4 only distinguishes border/color/labels. Current source adds an inspector and explicit local presentation routing; portability/collaboration are still pending. See the latest NEXT-STEPS.md section.
   - Read `NEXT-STEPS.md` before implementing this change. Preserve existing note IDs, text, anchors and exports; no silent kind-based reclassification of historical notes.
 - **Visual direction**: quiet neutral workspace inspired by the supplied ZCode screenshot; remove decorative wallpaper. Reserve imagery for actual document covers. Editor clarity precedes new showcase/template features.
 - **$0 Subscription Model**:
   - Native on-device Apple Intelligence, Apple Dictionaries, and BYO AI agent connection via stdio MCP. No recurring subscription for reading tools.
 
 ---
+
+## Long-term direction
+Read [PRODUCT-VISION.md](PRODUCT-VISION.md) for the user’s vision, stage gates, agent bridge, collaboration and showcase business model.
 
 ## 4. Current State & Handoff
 - **Version**: 1.9.4 (18)

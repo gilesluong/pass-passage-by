@@ -1,3 +1,15 @@
+# Implementation update — initial separation slice
+
+Implemented locally: PRODUCT-VISION.md records the full long-term direction. NotePresentation.swift stores an explicit document-ID/note-ID surface preference. Historical notes remain margin annotations regardless of kind. Comments.swift adds an independent right inspector, selected passage navigation and edit flow. New comments are routed only to the inspector. Move to comments/margin preserves the Note object. Margin cards are now compact, borderless and directly clickable; auto-save remains. Fixed the missing popover contentViewController assignment.
+
+Validation: strict lint, core tests and native layout tests pass; preview build succeeds. Native tests cover legacy preservation, role persistence/document isolation, no duplicate margin rendering, edit, conversion, creation and document undo/redo. Offscreen render inspected. Live full-size interaction remains to be checked.
+
+Limits before a public release: surface preferences live in UserDefaults, NOT in exported JSON/MD or a portable sidecar. The original note data is fully preserved, but importing on another machine returns to legacy margin presentation. Conversion is reversible via Move, not yet integrated into text undo history. No replies, authors, resolution or online collaboration yet. Inline brace notes cannot be moved until their materialization/anchor semantics are designed. Add portable metadata and roundtrip tests before shipping this separation in Sparkle. Current version remains 1.9.4; only preview build changed.
+
+Next: (1) portable presentation sidecar + import/export/MCP contract, (2) conversion undo and dense/narrow-window interaction tests, (3) comment indicators in text and live keyboard/accessibility review. Do not advertise the roadmap as complete.
+
+---
+
 # PPB continuation — 17 September 2026, evening
 
 ## Verified baseline
