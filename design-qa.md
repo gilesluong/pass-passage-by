@@ -1,9 +1,11 @@
-# Design verification — 1.7
+# Design verification — 1.8.0 (12)
 
-Reference: user-supplied Apple TV screenshot. Implemented hierarchy: fixed translucent sidebar, cinematic featured writing, horizontal shelves and restrained controls. Original generated reading-room cover; no copied film art. No fictitious partner credentials.
+User screenshot: horizontal page drift concealed the sidebar. The page clip now fixes x=0 for constraints, direct scrolling and bounds changes; shelves retain their independent horizontal scrolling.
 
-Home at 1100×768: visually inspected in the running native preview; sidebar, hero, typography and first shelf fit. Search restoration and compact category wrapping also pass AppKit regression checks.
+Changes: restrained sidebar selection, Discover heading, shorter featured titles, readable multi-line card titles, compact metadata, clean excerpts without Markdown heading tokens, search result grids/counts, removal of nonfunctional section chevrons and decorative background arcs. The editor remains intact; task prompts are directly editable and autosave.
 
-Settings: Appearance and Zoom screenshots inspected at native window size; labels, theme cards and step controls fit. Live zoom selection tested. Agent connection controls verified through accessibility; its screenshot remained a Stage Manager thumbnail. Other Settings pages passed offscreen layout checks but have not all received full interactive visual inspection.
+Verification: model/markup/Unicode, 20 IELTS anchors, PDF, MCP, OCR and AppKit layout suites passed. Regression checks cover direct horizontal scrolling, sidebar visibility, live search delegate, deep body-text search, empty results, clear restoration, editable task prompts and all settings pages. Four CC BY reading documents and all 20 new anchors validate.
 
-Motion: zoom chips animate over 250 ms with smooth easing and respect Reduce Motion. Editor annotation geometry retained; task toggle regression checks pass. Real trackpad stress, dense notes and multiple-screen Stage Manager remain manual QA items.
+Native interaction: typing interpolated immediately found the workplace research article, as expected. Settings and Home controls were inspected through accessibility. Current screenshot capture returns a Stage Manager thumbnail or a blank miniature, so a complete full-size visual audit of every window and real trackpad stress test cannot be claimed. Offscreen Home rendering identified title clipping and Markdown excerpt artifacts; both were corrected. Offscreen Settings rendering does not accurately reproduce native controls and was not used as visual approval.
+
+Remaining: full-size multi-display/Stage Manager visual QA, dense annotation stress, per-document carousel artwork and actual third-party MCP-host onboarding. Settings are not claimed to have received a new full redesign in this release.

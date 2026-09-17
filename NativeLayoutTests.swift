@@ -52,7 +52,11 @@ final class TestPassage:Passage {
         app.saveTaskBrief();app.root.layoutSubtreeIfNeeded()
         precondition(app.data.document.prompt==app.promptEditor?.string)
         precondition(!app.taskBrief.isHidden)
-        precondition(app.briefEditButton?.title=="Edit task")
+        precondition(app.briefEditButton?.isHidden==true)
+        precondition(app.taskPromptField?.isEditable==true)
+        app.taskPromptField?.stringValue="Updated task directly."
+        app.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:app.taskPromptField))
+        precondition(app.data.document.prompt=="Updated task directly.")
         let labels=app.taskBrief.documentView!.subviews.compactMap{$0 as? NSTextField}
         precondition(labels.first!.font!.pointSize>=19)
         app.deleteTaskBrief();app.root.layoutSubtreeIfNeeded()
@@ -89,9 +93,27 @@ final class TestPassage:Passage {
         precondition(PointerPolicy.isActive(mode:"Hold Option",option:true))
         precondition(PointerPolicy.isActive(mode:"Always",option:false))
         precondition(!PointerPolicy.isActive(mode:"Off",option:true))
-        dashboardLight.applyFilter(query:"food waste");dashboardLight.layoutSubtreeIfNeeded()
+        precondition(dashboardLight.searchField.delegate === dashboardLight)
+        precondition(dashboardLight.searchField.sendsSearchStringImmediately)
+        let pageClip=homeScrollLight.contentView
+        precondition(pageClip.constrainBoundsRect(NSRect(x:240,y:100,width:pageClip.bounds.width,height:pageClip.bounds.height)).minX==0)
+        pageClip.scroll(to:NSPoint(x:240,y:100));dashboardLight.repositionStickySidebar()
+        precondition(dashboardLight.sidebar.convert(.zero,to:homeScrollLight).x>=0,"Horizontal swipe must never hide the sidebar")
+        dashboardLight.searchField.stringValue="food waste"
+        dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
+        precondition(!dashboardLight.cards.isEmpty,"Search must find actual results")
         precondition(dashboardLight.cards.allSatisfy{$0.heading.stringValue.localizedCaseInsensitiveContains("food") || $0.detail.stringValue.localizedCaseInsensitiveContains("food")})
-        dashboardLight.filterCards(categoryIndex:0);dashboardLight.layoutSubtreeIfNeeded()
+        dashboardLight.searchField.stringValue="interpolated"
+        dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
+        precondition(dashboardLight.cards.contains{$0.heading.stringValue.contains("workplace")},"Search includes full document text, beyond card excerpts")
+        try render(app.root,to:"/tmp/ppb-search-layout.png")
+        dashboardLight.searchField.stringValue="ppb-no-match-unique"
+        dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
+        precondition(dashboardLight.cards.isEmpty && !dashboardLight.emptyResults.isHidden)
+        dashboardLight.searchField.stringValue=""
+        dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
+        precondition(dashboardLight.allCards.allSatisfy{!$0.card.isHidden},"Clearing search restores all writing")
+        for url in try FileManager.default.contentsOfDirectory(at:URL(fileURLWithPath:"Reading"),includingPropertiesForKeys:nil) where url.pathExtension=="json" && url.lastPathComponent != "manifest.json" {let doc=try JSONDecoder().decode(Breakdown.self,from:Data(contentsOf:url));try doc.validate();precondition(doc.document.prompt!.contains("CC BY"))}
         let picker=app.zoomPathPicker!;picker.configure(route:[0,1,2,3])
         let chip=NSButton();chip.tag=1;picker.choose(chip);precondition(picker.route == [0,2,3]);picker.choose(chip);precondition(picker.route == [0,1,2,3])
         app.prefs.set("Student",forKey:"zoomPreset");app.level=0;precondition(app.nextZoomLevel(1)==3);app.level=3;precondition(app.nextZoomLevel(-1)==0)

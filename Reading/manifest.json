@@ -1,0 +1,38 @@
+[
+  {
+    "file": "workplace.json",
+    "title": "Enhancing workplace digital learning by use of the science of learning",
+    "authors": "Kana Okano, Jakub R. Kaczmarzyk, John D. E. Gabrieli",
+    "doi": "10.1371/journal.pone.0206250",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "selection": "Abstract and introduction",
+    "words": 1167
+  },
+  {
+    "file": "sleep.json",
+    "title": "Sleep and eyewitness memory: Fewer false identifications after sleep when the target is absent from the lineup",
+    "authors": "Michelle E. Stepan, Taylor M. Dehnke, Kimberly M. Fenn",
+    "doi": "10.1371/journal.pone.0182907",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "selection": "Abstract and introduction",
+    "words": 710
+  },
+  {
+    "file": "structure.json",
+    "title": "Ten simple rules for structuring papers",
+    "authors": "Brett Mensh, Konrad Kording",
+    "doi": "10.1371/journal.pcbi.1005619",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "selection": "Overview and Rules 1–2",
+    "words": 648
+  },
+  {
+    "file": "review.json",
+    "title": "Ten Simple Rules for Writing a Literature Review",
+    "authors": "Marco Pautasso",
+    "doi": "10.1371/journal.pcbi.1003149",
+    "license": "https://creativecommons.org/licenses/by/",
+    "selection": "Rules 3 and 6",
+    "words": 351
+  }
+]

@@ -20,6 +20,8 @@ t=Path(sys.argv[1]);t.mkdir(parents=True,exist_ok=True)
 for p in Path("AgentKit").iterdir():
  if p.is_file():(t/p.name).write_bytes(p.read_bytes())
 PYKIT
+mkdir -p "$PPB_APP/Contents/Resources/Reading"
+cp Reading/*.json Reading/LICENSES.md "$PPB_APP/Contents/Resources/Reading/"
 mkdir -p "$PPB_APP/Contents/Resources/Assets"
 cp Assets/reading-cover.png "$PPB_APP/Contents/Resources/Assets/"
 cp example.breakdown.json ABOUT.txt PRIVACY.txt TERMS.txt "$PPB_APP/Contents/Resources/"

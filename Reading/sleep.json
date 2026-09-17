@@ -1,0 +1,74 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "ppb-open-sleep",
+    "title": "Sleep and eyewitness memory: Fewer false identifications after sleep when the target is absent from the lineup",
+    "text": "## Abstract\n\nInaccurate eyewitness identifications are the leading cause of known false convictions in the United States. Moreover, improving eyewitness memory is difficult and often unsuccessful. Sleep consistently strengthens and protects memory from interference, particularly when a recall test is used. However, the effect of sleep on recognition memory is more equivocal. Eyewitness identification tests are often recognition based, thus leaving open the question of how sleep affects recognition performance in an eyewitness context. In the current study, we investigated the effect of sleep on eyewitness memory. Participants watched a video of a mock-crime and attempted to identify the perpetrator from a simultaneous lineup after a 12-hour retention interval that either spanned a waking day or night of sleep. In Experiment 1, we used a target-present lineup and, in Experiment 2, we used a target-absent lineup in order to investigate correct and false identifications, respectively. Sleep reduced false identifications in the target-absent lineup (Experiment 2) but had no effect on correct identifications in the target-present lineup (Experiment 1). These results are discussed with respect to memory strength and decision making strategies.\n\n## Introduction\n\nSeveral decades of research have shown that sleep is not only beneficial for physiological function but is also important for memory. Sleep strengthens hippocampal-dependent declarative memory for word pairs [1–4] and spatial information [5–7]. Sleep also protects memory from interference experienced during waking [8–9], likely due to an active consolidation process [10–13, 3–4, 6–7].\n\nAlthough a vast literature supports the positive influence of sleep on memory, the effect of sleep on eyewitness memory remains unexplored. Moreover, it is difficult to predict the effect of sleep on eyewitness memory due to the reliance on free or cued recall tests in the sleep-dependent consolidation literature and a comparable dearth of work using recognition tests. During free recall, participants recall a list of previously studied items, whereas in cued recall, participants are given an item from a set of studied items in order to aid, or cue, recall of a particular item. In contrast, recognition tests differ from recall in that individual items are presented to a participant who must then indicate if the item had been previously studied. It is well-established that sleep strengthens veridical memory when recall tests are used [1–5, 7–9], but few studies have used recognition tests (the type of test used in eyewitness identification research).\n\nStudies directly testing the effect of sleep on recognition memory have been equivocal. Recognition of emotionally salient information is better after sleep [13–14] and recognition of neutral information is enhanced after a daytime nap [15–16]. Studies testing the effect of a full night of sleep on neutral information have used the Deese-Roediger-McDermott (DRM) illusory memory paradigm [17–18]. These studies found no effect of sleep on correct recognition of neutral words but show either a reduction in false recognition following sleep [19–20] or no effect of sleep on false recognition [21]. It should be noted that the effect of sleep on false memory seems to be sensitive to testing format as the reverse effect (higher false memory after sleep) is found when a recall test is used [22–24]. The DRM paradigm, however, is unique in that recognizing one item can improve recognition for other items in the list, which may explain the null result for correct recognition. Thus, it is unclear whether the null effect of sleep on correct recognition is restricted to the DRM paradigm or if this null result accurately reflects the effect of sleep on recognition for neutral information across paradigms.\n\nWe investigated the effect of sleep on recognition in an eyewitness memory paradigm to help disambiguate prior results and to broaden the research on sleep-dependent memory consolidation to an ecologically important stimulus. Participants watched a video of a mock-crime and attempted to identify the perpetrator after a retention interval that either spanned a waking day or night of sleep. Experiment 1 utilized a lineup in which the perpetrator was present in the lineup (target-present); Experiment 2 utilized a lineup in which the perpetrator was not present (target-absent). Given substantial findings that sleep is beneficial for memory, we predicted that sleep would facilitate memory retention, resulting in more correct identifications in the target-present lineup, and protect against false recognition, resulting in fewer false identifications in the target-absent lineup.",
+    "taskType": "research",
+    "prompt": "Michelle E. Stepan, Taylor M. Dehnke, Kimberly M. Fenn (2017) · PLOS\nAbstract and introduction. Selected passages, not the complete paper.\nhttps://doi.org/10.1371/journal.pone.0182907\nCC BY · http://creativecommons.org/licenses/by/4.0/\nOriginal wording retained; paragraph spacing and Markdown headings adapted. PPB margin notes are editorial teaching commentary, not statements by the authors. Reference numbers refer to the original paper.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "sleep-0",
+      "start": 13,
+      "end": 93,
+      "quote": "Inaccurate eyewitness identifications are the leading cause of known false convi",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Source & reuse",
+      "body": "Michelle E. Stepan, Taylor M. Dehnke, Kimberly M. Fenn (2017). Sleep and eyewitness memory: Fewer false identifications after sleep when the target is absent from the lineup. DOI: 10.1371/journal.pone.0182907\nCC BY: http://creativecommons.org/licenses/by/4.0/\nSelection: Abstract and introduction. Layout adapted; teaching notes added by PPB. No endorsement implied.",
+      "side": "left",
+      "tag": "gray"
+    },
+    {
+      "id": "sleep-1",
+      "start": 308,
+      "end": 377,
+      "quote": "However, the effect of sleep on recognition memory is more equivocal.",
+      "kind": "vocabulary",
+      "level": "essay",
+      "label": "Contrast and gap",
+      "body": "“However” distinguishes recognition from recall. “Equivocal” means the evidence is ambiguous, not that there is definitely no effect.",
+      "side": "right",
+      "tag": "blue"
+    },
+    {
+      "id": "sleep-2",
+      "start": 741,
+      "end": 769,
+      "quote": "a 12-hour retention interval",
+      "kind": "structure",
+      "level": "essay",
+      "label": "Operational definition",
+      "body": "The authors specify when memory was measured. A precise procedure lets readers evaluate what the experiment actually tested.",
+      "side": "left",
+      "tag": "green"
+    },
+    {
+      "id": "sleep-3",
+      "start": 849,
+      "end": 870,
+      "quote": "target-present lineup",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Two different outcomes",
+      "body": "The two experiments test correct identification and false identification separately. Avoid combining these outcomes into a single claim about better memory.",
+      "side": "right",
+      "tag": "purple"
+    },
+    {
+      "id": "sleep-4",
+      "start": 1076,
+      "end": 1120,
+      "quote": "but had no effect on correct identifications",
+      "kind": "structure",
+      "level": "essay",
+      "label": "Qualified conclusion",
+      "body": "The contrast limits the positive result. A useful model for reporting mixed findings without overstating them.",
+      "side": "left",
+      "tag": "orange"
+    }
+  ]
+}

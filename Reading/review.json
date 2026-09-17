@@ -1,0 +1,74 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "ppb-open-review",
+    "title": "Ten Simple Rules for Writing a Literature Review",
+    "text": "## Rule 3: Take Notes While Reading\n\nIf you read the papers first, and only afterwards start writing the review, you will need a very good memory to remember who wrote what, and what your impressions and associations were while reading each single paper. My advice is, while reading, to start writing down interesting pieces of information, insights about how to organize the review, and thoughts on what to write. This way, by the time you have read the literature you selected, you will already have a rough draft of the review.\n\nOf course, this draft will still need much rewriting, restructuring, and rethinking to obtain a text with a coherent argument [11], but you will have avoided the danger posed by staring at a blank document. Be careful when taking notes to use quotation marks if you are provisionally copying verbatim from the literature. It is advisable then to reformulate such quotes with your own words in the final draft. It is important to be careful in noting the references already at this stage, so as to avoid misattributions. Using referencing software from the very beginning of your endeavour will save you time.\n\n## Rule 6: Be Critical and Consistent\n\nReviewing the literature is not stamp collecting. A good review does not just summarize the literature, but discusses it critically, identifies methodological problems, and points out research gaps [19]. After having read a review of the literature, a reader should have a rough idea of:\n\nIt is challenging to achieve a successful review on all these fronts. A solution can be to involve a set of complementary coauthors: some people are excellent at mapping what has been achieved, some others are very good at identifying dark clouds on the horizon, and some have instead a knack at predicting where solutions are going to come from. If your journal club has exactly this sort of team, then you should definitely write a review of the literature! In addition to critical thinking, a literature review needs consistency, for example in the choice of passive vs. active voice and present vs. past tense.",
+    "taskType": "discursive",
+    "prompt": "Marco Pautasso (2013) · PLOS\nRules 3 and 6. Selected passages, not the complete paper.\nhttps://doi.org/10.1371/journal.pcbi.1003149\nCC BY · https://creativecommons.org/licenses/by/\nOriginal wording retained; paragraph spacing and Markdown headings adapted. PPB margin notes are editorial teaching commentary, not statements by the authors. Reference numbers refer to the original paper.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "review-0",
+      "start": 37,
+      "end": 117,
+      "quote": "If you read the papers first, and only afterwards start writing the review, you ",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Source & reuse",
+      "body": "Marco Pautasso (2013). Ten Simple Rules for Writing a Literature Review. DOI: 10.1371/journal.pcbi.1003149\nCC BY: https://creativecommons.org/licenses/by/\nSelection: Rules 3 and 6. Layout adapted; teaching notes added by PPB. No endorsement implied.",
+      "side": "left",
+      "tag": "gray"
+    },
+    {
+      "id": "review-1",
+      "start": 269,
+      "end": 305,
+      "quote": "while reading, to start writing down",
+      "kind": "structure",
+      "level": "essay",
+      "label": "Reading into writing",
+      "body": "The recommendation joins note-taking and reading. Record both the source claim and your response so that a later draft is not a list of disconnected summaries.",
+      "side": "right",
+      "tag": "blue"
+    },
+    {
+      "id": "review-2",
+      "start": 771,
+      "end": 790,
+      "quote": "use quotation marks",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Attribution",
+      "body": "Preserve the boundary between a source’s exact wording and your paraphrase. Keep a citation even when the final wording is your own.",
+      "side": "left",
+      "tag": "green"
+    },
+    {
+      "id": "review-3",
+      "start": 1181,
+      "end": 1230,
+      "quote": "Reviewing the literature is not stamp collecting.",
+      "kind": "structure",
+      "level": "essay",
+      "label": "A memorable contrast",
+      "body": "The analogy rejects collecting references as an end in itself. The following sentence explains the analytical work a review must do.",
+      "side": "right",
+      "tag": "purple"
+    },
+    {
+      "id": "review-4",
+      "start": 1314,
+      "end": 1348,
+      "quote": "identifies methodological problems",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Critical synthesis",
+      "body": "Compare how studies reached their conclusions, not only what they concluded. A method can limit how far a finding generalises.",
+      "side": "left",
+      "tag": "orange"
+    }
+  ]
+}

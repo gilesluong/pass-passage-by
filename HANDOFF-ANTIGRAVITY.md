@@ -1,3 +1,13 @@
+# Current: Pass Passage By! 1.8.0 (12) — 17 September 2026
+
+Prepared update: horizontal page lock, live full-text search, direct task editing, tighter Discover cards and four open-license PLOS reading selections. See design-qa.md for verified behavior and visual QA limits. Release/installation verification is recorded below after publishing.
+
+Reading/assemble.py regenerates JSON offline from checked-in official PLOS XML. Reading/LICENSES.md preserves authors, DOI, license and selection details. Review article license is CC BY with no version specified in the source; do not invent a version. User text, library, bundle ID and data paths remain unchanged. Do not manually overwrite the installed app; use Sparkle only. No Llama or Apple Intelligence downloads on hotspot.
+
+Both test suites passed. Live native search for interpolated returned the correct full-text result. Full-size screenshot capture was unavailable (Stage Manager thumbnail); do not describe the entire UI as visually certified. All four readings contain five validated notes each. Existing IELTS samples are unchanged.
+
+---
+
 # Current: Pass Passage By! 1.7.0 (11) — 17 September 2026
 
 Release v1.7.0 is live at https://github.com/gilesluong/pass-passage-by/releases/tag/v1.7.0. On 17 September the user changed the canonical repository to PUBLIC. Both the canonical and legacy redirected feed URLs return HTTP 200 without authentication. The installed app updated through Sparkle from 1.6.0 (9) to 1.7.0 (11), relaunched successfully, passed codesign --verify --deep --strict, and its executable SHA-256 matches the release build. No manual overwrite or separate public repository was needed. The installed SUFeedURL now points to the canonical repository. This supersedes the previous private-feed blocker and all historical release/installation instructions below.

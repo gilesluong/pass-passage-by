@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1d3 20150301//EN" "http://jats.nlm.nih.gov/publishing/1.1d3/JATS-journalpublishing1.dtd">
+<article article-type="research-article" dtd-version="1.1d3" xml:lang="en" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">
+<front>
+<journal-meta>
+<journal-id journal-id-type="nlm-ta">PLoS ONE</journal-id>
+<journal-id journal-id-type="publisher-id">plos</journal-id>
+<journal-id journal-id-type="pmc">plosone</journal-id>
+<journal-title-group>
+<journal-title>PLOS ONE</journal-title>
+</journal-title-group>
+<issn pub-type="epub">1932-6203</issn>
+<publisher>
+<publisher-name>Public Library of Science</publisher-name>
+<publisher-loc>San Francisco, CA USA</publisher-loc>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="doi">10.1371/journal.pone.0206250</article-id>
+<article-id pub-id-type="publisher-id">PONE-D-18-19369</article-id>
+<article-categories>
+<subj-group subj-group-type="heading">
+<subject>Research Article</subject>
+</subj-group>
+<subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Learning</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject><subj-group><subject>Human learning</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject><subj-group><subject>Human learning</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Learning</subject><subj-group><subject>Human learning</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Learning</subject><subj-group><subject>Human learning</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Economics</subject><subj-group><subject>Labor economics</subject><subj-group><subject>Employment</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>People and places</subject><subj-group><subject>Population groupings</subject><subj-group><subject>Professions</subject><subj-group><subject>Instructors</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Sociology</subject><subj-group><subject>Education</subject><subj-group><subject>Lectures</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject><subj-group><subject>Long term memory</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject><subj-group><subject>Long term memory</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject><subj-group><subject>Memory recall</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject><subj-group><subject>Memory recall</subject></subj-group></subj-group></subj-group></subj-group></subj-group></article-categories>
+<title-group>
+<article-title>Enhancing workplace digital learning by use of the science of learning</article-title>
+<alt-title alt-title-type="running-head">Workplace digital learning</alt-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" corresp="yes" xlink:type="simple">
+<contrib-id authenticated="true" contrib-id-type="orcid">http://orcid.org/0000-0001-7289-9447</contrib-id>
+<name name-style="western">
+<surname>Okano</surname>
+<given-names>Kana</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Conceptualization</role>
+<role content-type="http://credit.casrai.org/">Data curation</role>
+<role content-type="http://credit.casrai.org/">Formal analysis</role>
+<role content-type="http://credit.casrai.org/">Investigation</role>
+<role content-type="http://credit.casrai.org/">Methodology</role>
+<role content-type="http://credit.casrai.org/">Project administration</role>
+<role content-type="http://credit.casrai.org/">Supervision</role>
+<role content-type="http://credit.casrai.org/">Validation</role>
+<role content-type="http://credit.casrai.org/">Visualization</role>
+<role content-type="http://credit.casrai.org/">Writing – original draft</role>
+<xref ref-type="aff" rid="aff001"><sup>1</sup></xref>
+<xref ref-type="aff" rid="aff002"><sup>2</sup></xref>
+<xref ref-type="aff" rid="aff003"><sup>3</sup></xref>
+<xref ref-type="corresp" rid="cor001">*</xref>
+</contrib>
+<contrib contrib-type="author" xlink:type="simple">
+<name name-style="western">
+<surname>Kaczmarzyk</surname>
+<given-names>Jakub R.</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Data curation</role>
+<role content-type="http://credit.casrai.org/">Formal analysis</role>
+<role content-type="http://credit.casrai.org/">Writing – review &amp; editing</role>
+<xref ref-type="aff" rid="aff001"><sup>1</sup></xref>
+<xref ref-type="aff" rid="aff002"><sup>2</sup></xref>
+<xref ref-type="aff" rid="aff003"><sup>3</sup></xref>
+</contrib>
+<contrib contrib-type="author" xlink:type="simple">
+<name name-style="western">
+<surname>Gabrieli</surname>
+<given-names>John D. E.</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Conceptualization</role>
+<role content-type="http://credit.casrai.org/">Funding acquisition</role>
+<role content-type="http://credit.casrai.org/">Methodology</role>
+<role content-type="http://credit.casrai.org/">Supervision</role>
+<role content-type="http://credit.casrai.org/">Validation</role>
+<role content-type="http://credit.casrai.org/">Writing – review &amp; editing</role>
+<xref ref-type="aff" rid="aff001"><sup>1</sup></xref>
+<xref ref-type="aff" rid="aff002"><sup>2</sup></xref>
+<xref ref-type="aff" rid="aff003"><sup>3</sup></xref>
+</contrib>
+</contrib-group>
+<aff id="aff001"><label>1</label> <addr-line>MIT Integrated Learning Initiative, Massachusetts Institute of Technology, Cambridge, MA, United States of America</addr-line></aff>
+<aff id="aff002"><label>2</label> <addr-line>Department of Brain and Cognitive Sciences, Massachusetts Institute of Technology, Cambridge, MA, United States of America</addr-line></aff>
+<aff id="aff003"><label>3</label> <addr-line>McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA, United States of America</addr-line></aff>
+<contrib-group>
+<contrib contrib-type="editor" xlink:type="simple">
+<name name-style="western">
+<surname>Ito</surname>
+<given-names>Etsuro</given-names>
+</name>
+<role>Editor</role>
+<xref ref-type="aff" rid="edit1"/>
+</contrib>
+</contrib-group>
+<aff id="edit1"><addr-line>Waseda University, JAPAN</addr-line></aff>
+<author-notes>
+<fn fn-type="conflict" id="coi001">
+<p>Authors received funding from Accenture PLC to conduct this research. Accenture PLC helped recruit employee volunteers at their offices but did not have any role in the study design, data collection, analysis, decision to publish, or preparation of the manuscript. Accenture PLC has never served on the editorial board of PLOS ONE and has never sat on a committee for an organization that may benefit from publication of this manuscript. This does not alter our adherence to PLOS ONE policies on sharing data.</p>
+</fn>
+<corresp id="cor001">* E-mail: <email xlink:type="simple">kokano@mit.edu</email></corresp>
+</author-notes>
+<pub-date pub-type="epub">
+<day>24</day>
+<month>10</month>
+<year>2018</year>
+</pub-date>
+<pub-date pub-type="collection">
+<year>2018</year>
+</pub-date>
+<volume>13</volume>
+<issue>10</issue>
+<elocation-id>e0206250</elocation-id>
+<history>
+<date date-type="received">
+<day>29</day>
+<month>6</month>
+<year>2018</year>
+</date>
+<date date-type="accepted">
+<day>9</day>
+<month>10</month>
+<year>2018</year>
+</date>
+</history>
+<permissions>
+<copyright-year>2018</copyright-year>
+<copyright-holder>Okano et al</copyright-holder>
+<license xlink:href="http://creativecommons.org/licenses/by/4.0/" xlink:type="simple">
+<license-p>This is an open access article distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/4.0/" xlink:type="simple">Creative Commons Attribution License</ext-link>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</license-p>
+</license>
+</permissions>
+<self-uri content-type="pdf" xlink:href="info:doi/10.1371/journal.pone.0206250"/>
+<abstract>
+<p>Digital learning is becoming the most commonly used portal for workplace learning, but its effectiveness is not clearly understood. We studied 99 employees on-site in a large company as they watched an already used and required training video. Employees were randomly assigned to one of four conditions: (1) a baseline condition of watching the video as in current practice; (2) a spontaneous discussion condition in which participants discussed the video with colleagues immediately after the video without any guidelines; (3) a structured discussion condition in which participants discussed the video with colleagues immediately after the video with an instructor guiding discussion topics; and (4) a testing condition in which test questions were interpolated throughout the video. Memory for the content of the video was measured on a recognition memory test completed 20–35 hours after watching the video. Employees who were in the interpolated-testing or structured discussion conditions had significantly superior memory for the video content (26% and 25% better respectively) relative to typical video viewing; spontaneous discussion did not enhance memory for content. These findings demonstrate that interpolated testing and structured discussion enhance information retention in the workplace and point to how learning science may accelerate workplace learning more generally.</p>
+</abstract>
+<funding-group>
+<funding-statement>Authors received funding from Accenture PLC to conduct this research. The funder helped recruit employee volunteers at their offices but had no other role in the study design, data collection, analysis, decision to publish, or preparation of the manuscript.</funding-statement>
+</funding-group>
+<counts>
+<fig-count count="2"/>
+<table-count count="1"/>
+<page-count count="10"/>
+</counts>
+<custom-meta-group>
+<custom-meta id="data-availability">
+<meta-name>Data Availability</meta-name>
+<meta-value>Data may be located at the following URL: (<ext-link ext-link-type="uri" xlink:href="https://github.com/kokano/Workplace-Digital-Learning/blob/master/WorkplaceDigitalLearning_Data.csv" xlink:type="simple">https://github.com/kokano/Workplace-Digital-Learning/blob/master/WorkplaceDigitalLearning_Data.csv</ext-link>).</meta-value>
+</custom-meta>
+</custom-meta-group>
+</article-meta>
+</front>
+<body>
+<sec id="sec001" sec-type="intro">
+<title>Introduction</title>
+<p>Organizations invest substantial resources in learning and development to enhance their human capital. In 2015, US based companies spent $1,252 on average per employee for direct learning and development expenditures, making it a 180 billion dollar annual business in the US alone and growing every year [<xref ref-type="bibr" rid="pone.0206250.ref001">1</xref>]. The annual increases in investment in learning and development is also matched by annual increases in employees’ average hours spent on training.</p>
+<p>Instructor-led live classroom delivery continues to be the most popular method of formal workplace learning, occupying 49% of all learning content [<xref ref-type="bibr" rid="pone.0206250.ref001">1</xref>]. However, with globalization and technological advances, companies are shifting to a more cost-effective content delivery method. In 2015, 41% of all learning content was delivered using technology—quickly approaching the amount of traditional classroom delivery.</p>
+<p>Despite increasing investment of time and resources on creating and curating digital learning content, it is unclear how much of the learning done in this space is retained and carried over to impact work. In a corporate environment where fiscal success (return on investment) is perhaps the most important metric, there is surprisingly little scientific evidence about how well digital learning enhances performance. An initial step in such a scientific analysis is measuring how well the content of digital learning is remembered, because what is forgotten cannot be applied to work performance. Furthermore, such a scientific analysis could include measurement of whether specific methods could be applied to enhance long-term memory for the content of the digital courseware.</p>
+<p>Our goal was to scientifically investigate how to improve the effectiveness of workplace digital learning by measuring the impact of two science-of-learning techniques thought to enhance information retention that can be easily applied in the workplace learning environment. Collaborating with a large corporation, we examined information retention in employees for a regularly used training video on development and operation. Employees were randomly assigned to one of four training conditions –1. a baseline conditioning with watching the video as usual, 2. Spontaneous peer discussion, 3. Structured peer discussion, or 4. Interpolated testing. The latter three conditions driven from the science-of-learning and are described in detail below. Then, 20–30 hours later, returning employees were administered a test to measure how much of the video content was remembered and retained in long-term memory. The critical question was whether any of the science-of-learning manipulations would enhance information retention relative to typical practices.</p>
+<sec id="sec002">
+<title>Peer discussion–Spontaneous or structured</title>
+<p>One science-of-learning technique that can improve learning outcome is peer discussion. Research in higher education suggests that peer discussion fosters deep and lasting learning outcome [<xref ref-type="bibr" rid="pone.0206250.ref002">2</xref>]. This is thought to emerge through active engagement with the content being learned, which allows learners to discuss and construct their own understanding of the material [<xref ref-type="bibr" rid="pone.0206250.ref003">3</xref>–<xref ref-type="bibr" rid="pone.0206250.ref006">6</xref>].</p>
+<p>Peer discussion is traditionally carried out as spontaneous discussion where students discuss relevant topics without any formal structure or guidance. One such technique was introduced by Mazur [<xref ref-type="bibr" rid="pone.0206250.ref006">6</xref>] where students in a traditional classroom were asked content questions regarding the lecture. After answering these questions, but before given the correct answer, students were prompted to discuss how they came to their answers with peers sitting nearby. When the same question was asked again after the spontaneous discussion, accurate memory for the content increased. These results have been replicated in multiple studies [<xref ref-type="bibr" rid="pone.0206250.ref004">4</xref>,<xref ref-type="bibr" rid="pone.0206250.ref007">7</xref>], showing the effectiveness of spontaneous peer discussion.</p>
+<p>Extending this research, some have found that peer discussion can further enhance learning if accompanied by instructors’ cues (structured discussion) [<xref ref-type="bibr" rid="pone.0206250.ref008">8</xref>,<xref ref-type="bibr" rid="pone.0206250.ref009">9</xref>], rather than having students engage in spontaneous discussions. Although most of these studies involve problem-solving tasks in addition to peer discussions, the peer discussions themselves may encourage active engagement that enhances learning.</p>
+<p>The idea that discussion is beneficial in learning is represented in flipped classrooms, in which students view video lectures independently and asynchronously and then engage in collaborative learning through active problem solving or discussions during traditional classroom time. The very concept of flipped learning stems from the idea that classroom time is better spent actively discussing the content, rather than passively listening to a lecture.</p>
+<p>Research in flipped learning has shown that students’ perception of learning effectiveness is highly positive, and more importantly, students show better performance as evaluated with examinations. This has been observed in all levels of education from high school [<xref ref-type="bibr" rid="pone.0206250.ref010">10</xref>,<xref ref-type="bibr" rid="pone.0206250.ref011">11</xref>], to higher education [<xref ref-type="bibr" rid="pone.0206250.ref012">12</xref>,<xref ref-type="bibr" rid="pone.0206250.ref013">13</xref>], to professional education[<xref ref-type="bibr" rid="pone.0206250.ref014">14</xref>,<xref ref-type="bibr" rid="pone.0206250.ref015">15</xref>].</p>
+</sec>
+<sec id="sec003">
+<title>Interpolated testing</title>
+<p>Historically, quizzes and tests have been frequently used to assess learning, but rarely used to enhance learning itself. Numerous studies have shown that any attempt to retrieve information by testing will increase the likelihood of remembering that information in the long term [<xref ref-type="bibr" rid="pone.0206250.ref016">16</xref>–<xref ref-type="bibr" rid="pone.0206250.ref019">19</xref>]. This phenomenon is known as the “testing effect.” The facilitative effect of testing on learning is thought to be a result of the act of retrieval strengthening the link between cues and targets [<xref ref-type="bibr" rid="pone.0206250.ref020">20</xref>]. This link is unique to testing and cannot be gained through other forms of study as research has shown that memory gained through testing outlasts those gained through repeated study[<xref ref-type="bibr" rid="pone.0206250.ref018">18</xref>].</p>
+<p>Interpolated testing is a learning technique that quizzes the learner intermittently during the learning process. Aside from the benefits of greater long-term retention, interpolated testing can also reduce the learner’s instances of mind wandering away from the material and help the learner stay on task [<xref ref-type="bibr" rid="pone.0206250.ref021">21</xref>,<xref ref-type="bibr" rid="pone.0206250.ref022">22</xref>]. Although interpolated testing has been studied in laboratories using lists of words [<xref ref-type="bibr" rid="pone.0206250.ref023">23</xref>,<xref ref-type="bibr" rid="pone.0206250.ref024">24</xref>] and online university lectures [<xref ref-type="bibr" rid="pone.0206250.ref022">22</xref>,<xref ref-type="bibr" rid="pone.0206250.ref025">25</xref>], it has never been studied in a workplace setting.</p>
+<p>Our aim was to examine science-of-learning techniques that can be easily supplemented to existing workplace digital courses and compare their effectiveness relative to the current practice of simply watching the video. We hypothesized that both interpolated testing and peer discussion would enhance information retention compared to baseline. Based on previous research, we also hypothesized that peer discussion would be more effective when it is structured rather than spontaneous.</p>
+</sec>
+</sec>
+<sec id="sec004" sec-type="materials|methods">
+<title>Materials and methods</title>
+<sec id="sec005">
+<title>Participants</title>
+<p>One hundred fifty-three randomly selected employee volunteers (81 females) from Accenture PLC (Accenture) participated in the two-day experiment. Employees were informed of the study and gave written consent obtained in accordance with guidelines of the 1964 Declaration of Helsinki and approved by Massachusetts Institute of Technology (MIT) Committee on the Use of Humans as Experimental Subjects. Participants in this study were either part of a 1~2 week corporate training session which took place in St. Charles, Illinois, or taking part in an Accenture organized short program offered at MIT. Accenture is a leading global professional services company with over 401,000 people serving clients in more than 120 countries and operates in over 200 cities across 120 countries.</p>
+<p>Fifty-four participants were excluded from analysis because they did not complete the second day of assessment. Due to company policy, we were only able to ask which age group they belonged in, rather than their actual age. The demographics of the 99 participants (45 females) who completed the two-day experiment are detailed in <xref ref-type="table" rid="pone.0206250.t001">Table 1</xref>. The large percentage of attrition (35%) was likely due in part to participants being actual employees in a workplace environment who were busy with workplace tasks and unable to return for the second day of assessments.</p>
+<table-wrap id="pone.0206250.t001" position="float">
+<object-id pub-id-type="doi">10.1371/journal.pone.0206250.t001</object-id>
+<label>Table 1</label> <caption><title>Participants in the experiment.</title></caption>
+<alternatives>
+<graphic id="pone.0206250.t001g" mimetype="image" position="float" xlink:href="info:doi/10.1371/journal.pone.0206250.t001" xlink:type="simple"/>
+<table>
+<colgroup>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+</colgroup>
+<thead>
+<tr>
+<th align="center">Age Range</th>
+<th align="center">Number of Females</th>
+<th align="center">Number of Males</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">21–25</td>
+<td align="center">19</td>
+<td align="center">15</td>
+<td align="center">34</td>
+</tr>
+<tr>
+<td align="center">26–30</td>
+<td align="center">19</td>
+<td align="center">26</td>
+<td align="center">45</td>
+</tr>
+<tr>
+<td align="center">31–35</td>
+<td align="center">3</td>
+<td align="center">10</td>
+<td align="center">13</td>
+</tr>
+<tr>
+<td align="center">36–40</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">41–45</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center">46–50</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">56–60</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="t001fn001"><p>Age range and gender of all participants who completed the two day experiment.</p></fn>
+</table-wrap-foot>
+</table-wrap>
+</sec>
+<sec id="sec006">
+<title>Procedure</title>
+<p>On Day 1 of the study, participants were asked to watch and learn an eight-minute 20-second introductory lecture on development and operations (DevOps), a practice that emphasizes the effective delivery of information-technology (IT) products through active collaboration of software developers and other IT professionals (see transcript of entire video made available at <ext-link ext-link-type="uri" xlink:href="https://github.com/kokano/Workplace-Digital-Learning/Video_Transcript.docx" xlink:type="simple">https://github.com/kokano/Workplace-Digital-Learning/Video_Transcript.docx</ext-link>) This video has been used regularly for training purposes within the Accenture organization. Volunteers were randomly assigned to one of four conditions: Video, Spontaneous Discussion, Structured Discussion, or Interpolated Testing. Although viewing of the video was a requirement of the workplace, returning for testing of what had been retained in memory was optional. Of the 54 participants who did not return for Day 2 of the task, 22 were in the Video Group, 13 in the Spontaneous Discussion Group, 6 in the Structured Discussion Group, and 13 in the Interpolated Testing Group. The number of people who dropped out of the study did not differ by condition, <italic>X</italic><sup>2</sup> (3, N = 154) = 4.30, <italic>p</italic> = 0.23.</p>
+<p>The Video Group (n = 28, Female = 11) simply watched the video in the typical manner to measure the effectiveness of current practice. The Spontaneous Discussion Group (n = 20, Female = 9) was informed ahead of time that they would be discussing the content with two to four other colleagues immediately after watching the video. No further instructions as to what should be discussed were stipulated and the discussion content was not explicitly monitored. However, participants largely stayed on topic and discussions lasted no longer than 10 minutes. Those who veered off topic were discussing matters related to but not directly pertaining to the video content. Everyone in the group participated in these discussions. The Structured Discussion Group (n = 19, Female = 11) engaged in a structured discussion with an experimenter who followed topics that were pertinent to the main points made in the video. The only cues provided by the experimenter were: 1. What do you think were the key points of the video? 2. What do you think are the benefits of DevOps? 3. How do those help make DevOps effective? (Follow up question to 2.) Everyone participated in these discussions and lasted no longer than 10 minutes. The Interpolated Testing Group (n = 33, Female = 16) had multiple-choice questions interspersed throughout the video approximately every minute asking content questions regarding the part of the video they had just viewed. These questions were self-timed (i.e., without a time limit). Once participants selected their answer, a green check mark appeared next to the correct answer giving them immediate feedback. The screen that displayed the correct answer stayed on the screen until the learner pressed a button to move on to the next section of the video. Almost all of the participants were novices in this topic and only two reported as having some exposure to the topic in the past. These two participants were in the Video Group and Interpolated Testing Group respectively.</p>
+<p>Next day, approximately 20–35 hours later, (Day 2), participants completed an online post-test that tested their memory (knowledge) on the content of the video. The reason we waited a day to conduct the post-test stems from the research on the Ebbinghaus forgetting curve [<xref ref-type="bibr" rid="pone.0206250.ref026">26</xref>–<xref ref-type="bibr" rid="pone.0206250.ref028">28</xref>]. The original research as well as repeated replications have indicated that memory declines rapidly in the first 9 hours and quickly plateauing thereafter. Therefore, recall test 1 day later is a reliable measure of what people will remember up to a month in the future. Because most information acquired from work related videos are not used immediately after viewing, we elected to test people’s acquisition of video information one day later.</p>
+<p>The post-test included three free-form questions and 16 multiple-choice questions. Six of the 16 multiple-choice questions were presented to the Interpolated Testing Group on the first day, but three of these six questions were asked in a different format than in the interpolated testing (see <xref ref-type="fig" rid="pone.0206250.g001">Fig 1</xref> for example). The remaining 10 multiple-choice questions and all three free-form questions were novel to all participants. There was no time limit on the post-test.</p>
+<fig id="pone.0206250.g001" position="float">
+<object-id pub-id-type="doi">10.1371/journal.pone.0206250.g001</object-id>
+<label>Fig 1</label>
+<caption>
+<title>Example questions.</title>
+<p><bold>a:</bold> Example interpolated question during the video. <bold>b:</bold> Example post-test question for the same question representing a different format of questioning.</p>
+</caption>
+<graphic mimetype="image" position="float" xlink:href="info:doi/10.1371/journal.pone.0206250.g001" xlink:type="simple"/>
+</fig>
+</sec>
+<sec id="sec007">
+<title>Scoring</title>
+<p>The 10 multiple-choice items that had only one correct answer were awarded one point per item. For the six multiple choice questions that asked learners to “select all that apply”, one point was awarded to the item only if learners had selected all of the correct answers. No points were awarded if they had lacked any choices or if they had selected any incorrect choices. For short-answer questions, a response was coded as correct and given one point if it included key phrases.</p>
+</sec>
+</sec>
+<sec id="sec008" sec-type="results">
+<title>Results</title>
+<sec id="sec009">
+<title>Post-test</title>
+<p>In the post-test, the Video Group had a mean score of 55.45% (SD = 17.57%), the Spontaneous Discussion Group had a mean score of 56.84% (SD = 17.96%), the Structured Discussion Group had a mean score of 69.53% (SD = 17.15%), and the Interpolated Testing Group had a mean score of 69.70% (SD = 16.85) (<xref ref-type="fig" rid="pone.0206250.g002">Fig 2</xref>). For participants in the Interpolated Testing Group, accuracy during interpolated testing significantly correlated and positively with post-test scores on the same items (r (33) = 0.36, <italic>p</italic> = 0.04), and correlations with items that were not tested also trended towards significance (r (33) = 0.30, <italic>p</italic> = 0.09).</p>
+<fig id="pone.0206250.g002" position="float">
+<object-id pub-id-type="doi">10.1371/journal.pone.0206250.g002</object-id>
+<label>Fig 2</label>
+<caption>
+<title>Post-test accuracy by condition.</title>
+<p>Average post-test performance (percentage correct) as a function of condition. Error bars represent standard errors of the mean.</p>
+</caption>
+<graphic mimetype="image" position="float" xlink:href="info:doi/10.1371/journal.pone.0206250.g002" xlink:type="simple"/>
+</fig>
+<p>We conducted an ANOVA using post-test scores as the dependent variable, Condition (Video/Spontaneous Discussion/Structured Discussion/Interpolated Testing) as the independent variable. The ANOVA revealed a significant main effect of Condition (F (3, 96) = 5.15, <italic>p</italic> = 0.002), such that the Interpolated Testing Group outperformed the Video (<italic>p</italic> = 0.01) and Spontaneous Discussion (p = 0.049) Groups as revealed by a Tukey HSD. The Structured Discussion Group also outperformed the Video Group (p = 0.036) but not the Spontaneous Discussion Groups (p = 0.108). Neither the Video and Spontaneous Discussion Groups nor the Structured Discussion and Interpolated Testing Groups differed reliably from one another (all <italic>ps</italic> &gt; 0.99). Restricting the analyses to questions that differed from the interpolated test questions resulted in similar outcomes revealing a significant main effect of Condition (F (3,96) = 4.15, <italic>p</italic> = 0.008).</p>
+</sec>
+</sec>
+<sec id="sec010" sec-type="conclusions">
+<title>Conclusions</title>
+<p>We report the first empirical evidence that interpolated testing and structured discussions enhance long-term retention of the content of video training in the workplace. Testing for knowledge retained 20–35 hours after study revealed that participants who participated in structured discussion after the video or who answered questions interspersed throughout the video remembered the content substantially more (25~26% respectively) than participants who simply watched the video as in current practice. Unstructured spontaneous discussion did not, however, enhance information retention significantly above baseline training as usual.</p>
+<p>The effect of interpolated testing on long-term retention of information from the training video is consistent with the experimental literature that intermittent testing is a powerful way to enhance on-line learning [<xref ref-type="bibr" rid="pone.0206250.ref021">21</xref>,<xref ref-type="bibr" rid="pone.0206250.ref025">25</xref>,<xref ref-type="bibr" rid="pone.0206250.ref029">29</xref>]. Indeed, digital learning provides an exceptional platform for interpolated testing because such testing can be carefully and consistently interpolated between content. The present study shows for the first time that interpolated testing enhances information retention not only in laboratory studies of arbitrary materials but also in the workplace with mandated content.</p>
+<p>A novel finding from this study was that structured discussion enhanced digital learning but that spontaneous discussion did not. The structured discussion followed key points of the video and gave cues to the learners on what was important to be learned, as well as a chance to retrieve relevant content immediately after watching the video. Thus, structured discussion offered a second, explicit, and reinforcing learning experience on the content. Enhanced learning following structured discussion is consistent with previous literature that found peer discussion to be more effective when accompanied by instructors’ cues [<xref ref-type="bibr" rid="pone.0206250.ref008">8</xref>,<xref ref-type="bibr" rid="pone.0206250.ref009">9</xref>].</p>
+<p>Although both interpolated testing and structured discussion significantly and similarly enhanced digital learning, interpolated testing has the advantage from the viewpoint of practical application. It costs less and is easier to implement with high fidelity than structured discussion, which costs more for paying an instructor, takes more time for employees, and may require a skilled instructor. Although it may have been hypothesized that the human interaction in structured discussion would engage social or cognitive mechanisms beyond those engaged by interpolated testing, in fact the automated interpolated testing was equally effective in enhancing learning beyond current workplace practice. This finding contrasts with other examples in which contingent human interaction enhances learning better than non-contingent teaching, such as viewing a video for children learning Mandarin Chinese [<xref ref-type="bibr" rid="pone.0206250.ref030">30</xref>].</p>
+<p>A major strength of this study was that it occurred in an actual workplace and participants were employees viewing a video that was already a workplace requirement (i.e., it had ecological validity). This strength, however, came with two major limitations. First, given the actual workplace use of the video, we could not include comparison conditions that would provide insights into the mechanisms of enhanced learning but were unlikely to enhance learning or could even depress learning below current workplace practice. For example, we could have included a condition with an unrelated interpolated task to demonstrate that the content of the interpolated tasks and had to be relevant to the video to enhance. This would, however, have been nonsensical and distracting to employees fulfilling a job requirement.</p>
+<p>Second, we had a high rate of attrition in regards to employees who did not complete the test of retention on the day following the video training. This limitation reflected a trade-off between the strength of conducting the study in a real work environment with actual employees and actual digital learning and the drawback that employees were busy with tasks in the workplace. High attrition may have reflected the optional nature of completing the delayed test, and the lack of a specific motivation (e.g., participant payment) to complete the test. It is interesting to note, however, that the two highest performing groups had the lowest dropout rates. This suggests that the Structured Discussion and Interpolated Testing enhanced employee motivation if willingness to complete the study was an index of motivation. Enhanced motivation would be an added benefit of the two conditions that enhanced learning, and consistent with the idea that motivation and learning are strongly intertwined. Furthermore, if dropout reflected low motivation to learn the material, then our study may have underestimated the learning benefits because the Video and Spontaneous Discussion Groups may have self-selected such that individuals with low motivation were underrepresented in the those two worse learning groups.</p>
+<p>In the present interpolated testing design, participants received feedback about whether each question was answered correctly or incorrectly, and for incorrect answers the correct answer was highlighted. Further, some of the final test questions overlapped with the interpolated test questions. Neither of these design aspects likely led to the learning gains from interpolated questions. First, many experiments have demonstrated that interpolated testing without corrective feedback enhances learning substantially more than other strategies for learning such as repeated study or other elaborative strategies [<xref ref-type="bibr" rid="pone.0206250.ref016">16</xref>,<xref ref-type="bibr" rid="pone.0206250.ref018">18</xref>,<xref ref-type="bibr" rid="pone.0206250.ref031">31</xref>]. Second, participants who received interpolated testing had about the same benefit for final test questions whether or not the final test questions matched the interpolated test questions. Indeed, the learning gains shown on the novel questions on the final test demonstrate that enhanced learning for all information, not just the intermittently tested information, occurred as a benefit of interpolated testing on only some of the information.</p>
+<p>In summary, we identified two effective interventions (interpolated testing and structured discussion) that can be easily applied to workplace digital learning without much change to existing videos. This adds to the existing literature pointing to the effective science-of-learning techniques that can be applied to workplace learning.</p>
+</sec>
+</body>
+<back>
+<ack>
+<p>We thank Julie C. Reed and Jennifer Stine for their essential contributions to the development and implementation of the experiment in this manuscript.</p>
+</ack>
+<ref-list>
+<title>References</title>
+<ref id="pone.0206250.ref001"><label>1</label><mixed-citation publication-type="other" xlink:type="simple">Ho, Maris; Jones M. 2015 State of the industry. 2015.</mixed-citation></ref>
+<ref id="pone.0206250.ref002"><label>2</label><mixed-citation publication-type="other" xlink:type="simple">de Corte E. New perspectives of learning and teaching in higher education. Goals and purposes of higher education in the 21st century. 1996.</mixed-citation></ref>
+<ref id="pone.0206250.ref003"><label>3</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Larson</surname> <given-names>BE</given-names></name>, <name name-style="western"><surname>Keiper</surname> <given-names>TA</given-names></name>. <article-title>Classroom discussion and threaded electronic discussion: Learning in two arenas</article-title>. <source>Contemp Issues Technol Teach Educ</source>. <year>2002</year>;</mixed-citation></ref>
+<ref id="pone.0206250.ref004"><label>4</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Smith</surname> <given-names>MK</given-names></name>, <name name-style="western"><surname>Wood</surname> <given-names>WB</given-names></name>, <name name-style="western"><surname>Adams</surname> <given-names>WK</given-names></name>, <name name-style="western"><surname>Wieman</surname> <given-names>C</given-names></name>, <name name-style="western"><surname>Knight</surname> <given-names>JK</given-names></name>, <name name-style="western"><surname>Guild</surname> <given-names>N</given-names></name>, <etal>et al</etal>. <article-title>Why peer discussion improves student performance on in-class concept questions</article-title>. <source>Science</source>. American Association for the Advancement of Science; <year>2009</year>;<volume>323</volume>: <fpage>122</fpage>–<lpage>4</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.1165919" xlink:type="simple">10.1126/science.1165919</ext-link></comment> <object-id pub-id-type="pmid">19119232</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref005"><label>5</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Crouch</surname> <given-names>CH</given-names></name>, <name name-style="western"><surname>Mazur</surname> <given-names>E</given-names></name>. <article-title>Peer Instruction: Ten years of experience and results</article-title>. <source>Am J Phys</source>. American Association of Physics Teachers; <year>2001</year>;<volume>69</volume>: <fpage>970</fpage>–<lpage>977</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1119/1.1374249" xlink:type="simple">10.1119/1.1374249</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref006"><label>6</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Mazur</surname> <given-names>E.</given-names></name> <article-title>Peer instruction: a user’s manual</article-title> [Internet]. <source>Prentice Hall</source>; <year>1997</year>. Available: <ext-link ext-link-type="uri" xlink:href="https://books.google.com/books/about/Peer_Instruction.html?id=tjcbAQAAIAAJ" xlink:type="simple">https://books.google.com/books/about/Peer_Instruction.html?id=tjcbAQAAIAAJ</ext-link></mixed-citation></ref>
+<ref id="pone.0206250.ref007"><label>7</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Knight</surname> <given-names>JK</given-names></name>, <name name-style="western"><surname>Wood</surname> <given-names>WB</given-names></name>. <article-title>Teaching more by lecturing less</article-title>. <source>Cell Biol Educ</source>. American Society for Cell Biology; <year>2005</year>;<volume>4</volume>: <fpage>298</fpage>–<lpage>310</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1187/05-06-0082" xlink:type="simple">10.1187/05-06-0082</ext-link></comment> <object-id pub-id-type="pmid">16341257</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref008"><label>8</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Knight</surname> <given-names>JK</given-names></name>, <name name-style="western"><surname>Wise</surname> <given-names>SB</given-names></name>, <name name-style="western"><surname>Southard</surname> <given-names>KM</given-names></name>. <article-title>Understanding clicker discussions: student reasoning and the impact of instructional cues</article-title>. <source>CBE Life Sci Educ</source>. American Society for Cell Biology; <year>2013</year>;<volume>12</volume>: <fpage>645</fpage>–<lpage>54</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1187/cbe.13-05-0090" xlink:type="simple">10.1187/cbe.13-05-0090</ext-link></comment> <object-id pub-id-type="pmid">24297291</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref009"><label>9</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Smith</surname> <given-names>MK</given-names></name>, <name name-style="western"><surname>Wood</surname> <given-names>WB</given-names></name>, <name name-style="western"><surname>Krauter</surname> <given-names>K</given-names></name>, <name name-style="western"><surname>Knight</surname> <given-names>JK</given-names></name>. <article-title>Combining Peer Discussion with Instructor Explanation Increases Student Learning from In-Class Concept Questions</article-title>. <name name-style="western"><surname>Ebert-May</surname> <given-names>D</given-names></name>, editor. <source>CBE—Life Sci Educ</source>. <year>2011</year>;<volume>10</volume>: <fpage>55</fpage>–<lpage>63</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1187/cbe.10-08-0101" xlink:type="simple">10.1187/cbe.10-08-0101</ext-link></comment> <object-id pub-id-type="pmid">21364100</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref010"><label>10</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Bergmann</surname> <given-names>J</given-names></name>, <name name-style="western"><surname>Samms</surname> <given-names>A</given-names></name>. <article-title>Remixing chemistry class: Two colorado teachers make vodcasts of their lectures to free up class time for hands-on activities</article-title>. <source>Learn Lead with Technol</source>. <year>2008</year>;</mixed-citation></ref>
+<ref id="pone.0206250.ref011"><label>11</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Bergmann</surname> <given-names>J</given-names></name>, <name name-style="western"><surname>Sams</surname> <given-names>A</given-names></name>. <article-title>Flip Your Classroom: Reach Every Student in Every Class Every Day</article-title> [Internet]. <year>2012</year>. Available: <ext-link ext-link-type="uri" xlink:href="http://www.iste.org/learn/publications/permissions-and-" xlink:type="simple">www.iste.org/learn/publications/permissions-and-</ext-link></mixed-citation></ref>
+<ref id="pone.0206250.ref012"><label>12</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Lage</surname> <given-names>MJ</given-names></name>, <name name-style="western"><surname>Platt</surname> <given-names>GJ</given-names></name>, <name name-style="western"><surname>Treglia</surname> <given-names>M</given-names></name>. <article-title>Inverting the Classroom: A Gateway to Creating an Inclusive Learning Environment</article-title>. <source>J Econ Educ</source>. Taylor &amp; Francis, Ltd.; <year>2000</year>;<volume>31</volume>: <fpage>30</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2307/1183338" xlink:type="simple">10.2307/1183338</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref013"><label>13</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Day</surname> <given-names>JA</given-names></name>, <name name-style="western"><surname>Foley</surname> <given-names>JD</given-names></name>. <article-title>Evaluating a Web Lecture Intervention in a Human–Computer Interaction Course</article-title>. <source>IEEE Trans Educ</source>. <year>2006</year>;<volume>49</volume>: <fpage>420</fpage>–<lpage>431</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1109/TE.2006.879792" xlink:type="simple">10.1109/TE.2006.879792</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref014"><label>14</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>McLaughlin</surname> <given-names>JE</given-names></name>, <name name-style="western"><surname>Roth</surname> <given-names>MT</given-names></name>, <name name-style="western"><surname>Glatt</surname> <given-names>DM</given-names></name>, <name name-style="western"><surname>Gharkholonarehe</surname> <given-names>N</given-names></name>, <name name-style="western"><surname>Davidson</surname> <given-names>CA</given-names></name>, <name name-style="western"><surname>Griffin</surname> <given-names>LM</given-names></name>, <etal>et al</etal>. <article-title>The Flipped Classroom</article-title>. <source>Acad Med</source>. <year>2014</year>;<volume>89</volume>: <fpage>236</fpage>–<lpage>243</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/ACM.0000000000000086" xlink:type="simple">10.1097/ACM.0000000000000086</ext-link></comment> <object-id pub-id-type="pmid">24270916</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref015"><label>15</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Mason</surname> <given-names>GS</given-names></name>, <name name-style="western"><surname>Shuman</surname> <given-names>TR</given-names></name>, <name name-style="western"><surname>Cook</surname> <given-names>KE</given-names></name>. <article-title>Comparing the Effectiveness of an Inverted Classroom to a Traditional Classroom in an Upper-Division Engineering Course</article-title>. <source>IEEE Trans Educ</source>. <year>2013</year>;<volume>56</volume>: <fpage>430</fpage>–<lpage>435</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1109/TE.2013.2249066" xlink:type="simple">10.1109/TE.2013.2249066</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref016"><label>16</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Abott</surname> <given-names>EE</given-names></name>. <article-title>On the analysis of the factor of recall in the learning process</article-title>. <source>Psychol Rev Monogr Suppl</source>. <year>1909</year>;<volume>11</volume>: <fpage>159</fpage>–<lpage>177</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1037/h0093018" xlink:type="simple">10.1037/h0093018</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref017"><label>17</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Carpenter</surname> <given-names>SK</given-names></name>, <name name-style="western"><surname>DeLosh</surname> <given-names>EL</given-names></name>. <article-title>Impoverished cue support enhances subsequent retention: support for the elaborative retrieval explanation of the testing effect</article-title>. <source>Mem Cognit</source>. <year>2006</year>;<volume>34</volume>: <fpage>268</fpage>–<lpage>76</lpage>. Available: <ext-link ext-link-type="uri" xlink:href="http://www.ncbi.nlm.nih.gov/pubmed/16752591" xlink:type="simple">http://www.ncbi.nlm.nih.gov/pubmed/16752591</ext-link> <object-id pub-id-type="pmid">16752591</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref018"><label>18</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Karpicke</surname> <given-names>JD</given-names></name>, <name name-style="western"><surname>Roediger</surname> <given-names>HL</given-names></name>. <article-title>The critical importance of retrieval for learning</article-title>. <source>Science</source>. American Association for the Advancement of Science; <year>2008</year>;<volume>319</volume>: <fpage>966</fpage>–<lpage>8</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.1152408" xlink:type="simple">10.1126/science.1152408</ext-link></comment> <object-id pub-id-type="pmid">18276894</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref019"><label>19</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Dunlosky</surname> <given-names>J</given-names></name>, <name name-style="western"><surname>Rawson</surname> <given-names>KA</given-names></name>, <name name-style="western"><surname>Marsh</surname> <given-names>EJ</given-names></name>, <name name-style="western"><surname>Nathan</surname> <given-names>MJ</given-names></name>, <name name-style="western"><surname>Willingham</surname> <given-names>DT</given-names></name>. <article-title>Improving Students’ Learning With Effective Learning Techniques: Promising Directions From Cognitive and Educational Psychology</article-title>. <source>Psychol Sci Public Interes</source>. <volume>14</volume>: <fpage>4</fpage>–<lpage>58</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/1529100612453266" xlink:type="simple">10.1177/1529100612453266</ext-link></comment> <object-id pub-id-type="pmid">26173288</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref020"><label>20</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Karpicke</surname> <given-names>JD</given-names></name>, <name name-style="western"><surname>Blunt</surname> <given-names>JR</given-names></name>. <article-title>Retrieval practice produces more learning than elaborative studying with concept mapping</article-title>. <source>Science</source>. American Association for the Advancement of Science; <year>2011</year>;<volume>331</volume>: <fpage>772</fpage>–<lpage>5</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.1199327" xlink:type="simple">10.1126/science.1199327</ext-link></comment> <object-id pub-id-type="pmid">21252317</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref021"><label>21</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Szpunar</surname> <given-names>KK</given-names></name>, <name name-style="western"><surname>Khan</surname> <given-names>NY</given-names></name>, <name name-style="western"><surname>Schacter</surname> <given-names>DL</given-names></name>. <article-title>Interpolated memory tests reduce mind wandering and improve learning of online lectures</article-title>. <source>Proc Natl Acad Sci U S A</source>. <year>2013</year>;<volume>110</volume>: <fpage>6313</fpage>–<lpage>7</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1073/pnas.1221764110" xlink:type="simple">10.1073/pnas.1221764110</ext-link></comment> <object-id pub-id-type="pmid">23576743</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref022"><label>22</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Szpunar</surname> <given-names>KK</given-names></name>, <name name-style="western"><surname>Moulton</surname> <given-names>ST</given-names></name>, <name name-style="western"><surname>Schacter</surname> <given-names>DL</given-names></name>. <article-title>Mind wandering and education: from the classroom to online learning</article-title>. <source>Front Psychol</source>. Frontiers Media SA; <year>2013</year>;<volume>4</volume>: <fpage>495</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fpsyg.2013.00495" xlink:type="simple">10.3389/fpsyg.2013.00495</ext-link></comment> <object-id pub-id-type="pmid">23914183</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref023"><label>23</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Rose</surname> <given-names>RJ</given-names></name>. <article-title>Degree of learning, interpolated tests, and rate of forgetting</article-title>. <source>Mem Cognit</source>. <year>1992</year>;<volume>20</volume>: <fpage>621</fpage>–<lpage>32</lpage>. Available: <ext-link ext-link-type="uri" xlink:href="http://www.ncbi.nlm.nih.gov/pubmed/1435265" xlink:type="simple">http://www.ncbi.nlm.nih.gov/pubmed/1435265</ext-link> <object-id pub-id-type="pmid">1435265</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref024"><label>24</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Bulevich</surname> <given-names>JB</given-names></name>, <name name-style="western"><surname>Thomas</surname> <given-names>AK</given-names></name>, <name name-style="western"><surname>Parsow</surname> <given-names>C</given-names></name>. <article-title>Filling in the gaps: using testing and restudy to promote associative learning</article-title>. <source>Memory</source>. <year>2016</year>;<volume>24</volume>: <fpage>1267</fpage>–<lpage>1277</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/09658211.2015.1098706" xlink:type="simple">10.1080/09658211.2015.1098706</ext-link></comment> <object-id pub-id-type="pmid">26492973</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref025"><label>25</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Jing</surname> <given-names>HG</given-names></name>, <name name-style="western"><surname>Szpunar</surname> <given-names>KK</given-names></name>, <name name-style="western"><surname>Schacter</surname> <given-names>DL</given-names></name>. <article-title>Interpolated testing influences focused attention and improves integration of information during a video-recorded lecture</article-title>. <source>J Exp Psychol Appl</source>. <year>2016</year>;<volume>22</volume>: <fpage>305</fpage>–<lpage>318</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1037/xap0000087" xlink:type="simple">10.1037/xap0000087</ext-link></comment> <object-id pub-id-type="pmid">27295464</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref026"><label>26</label><mixed-citation publication-type="other" xlink:type="simple">Ebbinghaus H. Urmanuskript “Ueber das Gedächtniss” [Internet]. Passavia Universitätsverlag; 1880. Available: <ext-link ext-link-type="uri" xlink:href="https://books.google.com/books/about/Urmanuskript_Ueber_das_Gedächtniss_1880.html?id=DMOGoAEACAAJ" xlink:type="simple">https://books.google.com/books/about/Urmanuskript_Ueber_das_Gedächtniss_1880.html?id=DMOGoAEACAAJ</ext-link></mixed-citation></ref>
+<ref id="pone.0206250.ref027"><label>27</label><mixed-citation publication-type="book" xlink:type="simple"><collab>Ebbinghaus</collab>. <source>Über das Gedächtnis</source>. <publisher-loc>Leipzig</publisher-loc>: <publisher-name>Dunker</publisher-name>; <year>1885</year>.</mixed-citation></ref>
+<ref id="pone.0206250.ref028"><label>28</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Murre</surname> <given-names>JMJ</given-names></name>, <name name-style="western"><surname>Dros</surname> <given-names>J</given-names></name>. <article-title>Replication and Analysis of Ebbinghaus’ Forgetting Curve</article-title>. <name name-style="western"><surname>Chialvo</surname> <given-names>DR</given-names></name>, editor. <source>PLoS One</source>. Public Library of Science; <year>2015</year>;<volume>10</volume>: <fpage>e0120644</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0120644" xlink:type="simple">10.1371/journal.pone.0120644</ext-link></comment> <object-id pub-id-type="pmid">26148023</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref029"><label>29</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Szpunar</surname> <given-names>KK</given-names></name>, <name name-style="western"><surname>Jing</surname> <given-names>HG</given-names></name>, <name name-style="western"><surname>Schacter</surname> <given-names>DL</given-names></name>. <article-title>Overcoming overconfidence in learning from video-recorded lectures: Implications of interpolated testing for online education</article-title>. <source>J Appl Res Mem Cogn</source>. Elsevier; <year>2014</year>;<volume>3</volume>: <fpage>161</fpage>–<lpage>164</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/J.JARMAC.2014.02.001" xlink:type="simple">10.1016/J.JARMAC.2014.02.001</ext-link></comment></mixed-citation></ref>
+<ref id="pone.0206250.ref030"><label>30</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Kuhl</surname> <given-names>PK</given-names></name>, <name name-style="western"><surname>Tsao</surname> <given-names>F-M</given-names></name>, <name name-style="western"><surname>Liu</surname> <given-names>H-M</given-names></name>. <article-title>Foreign-language experience in infancy: Effects of short-term exposure and social interaction on phonetic learning</article-title>. <source>Proc Natl Acad Sci</source>. <year>2003</year>;<volume>100</volume>: <fpage>9096</fpage>–<lpage>9101</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1073/pnas.1532872100" xlink:type="simple">10.1073/pnas.1532872100</ext-link></comment> <object-id pub-id-type="pmid">12861072</object-id></mixed-citation></ref>
+<ref id="pone.0206250.ref031"><label>31</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wheeler</surname> <given-names>M</given-names></name>, <name name-style="western"><surname>Ewers</surname> <given-names>M</given-names></name>, <name name-style="western"><surname>Buonanno</surname> <given-names>J</given-names></name>. <article-title>Different rates of forgetting following study versus test trials</article-title>. <source>Memory</source>. <year>2003</year>;<volume>11</volume>: <fpage>571</fpage>–<lpage>580</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/09658210244000414" xlink:type="simple">10.1080/09658210244000414</ext-link></comment> <object-id pub-id-type="pmid">14982124</object-id></mixed-citation></ref>
+</ref-list>
+</back>
+</article>

@@ -2224,6 +2224,12 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
             saveDraft()
         }
     }
+    func controlTextDidBeginEditing(_ notification:Notification) {
+        if notification.object as? NSTextField === taskPromptField {snapshot()}
+    }
+    func controlTextDidEndEditing(_ notification:Notification) {
+        if notification.object as? NSTextField === taskPromptField {saveDraft();refreshTaskBrief()}
+    }
     @objc func annotationChanged(){persistComment()}
     func popoverDidClose(_ notification:Notification) {
         guard notification.object as? NSPopover === commentPopover else{return}
@@ -2291,7 +2297,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         if briefHidden { briefHidden=false; refreshTaskBrief() }
         if let field = taskPromptField {
             window.makeFirstResponder(field)
-            field.currentEditor()?.selectedRange = NSRange(location: field.stringValue.count, length: 0)
+            field.currentEditor()?.selectedRange = NSRange(location: (field.stringValue as NSString).length, length: 0)
         } else {
             data.document.prompt = "WRITING TASK 2\nAllow about 40 minutes.\n\nEnter task prompt here..."
             refreshTaskBrief()
@@ -2307,7 +2313,8 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
     func refreshTaskBrief(){
         let prompt=data.document.prompt ?? ""
         let hasTask = !prompt.isEmpty || !(data.images ?? []).isEmpty
-        briefEditButton?.title=hasTask ? "Edit task":"Add task"
+        briefEditButton?.title="Add task"
+        briefEditButton?.isHidden = !prompt.isEmpty
         briefToggleButton?.isHidden = !hasTask
         briefToggleButton?.title=briefHidden ? "Show task":"Hide task"
         defer {scheduleAnnotationLayout()}
@@ -2327,6 +2334,8 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
             label.drawsBackground = false
             label.isBordered = false
             label.focusRingType = .none
+            label.toolTip="Click to edit the task. Changes save automatically."
+            label.setAccessibilityLabel("Task prompt — click to edit")
             label.delegate = self
             taskPromptField = label
             let height=(prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:NSFont.systemFont(ofSize:size)]).height+24
@@ -2460,7 +2469,7 @@ Ultimately, the value of automation lies not in passive delegation, but in activ
         intro.font = .systemFont(ofSize: 14)
         intro.textColor = .secondaryLabelColor
 
-        let f1 = createFeatureRow(symbol: "atom", title: "Academic Research & Source Previews", desc: "Recognize DOI links, preview peer-reviewed abstracts inline on hover, and anchor methodology directly to margins.")
+        let f1 = createFeatureRow(symbol: "atom", title: "Academic Research & Source Previews", desc: "Read credited open-access selections, follow DOI links, and discuss the evidence in the margins.")
         let f2 = createFeatureRow(symbol: "text.quote", title: "Argument Flow & Composition", desc: "Analyze thesis statements, concessions, and counter-arguments with bidirectional visual connector guidelines.")
         let f3 = createFeatureRow(symbol: "graduationcap", title: "IELTS Band 8.5+ Criteria", desc: "Evaluate Task 1 and Task 2 essays across Task Response, Coherence, Lexical Resource, and Grammar.")
         let f4 = createFeatureRow(symbol: "sparkles", title: "Antigravity AI Agent Kit (@PPB!)", desc: "Connect local agents to review essays, export skill packages, or import structured annotation JSONs.")

@@ -1,0 +1,74 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "ppb-open-workplace",
+    "title": "Enhancing workplace digital learning by use of the science of learning",
+    "text": "## Abstract\n\nDigital learning is becoming the most commonly used portal for workplace learning, but its effectiveness is not clearly understood. We studied 99 employees on-site in a large company as they watched an already used and required training video. Employees were randomly assigned to one of four conditions: (1) a baseline condition of watching the video as in current practice; (2) a spontaneous discussion condition in which participants discussed the video with colleagues immediately after the video without any guidelines; (3) a structured discussion condition in which participants discussed the video with colleagues immediately after the video with an instructor guiding discussion topics; and (4) a testing condition in which test questions were interpolated throughout the video. Memory for the content of the video was measured on a recognition memory test completed 20–35 hours after watching the video. Employees who were in the interpolated-testing or structured discussion conditions had significantly superior memory for the video content (26% and 25% better respectively) relative to typical video viewing; spontaneous discussion did not enhance memory for content. These findings demonstrate that interpolated testing and structured discussion enhance information retention in the workplace and point to how learning science may accelerate workplace learning more generally.\n\n## Introduction\n\nOrganizations invest substantial resources in learning and development to enhance their human capital. In 2015, US based companies spent $1,252 on average per employee for direct learning and development expenditures, making it a 180 billion dollar annual business in the US alone and growing every year [1]. The annual increases in investment in learning and development is also matched by annual increases in employees’ average hours spent on training.\n\nInstructor-led live classroom delivery continues to be the most popular method of formal workplace learning, occupying 49% of all learning content [1]. However, with globalization and technological advances, companies are shifting to a more cost-effective content delivery method. In 2015, 41% of all learning content was delivered using technology—quickly approaching the amount of traditional classroom delivery.\n\nDespite increasing investment of time and resources on creating and curating digital learning content, it is unclear how much of the learning done in this space is retained and carried over to impact work. In a corporate environment where fiscal success (return on investment) is perhaps the most important metric, there is surprisingly little scientific evidence about how well digital learning enhances performance. An initial step in such a scientific analysis is measuring how well the content of digital learning is remembered, because what is forgotten cannot be applied to work performance. Furthermore, such a scientific analysis could include measurement of whether specific methods could be applied to enhance long-term memory for the content of the digital courseware.\n\nOur goal was to scientifically investigate how to improve the effectiveness of workplace digital learning by measuring the impact of two science-of-learning techniques thought to enhance information retention that can be easily applied in the workplace learning environment. Collaborating with a large corporation, we examined information retention in employees for a regularly used training video on development and operation. Employees were randomly assigned to one of four training conditions –1. a baseline conditioning with watching the video as usual, 2. Spontaneous peer discussion, 3. Structured peer discussion, or 4. Interpolated testing. The latter three conditions driven from the science-of-learning and are described in detail below. Then, 20–30 hours later, returning employees were administered a test to measure how much of the video content was remembered and retained in long-term memory. The critical question was whether any of the science-of-learning manipulations would enhance information retention relative to typical practices.\n\n## Peer discussion–Spontaneous or structured\n\nOne science-of-learning technique that can improve learning outcome is peer discussion. Research in higher education suggests that peer discussion fosters deep and lasting learning outcome [2]. This is thought to emerge through active engagement with the content being learned, which allows learners to discuss and construct their own understanding of the material [3–6].\n\nPeer discussion is traditionally carried out as spontaneous discussion where students discuss relevant topics without any formal structure or guidance. One such technique was introduced by Mazur [6] where students in a traditional classroom were asked content questions regarding the lecture. After answering these questions, but before given the correct answer, students were prompted to discuss how they came to their answers with peers sitting nearby. When the same question was asked again after the spontaneous discussion, accurate memory for the content increased. These results have been replicated in multiple studies [4,7], showing the effectiveness of spontaneous peer discussion.\n\nExtending this research, some have found that peer discussion can further enhance learning if accompanied by instructors’ cues (structured discussion) [8,9], rather than having students engage in spontaneous discussions. Although most of these studies involve problem-solving tasks in addition to peer discussions, the peer discussions themselves may encourage active engagement that enhances learning.\n\nThe idea that discussion is beneficial in learning is represented in flipped classrooms, in which students view video lectures independently and asynchronously and then engage in collaborative learning through active problem solving or discussions during traditional classroom time. The very concept of flipped learning stems from the idea that classroom time is better spent actively discussing the content, rather than passively listening to a lecture.\n\nResearch in flipped learning has shown that students’ perception of learning effectiveness is highly positive, and more importantly, students show better performance as evaluated with examinations. This has been observed in all levels of education from high school [10,11], to higher education [12,13], to professional education[14,15].\n\n## Interpolated testing\n\nHistorically, quizzes and tests have been frequently used to assess learning, but rarely used to enhance learning itself. Numerous studies have shown that any attempt to retrieve information by testing will increase the likelihood of remembering that information in the long term [16–19]. This phenomenon is known as the “testing effect.” The facilitative effect of testing on learning is thought to be a result of the act of retrieval strengthening the link between cues and targets [20]. This link is unique to testing and cannot be gained through other forms of study as research has shown that memory gained through testing outlasts those gained through repeated study[18].\n\nInterpolated testing is a learning technique that quizzes the learner intermittently during the learning process. Aside from the benefits of greater long-term retention, interpolated testing can also reduce the learner’s instances of mind wandering away from the material and help the learner stay on task [21,22]. Although interpolated testing has been studied in laboratories using lists of words [23,24] and online university lectures [22,25], it has never been studied in a workplace setting.\n\nOur aim was to examine science-of-learning techniques that can be easily supplemented to existing workplace digital courses and compare their effectiveness relative to the current practice of simply watching the video. We hypothesized that both interpolated testing and peer discussion would enhance information retention compared to baseline. Based on previous research, we also hypothesized that peer discussion would be more effective when it is structured rather than spontaneous.",
+    "taskType": "research",
+    "prompt": "Kana Okano, Jakub R. Kaczmarzyk, John D. E. Gabrieli (2018) · PLOS\nAbstract and introduction. Selected passages, not the complete paper.\nhttps://doi.org/10.1371/journal.pone.0206250\nCC BY · http://creativecommons.org/licenses/by/4.0/\nOriginal wording retained; paragraph spacing and Markdown headings adapted. PPB margin notes are editorial teaching commentary, not statements by the authors. Reference numbers refer to the original paper.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "workplace-0",
+      "start": 13,
+      "end": 93,
+      "quote": "Digital learning is becoming the most commonly used portal for workplace learnin",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Source & reuse",
+      "body": "Kana Okano, Jakub R. Kaczmarzyk, John D. E. Gabrieli (2018). Enhancing workplace digital learning by use of the science of learning. DOI: 10.1371/journal.pone.0206250\nCC BY: http://creativecommons.org/licenses/by/4.0/\nSelection: Abstract and introduction. Layout adapted; teaching notes added by PPB. No endorsement implied.",
+      "side": "left",
+      "tag": "gray"
+    },
+    {
+      "id": "workplace-1",
+      "start": 96,
+      "end": 143,
+      "quote": "but its effectiveness is not clearly understood",
+      "kind": "structure",
+      "level": "essay",
+      "label": "Research gap",
+      "body": "The opening narrows a broad trend to a specific uncertainty. It motivates the experiment instead of assuming that digital delivery improves learning.",
+      "side": "right",
+      "tag": "blue"
+    },
+    {
+      "id": "workplace-2",
+      "start": 257,
+      "end": 315,
+      "quote": "Employees were randomly assigned to one of four conditions",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Experimental comparison",
+      "body": "Random assignment helps compare the learning conditions. Keep the four groups distinct when explaining the result.",
+      "side": "left",
+      "tag": "green"
+    },
+    {
+      "id": "workplace-3",
+      "start": 887,
+      "end": 898,
+      "quote": "20–35 hours",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Measurement window",
+      "body": "The test measured retention after roughly one day. This is not evidence of months-long retention or of improved job performance.",
+      "side": "right",
+      "tag": "purple"
+    },
+    {
+      "id": "workplace-4",
+      "start": 1065,
+      "end": 1096,
+      "quote": "26% and 25% better respectively",
+      "kind": "vocabulary",
+      "level": "essay",
+      "label": "Quantified result",
+      "body": "These are relative differences reported by the authors, not percentage-point gains. “Respectively” maps the two values to the two interventions in the preceding order.",
+      "side": "left",
+      "tag": "orange"
+    }
+  ]
+}

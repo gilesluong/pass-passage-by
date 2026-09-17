@@ -9,6 +9,6 @@ Built for macOS • Local-first • No account required
 
 This is an independent preview, not affiliated with Ulysses, Apple or IELTS. Markdown compatibility is partial. Dictionary text comes from dictionaries installed on your Mac.
 
-Version 1.7
+Version 1.8
 
 Scan photos or PDFs, review locally recognized text, and keep your writing in My writing. Apple Intelligence feedback is optional and requires an already available on-device model. Updates are delivered through Sparkle.

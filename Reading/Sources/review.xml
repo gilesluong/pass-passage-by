@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="3.0" xml:lang="en">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher-id">plos</journal-id>
+<journal-id journal-id-type="nlm-ta">PLoS Comput Biol</journal-id>
+<journal-id journal-id-type="pmc">ploscomp</journal-id><journal-title-group>
+<journal-title>PLoS Computational Biology</journal-title></journal-title-group>
+<issn pub-type="ppub">1553-734X</issn>
+<issn pub-type="epub">1553-7358</issn>
+<publisher>
+<publisher-name>Public Library of Science</publisher-name>
+<publisher-loc>San Francisco, USA</publisher-loc></publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="publisher-id">PCOMPBIOL-D-12-01817</article-id>
+<article-id pub-id-type="doi">10.1371/journal.pcbi.1003149</article-id>
+    <article-categories><subj-group subj-group-type="heading"><subject>Editorial</subject></subj-group><subj-group subj-group-type="Discipline-v2"><subject>Science policy</subject>
+        <subj-group><subject>Research assessment</subject>
+            <subj-group><subject>Publication practices</subject>
+                <subj-group><subject>Science and technology workforce</subject>
+                    <subj-group><subject>Careers in research</subject>
+                        <subj-group><subject>Science education</subject> </subj-group> </subj-group> </subj-group> </subj-group>
+        </subj-group> </subj-group></article-categories>
+<title-group>
+<article-title>Ten Simple Rules for Writing a Literature Review</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Pautasso</surname><given-names>Marco</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff2"><sup>2</sup></xref><xref ref-type="corresp" rid="cor1"><sup>*</sup></xref></contrib>
+</contrib-group>
+<aff id="aff1"><label>1</label><addr-line>Centre for Functional and Evolutionary Ecology (CEFE), CNRS, Montpellier, France</addr-line></aff>
+<aff id="aff2"><label>2</label><addr-line>Centre for Biodiversity Synthesis and Analysis (CESAB), FRB, Aix-en-Provence, France</addr-line></aff>
+<contrib-group>
+<contrib contrib-type="editor" xlink:type="simple"><name name-style="western"><surname>Bourne</surname><given-names>Philip E.</given-names></name>
+<role>Editor</role>
+<xref ref-type="aff" rid="edit1"/></contrib>
+</contrib-group>
+<aff id="edit1"><addr-line>University of California San Diego, United States of America</addr-line></aff>
+<author-notes>
+<corresp id="cor1">* E-mail: <email xlink:type="simple">marpauta@gmail.com</email></corresp>
+<fn fn-type="conflict"><p>The author has declared that no competing interests exist.</p></fn>
+</author-notes>
+<pub-date pub-type="collection"><month>7</month><year>2013</year></pub-date>
+<pub-date pub-type="epub"><day>18</day><month>7</month><year>2013</year></pub-date>
+<volume>9</volume>
+<issue>7</issue>
+<elocation-id>e1003149</elocation-id><permissions>
+<copyright-year>2013</copyright-year>
+<copyright-holder>Marco Pautasso</copyright-holder><license xlink:type="simple"><license-p>This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</license-p></license></permissions><funding-group><funding-statement>This work was funded by the French Foundation for Research on Biodiversity (FRB) through its Centre for Synthesis and Analysis of Biodiversity data (CESAB), as part of the NETSEED research project. The funders had no role in the preparation of the manuscript.</funding-statement></funding-group><counts><page-count count="4"/></counts></article-meta>
+</front>
+<body><sec id="s1">
+<title/>
+<p>Literature reviews are in great demand in most scientific fields. Their need stems from the ever-increasing output of scientific publications <xref ref-type="bibr" rid="pcbi.1003149-Rapple1">[1]</xref>. For example, compared to 1991, in 2008 three, eight, and forty times more papers were indexed in Web of Science on malaria, obesity, and biodiversity, respectively <xref ref-type="bibr" rid="pcbi.1003149-Pautasso1">[2]</xref>. Given such mountains of papers, scientists cannot be expected to examine in detail every single new paper relevant to their interests <xref ref-type="bibr" rid="pcbi.1003149-Erren1">[3]</xref>. Thus, it is both advantageous and necessary to rely on regular summaries of the recent literature. Although recognition for scientists mainly comes from primary research, timely literature reviews can lead to new synthetic insights and are often widely read <xref ref-type="bibr" rid="pcbi.1003149-Hampton1">[4]</xref>. For such summaries to be useful, however, they need to be compiled in a professional way <xref ref-type="bibr" rid="pcbi.1003149-Ketcham1">[5]</xref>.</p>
+<p>When starting from scratch, reviewing the literature can require a titanic amount of work. That is why researchers who have spent their career working on a certain research issue are in a perfect position to review that literature. Some graduate schools are now offering courses in reviewing the literature, given that most research students start their project by producing an overview of what has already been done on their research issue <xref ref-type="bibr" rid="pcbi.1003149-Boote1">[6]</xref>. However, it is likely that most scientists have not thought in detail about how to approach and carry out a literature review.</p>
+<p>Reviewing the literature requires the ability to juggle multiple tasks, from finding and evaluating relevant material to synthesising information from various sources, from critical thinking to paraphrasing, evaluating, and citation skills <xref ref-type="bibr" rid="pcbi.1003149-Budgen1">[7]</xref>. In this contribution, I share ten simple rules I learned working on about 25 literature reviews as a PhD and postdoctoral student. Ideas and insights also come from discussions with coauthors and colleagues, as well as feedback from reviewers and editors.</p>
+</sec><sec id="s2">
+<title>Rule 1: Define a Topic and Audience</title>
+<p>How to choose which topic to review? There are so many issues in contemporary science that you could spend a lifetime of attending conferences and reading the literature just pondering what to review. On the one hand, if you take several years to choose, several other people may have had the same idea in the meantime. On the other hand, only a well-considered topic is likely to lead to a brilliant literature review <xref ref-type="bibr" rid="pcbi.1003149-Maier1">[8]</xref>. The topic must at least be:</p>
+<list list-type="roman-lower"><list-item>
+<p>interesting to you (ideally, you should have come across a series of recent papers related to your line of work that call for a critical summary),</p>
+</list-item><list-item>
+<p>an important aspect of the field (so that many readers will be interested in the review and there will be enough material to write it), and</p>
+</list-item><list-item>
+<p>a well-defined issue (otherwise you could potentially include thousands of publications, which would make the review unhelpful).</p>
+</list-item></list>
+<p>Ideas for potential reviews may come from papers providing lists of key research questions to be answered <xref ref-type="bibr" rid="pcbi.1003149-Sutherland1">[9]</xref>, but also from serendipitous moments during desultory reading and discussions. In addition to choosing your topic, you should also select a target audience. In many cases, the topic (e.g., web services in computational biology) will automatically define an audience (e.g., computational biologists), but that same topic may also be of interest to neighbouring fields (e.g., computer science, biology, etc.).</p>
+</sec><sec id="s3">
+<title>Rule 2: Search and Re-search the Literature</title>
+<p>After having chosen your topic and audience, start by checking the literature and downloading relevant papers. Five pieces of advice here:</p>
+<list list-type="roman-lower"><list-item>
+<p>keep track of the search items you use (so that your search can be replicated <xref ref-type="bibr" rid="pcbi.1003149-Maggio1">[10]</xref>),</p>
+</list-item><list-item>
+<p>keep a list of papers whose pdfs you cannot access immediately (so as to retrieve them later with alternative strategies),</p>
+</list-item><list-item>
+<p>use a paper management system (e.g., Mendeley, Papers, Qiqqa, Sente),</p>
+</list-item><list-item>
+<p>define early in the process some criteria for exclusion of irrelevant papers (these criteria can then be described in the review to help define its scope), and</p>
+</list-item><list-item>
+<p>do not just look for research papers in the area you wish to review, but also seek previous reviews.</p>
+</list-item></list>
+<p>The chances are high that someone will already have published a literature review (<xref ref-type="fig" rid="pcbi-1003149-g001">Figure 1</xref>), if not exactly on the issue you are planning to tackle, at least on a related topic. If there are already a few or several reviews of the literature on your issue, my advice is not to give up, but to carry on with your own literature review,</p>
+<fig id="pcbi-1003149-g001" position="float"><object-id pub-id-type="doi">10.1371/journal.pcbi.1003149.g001</object-id><label>Figure 1</label><caption>
+<title>A conceptual diagram of the need for different types of literature reviews depending on the amount of published research papers and literature reviews.</title>
+<p>The bottom-right situation (many literature reviews but few research papers) is not just a theoretical situation; it applies, for example, to the study of the impacts of climate change on plant diseases, where there appear to be more literature reviews than research studies <xref ref-type="bibr" rid="pcbi.1003149-Pautasso3">[33]</xref>.</p>
+</caption><graphic mimetype="image" xlink:href="info:doi/10.1371/journal.pcbi.1003149.g001" position="float" xlink:type="simple"/></fig>
+<list list-type="roman-lower"><list-item>
+<p>discussing in your review the approaches, limitations, and conclusions of past reviews,</p>
+</list-item><list-item>
+<p>trying to find a new angle that has not been covered adequately in the previous reviews, and</p>
+</list-item><list-item>
+<p>incorporating new material that has inevitably accumulated since their appearance.</p>
+</list-item></list>
+<p>When searching the literature for pertinent papers and reviews, the usual rules apply:</p>
+<list list-type="roman-lower"><list-item>
+<p>be thorough,</p>
+</list-item><list-item>
+<p>use different keywords and database sources (e.g., DBLP, Google Scholar, ISI Proceedings, JSTOR Search, Medline, Scopus, Web of Science), and</p>
+</list-item><list-item>
+<p>look at who has cited past relevant papers and book chapters.</p>
+</list-item></list>
+</sec><sec id="s4">
+<title>Rule 3: Take Notes While Reading</title>
+<p>If you read the papers first, and only afterwards start writing the review, you will need a very good memory to remember who wrote what, and what your impressions and associations were while reading each single paper. My advice is, while reading, to start writing down interesting pieces of information, insights about how to organize the review, and thoughts on what to write. This way, by the time you have read the literature you selected, you will already have a rough draft of the review.</p>
+<p>Of course, this draft will still need much rewriting, restructuring, and rethinking to obtain a text with a coherent argument <xref ref-type="bibr" rid="pcbi.1003149-Torraco1">[11]</xref>, but you will have avoided the danger posed by staring at a blank document. Be careful when taking notes to use quotation marks if you are provisionally copying verbatim from the literature. It is advisable then to reformulate such quotes with your own words in the final draft. It is important to be careful in noting the references already at this stage, so as to avoid misattributions. Using referencing software from the very beginning of your endeavour will save you time.</p>
+</sec><sec id="s5">
+<title>Rule 4: Choose the Type of Review You Wish to Write</title>
+<p>After having taken notes while reading the literature, you will have a rough idea of the amount of material available for the review. This is probably a good time to decide whether to go for a mini- or a full review. Some journals are now favouring the publication of rather short reviews focusing on the last few years, with a limit on the number of words and citations. A mini-review is not necessarily a minor review: it may well attract more attention from busy readers, although it will inevitably simplify some issues and leave out some relevant material due to space limitations. A full review will have the advantage of more freedom to cover in detail the complexities of a particular scientific development, but may then be left in the pile of the very important papers “to be read” by readers with little time to spare for major monographs.</p>
+<p>There is probably a continuum between mini- and full reviews. The same point applies to the dichotomy of descriptive vs. integrative reviews. While descriptive reviews focus on the methodology, findings, and interpretation of each reviewed study, integrative reviews attempt to find common ideas and concepts from the reviewed material <xref ref-type="bibr" rid="pcbi.1003149-Khoo1">[12]</xref>. A similar distinction exists between narrative and systematic reviews: while narrative reviews are qualitative, systematic reviews attempt to test a hypothesis based on the published evidence, which is gathered using a predefined protocol to reduce bias <xref ref-type="bibr" rid="pcbi.1003149-Rosenfeld1">[13]</xref>, <xref ref-type="bibr" rid="pcbi.1003149-Cook1">[14]</xref>. When systematic reviews analyse quantitative results in a quantitative way, they become meta-analyses. The choice between different review types will have to be made on a case-by-case basis, depending not just on the nature of the material found and the preferences of the target journal(s), but also on the time available to write the review and the number of coauthors <xref ref-type="bibr" rid="pcbi.1003149-Dijkers1">[15]</xref>.</p>
+</sec><sec id="s6">
+<title>Rule 5: Keep the Review Focused, but Make It of Broad Interest</title>
+<p>Whether your plan is to write a mini- or a full review, it is good advice to keep it focused <xref ref-type="bibr" rid="pcbi.1003149-Eco1">16</xref>,<xref ref-type="bibr" rid="pcbi.1003149-Hart1">17</xref>. Including material just for the sake of it can easily lead to reviews that are trying to do too many things at once. The need to keep a review focused can be problematic for interdisciplinary reviews, where the aim is to bridge the gap between fields <xref ref-type="bibr" rid="pcbi.1003149-Wagner1">[18]</xref>. If you are writing a review on, for example, how epidemiological approaches are used in modelling the spread of ideas, you may be inclined to include material from both parent fields, epidemiology and the study of cultural diffusion. This may be necessary to some extent, but in this case a focused review would only deal in detail with those studies at the interface between epidemiology and the spread of ideas.</p>
+<p>While focus is an important feature of a successful review, this requirement has to be balanced with the need to make the review relevant to a broad audience. This square may be circled by discussing the wider implications of the reviewed topic for other disciplines.</p>
+</sec><sec id="s7">
+<title>Rule 6: Be Critical and Consistent</title>
+<p>Reviewing the literature is not stamp collecting. A good review does not just summarize the literature, but discusses it critically, identifies methodological problems, and points out research gaps <xref ref-type="bibr" rid="pcbi.1003149-Carnwell1">[19]</xref>. After having read a review of the literature, a reader should have a rough idea of:</p>
+<list list-type="roman-lower"><list-item>
+<p>the major achievements in the reviewed field,</p>
+</list-item><list-item>
+<p>the main areas of debate, and</p>
+</list-item><list-item>
+<p>the outstanding research questions.</p>
+</list-item></list>
+<p>It is challenging to achieve a successful review on all these fronts. A solution can be to involve a set of complementary coauthors: some people are excellent at mapping what has been achieved, some others are very good at identifying dark clouds on the horizon, and some have instead a knack at predicting where solutions are going to come from. If your journal club has exactly this sort of team, then you should definitely write a review of the literature! In addition to critical thinking, a literature review needs consistency, for example in the choice of passive vs. active voice and present vs. past tense.</p>
+</sec><sec id="s8">
+<title>Rule 7: Find a Logical Structure</title>
+<p>Like a well-baked cake, a good review has a number of telling features: it is worth the reader's time, timely, systematic, well written, focused, and critical. It also needs a good structure. With reviews, the usual subdivision of research papers into introduction, methods, results, and discussion does not work or is rarely used. However, a general introduction of the context and, toward the end, a recapitulation of the main points covered and take-home messages make sense also in the case of reviews. For systematic reviews, there is a trend towards including information about how the literature was searched (database, keywords, time limits) <xref ref-type="bibr" rid="pcbi.1003149-Roberts1">[20]</xref>.</p>
+<p>How can you organize the flow of the main body of the review so that the reader will be drawn into and guided through it? It is generally helpful to draw a conceptual scheme of the review, e.g., with mind-mapping techniques. Such diagrams can help recognize a logical way to order and link the various sections of a review <xref ref-type="bibr" rid="pcbi.1003149-Ridley1">[21]</xref>. This is the case not just at the writing stage, but also for readers if the diagram is included in the review as a figure. A careful selection of diagrams and figures relevant to the reviewed topic can be very helpful to structure the text too <xref ref-type="bibr" rid="pcbi.1003149-Kelleher1">[22]</xref>.</p>
+</sec><sec id="s9">
+<title>Rule 8: Make Use of Feedback</title>
+<p>Reviews of the literature are normally peer-reviewed in the same way as research papers, and rightly so <xref ref-type="bibr" rid="pcbi.1003149-Oxman1">[23]</xref>. As a rule, incorporating feedback from reviewers greatly helps improve a review draft. Having read the review with a fresh mind, reviewers may spot inaccuracies, inconsistencies, and ambiguities that had not been noticed by the writers due to rereading the typescript too many times. It is however advisable to reread the draft one more time before submission, as a last-minute correction of typos, leaps, and muddled sentences may enable the reviewers to focus on providing advice on the content rather than the form.</p>
+<p>Feedback is vital to writing a good review, and should be sought from a variety of colleagues, so as to obtain a diversity of views on the draft. This may lead in some cases to conflicting views on the merits of the paper, and on how to improve it, but such a situation is better than the absence of feedback. A diversity of feedback perspectives on a literature review can help identify where the consensus view stands in the landscape of the current scientific understanding of an issue <xref ref-type="bibr" rid="pcbi.1003149-May1">[24]</xref>.</p>
+</sec><sec id="s10">
+<title>Rule 9: Include Your Own Relevant Research, but Be Objective</title>
+<p>In many cases, reviewers of the literature will have published studies relevant to the review they are writing. This could create a conflict of interest: how can reviewers report objectively on their own work <xref ref-type="bibr" rid="pcbi.1003149-Logan1">[25]</xref>? Some scientists may be overly enthusiastic about what they have published, and thus risk giving too much importance to their own findings in the review. However, bias could also occur in the other direction: some scientists may be unduly dismissive of their own achievements, so that they will tend to downplay their contribution (if any) to a field when reviewing it.</p>
+<p>In general, a review of the literature should neither be a public relations brochure nor an exercise in competitive self-denial. If a reviewer is up to the job of producing a well-organized and methodical review, which flows well and provides a service to the readership, then it should be possible to be objective in reviewing one's own relevant findings. In reviews written by multiple authors, this may be achieved by assigning the review of the results of a coauthor to different coauthors.</p>
+</sec><sec id="s11">
+<title>Rule 10: Be Up-to-Date, but Do Not Forget Older Studies</title>
+<p>Given the progressive acceleration in the publication of scientific papers, today's reviews of the literature need awareness not just of the overall direction and achievements of a field of inquiry, but also of the latest studies, so as not to become out-of-date before they have been published. Ideally, a literature review should not identify as a major research gap an issue that has just been addressed in a series of papers in press (the same applies, of course, to older, overlooked studies (“sleeping beauties” <xref ref-type="bibr" rid="pcbi.1003149-vanRaan1">[26]</xref>)). This implies that literature reviewers would do well to keep an eye on electronic lists of papers in press, given that it can take months before these appear in scientific databases. Some reviews declare that they have scanned the literature up to a certain point in time, but given that peer review can be a rather lengthy process, a full search for newly appeared literature at the revision stage may be worthwhile. Assessing the contribution of papers that have just appeared is particularly challenging, because there is little perspective with which to gauge their significance and impact on further research and society.</p>
+<p>Inevitably, new papers on the reviewed topic (including independently written literature reviews) will appear from all quarters after the review has been published, so that there may soon be the need for an updated review. But this is the nature of science <xref ref-type="bibr" rid="pcbi.1003149-Rosenberg1">[27]</xref>–<xref ref-type="bibr" rid="pcbi.1003149-Tsafnat1">[32]</xref>. I wish everybody good luck with writing a review of the literature.</p>
+</sec></body>
+<back>
+<ack>
+<p>Many thanks to M. Barbosa, K. Dehnen-Schmutz, T. Döring, D. Fontaneto, M. Garbelotto, O. Holdenrieder, M. Jeger, D. Lonsdale, A. MacLeod, P. Mills, M. Moslonka-Lefebvre, G. Stancanelli, P. Weisberg, and X. Xu for insights and discussions, and to P. Bourne, T. Matoni, and D. Smith for helpful comments on a previous draft.</p>
+</ack>
+<ref-list>
+<title>References</title>
+<ref id="pcbi.1003149-Rapple1"><label>1</label>
+<mixed-citation publication-type="other" xlink:type="simple">Rapple C (2011) The role of the critical review article in alleviating information overload. Annual Reviews White Paper. Available: <ext-link ext-link-type="uri" xlink:href="http://www.annualreviews.org/userimages/ContentEditor/1300384004941/Annual_Reviews_WhitePaper_Web_2011.pdf" xlink:type="simple">http://www.annualreviews.org/userimages/ContentEditor/1300384004941/Annual_Reviews_WhitePaper_Web_2011.pdf</ext-link>. Accessed May 2013.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Pautasso1"><label>2</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Pautasso</surname><given-names>M</given-names></name> (<year>2010</year>) <article-title>Worsening file-drawer problem in the abstracts of natural, medical and social science databases</article-title>. <source>Scientometrics</source> <volume>85</volume>: <fpage>193</fpage>–<lpage>202</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1007/s11192-010-0233-5" xlink:type="simple">10.1007/s11192-010-0233-5</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Erren1"><label>3</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Erren</surname><given-names>TC</given-names></name>, <name name-style="western"><surname>Cullen</surname><given-names>P</given-names></name>, <name name-style="western"><surname>Erren</surname><given-names>M</given-names></name> (<year>2009</year>) <article-title>How to surf today's information tsunami: on the craft of effective reading</article-title>. <source>Med Hypotheses</source> <volume>73</volume>: <fpage>278</fpage>–<lpage>279</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.mehy.2009.05.002" xlink:type="simple">10.1016/j.mehy.2009.05.002</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Hampton1"><label>4</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Hampton</surname><given-names>SE</given-names></name>, <name name-style="western"><surname>Parker</surname><given-names>JN</given-names></name> (<year>2011</year>) <article-title>Collaboration and productivity in scientific synthesis</article-title>. <source>Bioscience</source> <volume>61</volume>: <fpage>900</fpage>–<lpage>910</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1525/bio.2011.61.11.9" xlink:type="simple">10.1525/bio.2011.61.11.9</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Ketcham1"><label>5</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Ketcham</surname><given-names>CM</given-names></name>, <name name-style="western"><surname>Crawford</surname><given-names>JM</given-names></name> (<year>2007</year>) <article-title>The impact of review articles</article-title>. <source>Lab Invest</source> <volume>87</volume>: <fpage>1174</fpage>–<lpage>1185</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1038/labinvest.3700688" xlink:type="simple">10.1038/labinvest.3700688</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Boote1"><label>6</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Boote</surname><given-names>DN</given-names></name>, <name name-style="western"><surname>Beile</surname><given-names>P</given-names></name> (<year>2005</year>) <article-title>Scholars before researchers: on the centrality of the dissertation literature review in research preparation</article-title>. <source>Educ Res</source> <volume>34</volume>: <fpage>3</fpage>–<lpage>15</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.3102/0013189X034006003" xlink:type="simple">10.3102/0013189X034006003</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Budgen1"><label>7</label>
+<mixed-citation publication-type="other" xlink:type="simple">Budgen D, Brereton P (2006) Performing systematic literature reviews in software engineering. Proc 28th Int Conf Software Engineering, ACM New York, NY, USA, pp. 1051–1052. doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1145/1134285.1134500" xlink:type="simple">10.1145/1134285.1134500</ext-link>.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Maier1"><label>8</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Maier</surname><given-names>HR</given-names></name> (<year>2013</year>) <article-title>What constitutes a good literature review and why does its quality matter?</article-title> <source>Environ Model Softw</source> <volume>43</volume>: <fpage>3</fpage>–<lpage>4</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.envsoft.2013.02.004" xlink:type="simple">10.1016/j.envsoft.2013.02.004</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Sutherland1"><label>9</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Sutherland</surname><given-names>WJ</given-names></name>, <name name-style="western"><surname>Fleishman</surname><given-names>E</given-names></name>, <name name-style="western"><surname>Mascia</surname><given-names>MB</given-names></name>, <name name-style="western"><surname>Pretty</surname><given-names>J</given-names></name>, <name name-style="western"><surname>Rudd</surname><given-names>MA</given-names></name> (<year>2011</year>) <article-title>Methods for collaboratively identifying research priorities and emerging issues in science and policy</article-title>. <source>Methods Ecol Evol</source> <volume>2</volume>: <fpage>238</fpage>–<lpage>247</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1111/j.2041-210X.2010.00083.x" xlink:type="simple">10.1111/j.2041-210X.2010.00083.x</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Maggio1"><label>10</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Maggio</surname><given-names>LA</given-names></name>, <name name-style="western"><surname>Tannery</surname><given-names>NH</given-names></name>, <name name-style="western"><surname>Kanter</surname><given-names>SL</given-names></name> (<year>2011</year>) <article-title>Reproducibility of literature search reporting in medical education reviews</article-title>. <source>Acad Med</source> <volume>86</volume>: <fpage>1049</fpage>–<lpage>1054</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1097/ACM.0b013e31822221e7" xlink:type="simple">10.1097/ACM.0b013e31822221e7</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Torraco1"><label>11</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Torraco</surname><given-names>RJ</given-names></name> (<year>2005</year>) <article-title>Writing integrative literature reviews: guidelines and examples</article-title>. <source>Human Res Develop Rev</source> <volume>4</volume>: <fpage>356</fpage>–<lpage>367</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1177/1534484305278283" xlink:type="simple">10.1177/1534484305278283</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Khoo1"><label>12</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Khoo</surname><given-names>CSG</given-names></name>, <name name-style="western"><surname>Na</surname><given-names>JC</given-names></name>, <name name-style="western"><surname>Jaidka</surname><given-names>K</given-names></name> (<year>2011</year>) <article-title>Analysis of the macro-level discourse structure of literature reviews</article-title>. <source>Online Info Rev</source> <volume>35</volume>: <fpage>255</fpage>–<lpage>271</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1108/14684521111128032" xlink:type="simple">10.1108/14684521111128032</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Rosenfeld1"><label>13</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Rosenfeld</surname><given-names>RM</given-names></name> (<year>1996</year>) <article-title>How to systematically review the medical literature</article-title>. <source>Otolaryngol Head Neck Surg</source> <volume>115</volume>: <fpage>53</fpage>–<lpage>63</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/S0194-5998(96)70137-7" xlink:type="simple">10.1016/S0194-5998(96)70137-7</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Cook1"><label>14</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Cook</surname><given-names>DA</given-names></name>, <name name-style="western"><surname>West</surname><given-names>CP</given-names></name> (<year>2012</year>) <article-title>Conducting systematic reviews in medical education: a stepwise approach</article-title>. <source>Med Educ</source> <volume>46</volume>: <fpage>943</fpage>–<lpage>952</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1111/j.1365-2923.2012.04328.x" xlink:type="simple">10.1111/j.1365-2923.2012.04328.x</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Dijkers1"><label>15</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Dijkers</surname><given-names>M</given-names></name> (<year>2009</year>) <collab xlink:type="simple">The Task Force on Systematic Reviews and Guidelines</collab> (<year>2009</year>) <article-title>The value of “traditional” reviews in the era of systematic reviewing</article-title>. <source>Am J Phys Med Rehabil</source> <volume>88</volume>: <fpage>423</fpage>–<lpage>430</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1097/PHM.0b013e31819c59c6" xlink:type="simple">10.1097/PHM.0b013e31819c59c6</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Eco1"><label>16</label>
+<mixed-citation publication-type="other" xlink:type="simple">Eco U (1977) Come si fa una tesi di laurea. Milan: Bompiani.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Hart1"><label>17</label>
+<mixed-citation publication-type="other" xlink:type="simple">Hart C (1998) Doing a literature review: releasing the social science research imagination. London: SAGE.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Wagner1"><label>18</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wagner</surname><given-names>CS</given-names></name>, <name name-style="western"><surname>Roessner</surname><given-names>JD</given-names></name>, <name name-style="western"><surname>Bobb</surname><given-names>K</given-names></name>, <name name-style="western"><surname>Klein</surname><given-names>JT</given-names></name>, <name name-style="western"><surname>Boyack</surname><given-names>KW</given-names></name>, <etal>et al</etal>. (<year>2011</year>) <article-title>Approaches to understanding and measuring interdisciplinary scientific research (IDR): a review of the literature</article-title>. <source>J Informetr</source> <volume>5</volume>: <fpage>14</fpage>–<lpage>26</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.joi.2010.06.004" xlink:type="simple">10.1016/j.joi.2010.06.004</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Carnwell1"><label>19</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Carnwell</surname><given-names>R</given-names></name>, <name name-style="western"><surname>Daly</surname><given-names>W</given-names></name> (<year>2001</year>) <article-title>Strategies for the construction of a critical review of the literature</article-title>. <source>Nurse Educ Pract</source> <volume>1</volume>: <fpage>57</fpage>–<lpage>63</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1054/nepr.2001.0008" xlink:type="simple">10.1054/nepr.2001.0008</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Roberts1"><label>20</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Roberts</surname><given-names>PD</given-names></name>, <name name-style="western"><surname>Stewart</surname><given-names>GB</given-names></name>, <name name-style="western"><surname>Pullin</surname><given-names>AS</given-names></name> (<year>2006</year>) <article-title>Are review articles a reliable source of evidence to support conservation and environmental management? A comparison with medicine</article-title>. <source>Biol Conserv</source> <volume>132</volume>: <fpage>409</fpage>–<lpage>423</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.biocon.2006.04.034" xlink:type="simple">10.1016/j.biocon.2006.04.034</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Ridley1"><label>21</label>
+<mixed-citation publication-type="other" xlink:type="simple">Ridley D (2008) The literature review: a step-by-step guide for students. London: SAGE.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Kelleher1"><label>22</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Kelleher</surname><given-names>C</given-names></name>, <name name-style="western"><surname>Wagener</surname><given-names>T</given-names></name> (<year>2011</year>) <article-title>Ten guidelines for effective data visualization in scientific publications</article-title>. <source>Environ Model Softw</source> <volume>26</volume>: <fpage>822</fpage>–<lpage>827</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.envsoft.2010.12.006" xlink:type="simple">10.1016/j.envsoft.2010.12.006</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Oxman1"><label>23</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Oxman</surname><given-names>AD</given-names></name>, <name name-style="western"><surname>Guyatt</surname><given-names>GH</given-names></name> (<year>1988</year>) <article-title>Guidelines for reading literature reviews</article-title>. <source>CMAJ</source> <volume>138</volume>: <fpage>697</fpage>–<lpage>703</lpage>.</mixed-citation>
+</ref>
+<ref id="pcbi.1003149-May1"><label>24</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>May</surname><given-names>RM</given-names></name> (<year>2011</year>) <article-title>Science as organized scepticism</article-title>. <source>Philos Trans A Math Phys Eng Sci</source> <volume>369</volume>: <fpage>4685</fpage>–<lpage>4689</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1098/rsta.2011.0177" xlink:type="simple">10.1098/rsta.2011.0177</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Logan1"><label>25</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Logan</surname><given-names>DW</given-names></name>, <name name-style="western"><surname>Sandal</surname><given-names>M</given-names></name>, <name name-style="western"><surname>Gardner</surname><given-names>PP</given-names></name>, <name name-style="western"><surname>Manske</surname><given-names>M</given-names></name>, <name name-style="western"><surname>Bateman</surname><given-names>A</given-names></name> (<year>2010</year>) <article-title>Ten simple rules for editing Wikipedia</article-title>. <source>PLoS Comput Biol</source> <volume>6</volume>: <fpage>e1000941</fpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1371/journal.pcbi.1000941" xlink:type="simple">10.1371/journal.pcbi.1000941</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-vanRaan1"><label>26</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>van Raan</surname><given-names>AFJ</given-names></name> (<year>2004</year>) <article-title>Sleeping beauties in science</article-title>. <source>Scientometrics</source> <volume>59</volume>: <fpage>467</fpage>–<lpage>472</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1023/B:SCIE.0000018543.82441.f1" xlink:type="simple">10.1023/B:SCIE.0000018543.82441.f1</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Rosenberg1"><label>27</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Rosenberg</surname><given-names>D</given-names></name> (<year>2003</year>) <article-title>Early modern information overload</article-title>. <source>J Hist Ideas</source> <volume>64</volume>: <fpage>1</fpage>–<lpage>9</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1353/jhi.2003.0017" xlink:type="simple">10.1353/jhi.2003.0017</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Bastian1"><label>28</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Bastian</surname><given-names>H</given-names></name>, <name name-style="western"><surname>Glasziou</surname><given-names>P</given-names></name>, <name name-style="western"><surname>Chalmers</surname><given-names>I</given-names></name> (<year>2010</year>) <article-title>Seventy-five trials and eleven systematic reviews a day: how will we ever keep up?</article-title> <source>PLoS Med</source> <volume>7</volume>: <fpage>e1000326</fpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1371/journal.pmed.1000326" xlink:type="simple">10.1371/journal.pmed.1000326</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Bertamini1"><label>29</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Bertamini</surname><given-names>M</given-names></name>, <name name-style="western"><surname>Munafò</surname><given-names>MR</given-names></name> (<year>2012</year>) <article-title>Bite-size science and its undesired side effects</article-title>. <source>Perspect Psychol Sci</source> <volume>7</volume>: <fpage>67</fpage>–<lpage>71</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1177/1745691611429353" xlink:type="simple">10.1177/1745691611429353</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Pautasso2"><label>30</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Pautasso</surname><given-names>M</given-names></name> (<year>2012</year>) <article-title>Publication growth in biological sub-fields: patterns, predictability and sustainability</article-title>. <source>Sustainability</source> <volume>4</volume>: <fpage>3234</fpage>–<lpage>3247</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.3390/su4123234" xlink:type="simple">10.3390/su4123234</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Michels1"><label>31</label>
+    <mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Michels</surname><given-names>C</given-names></name>, <name name-style="western"><surname>Schmoch</surname><given-names>U</given-names></name> (<year>2013</year>) <article-title>Impact of bibliometric studies on the publication behaviour of authors</article-title>. <source>Scientometrics</source> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1007/s11192-013-1015-7" xlink:type="simple">10.1007/s11192-013-1015-7.</ext-link> In press.</comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Tsafnat1"><label>32</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Tsafnat</surname><given-names>G</given-names></name>, <name name-style="western"><surname>Dunn</surname><given-names>A</given-names></name>, <name name-style="western"><surname>Glasziou</surname><given-names>P</given-names></name>, <name name-style="western"><surname>Coiera</surname><given-names>E</given-names></name> (<year>2013</year>) <article-title>The automation of systematic reviews</article-title>. <source>BMJ</source> <volume>346</volume>: <fpage>f139</fpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1136/bmj.f139" xlink:type="simple">10.1136/bmj.f139</ext-link></comment></mixed-citation>
+</ref>
+<ref id="pcbi.1003149-Pautasso3"><label>33</label>
+<mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Pautasso</surname><given-names>M</given-names></name>, <name name-style="western"><surname>Döring</surname><given-names>TF</given-names></name>, <name name-style="western"><surname>Garbelotto</surname><given-names>M</given-names></name>, <name name-style="western"><surname>Pellis</surname><given-names>L</given-names></name>, <name name-style="western"><surname>Jeger</surname><given-names>MJ</given-names></name> (<year>2012</year>) <article-title>Impacts of climate change on plant diseases - opinions and trends</article-title>. <source>Eur J Plant Pathol</source> <volume>133</volume>: <fpage>295</fpage>–<lpage>313</lpage> <comment>doi:<ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1007/s10658-012-9936-1" xlink:type="simple">10.1007/s10658-012-9936-1</ext-link></comment></mixed-citation>
+</ref>
+</ref-list></back>
+</article>

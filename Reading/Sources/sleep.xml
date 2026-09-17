@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1d3 20150301//EN" "http://jats.nlm.nih.gov/publishing/1.1d3/JATS-journalpublishing1.dtd">
+<article article-type="research-article" dtd-version="1.1d3" xml:lang="en" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">
+<front>
+<journal-meta>
+<journal-id journal-id-type="nlm-ta">PLoS ONE</journal-id>
+<journal-id journal-id-type="publisher-id">plos</journal-id>
+<journal-id journal-id-type="pmc">plosone</journal-id>
+<journal-title-group>
+<journal-title>PLOS ONE</journal-title>
+</journal-title-group>
+<issn pub-type="epub">1932-6203</issn>
+<publisher>
+<publisher-name>Public Library of Science</publisher-name>
+<publisher-loc>San Francisco, CA USA</publisher-loc>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="doi">10.1371/journal.pone.0182907</article-id>
+<article-id pub-id-type="publisher-id">PONE-D-17-09682</article-id>
+<article-categories>
+<subj-group subj-group-type="heading">
+<subject>Research Article</subject>
+</subj-group>
+<subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Physiology</subject><subj-group><subject>Physiological processes</subject><subj-group><subject>Sleep</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Medicine and health sciences</subject><subj-group><subject>Physiology</subject><subj-group><subject>Physiological processes</subject><subj-group><subject>Sleep</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject><subj-group><subject>Recall (memory)</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject><subj-group><subject>Recall (memory)</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject><subj-group><subject>Memory consolidation</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject><subj-group><subject>Memory consolidation</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Decision making</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Decision making</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Cognitive psychology</subject><subj-group><subject>Decision making</subject></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Decision making</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Experimental psychology</subject></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Psychology</subject><subj-group><subject>Experimental psychology</subject></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Cognitive science</subject><subj-group><subject>Cognition</subject><subj-group><subject>Memory</subject><subj-group><subject>False memories</subject></subj-group></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Biology and life sciences</subject><subj-group><subject>Neuroscience</subject><subj-group><subject>Learning and memory</subject><subj-group><subject>Memory</subject><subj-group><subject>False memories</subject></subj-group></subj-group></subj-group></subj-group></subj-group><subj-group subj-group-type="Discipline-v3"><subject>Social sciences</subject><subj-group><subject>Linguistics</subject><subj-group><subject>Cognitive linguistics</subject><subj-group><subject>Word recognition</subject></subj-group></subj-group></subj-group></subj-group></article-categories>
+<title-group>
+<article-title>Sleep and eyewitness memory: Fewer false identifications after sleep when the target is absent from the lineup</article-title>
+<alt-title alt-title-type="running-head">Sleep and eyewitness memory</alt-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" corresp="yes" xlink:type="simple">
+<contrib-id authenticated="true" contrib-id-type="orcid">http://orcid.org/0000-0001-9109-0491</contrib-id>
+<name name-style="western">
+<surname>Stepan</surname>
+<given-names>Michelle E.</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Conceptualization</role>
+<role content-type="http://credit.casrai.org/">Data curation</role>
+<role content-type="http://credit.casrai.org/">Formal analysis</role>
+<role content-type="http://credit.casrai.org/">Investigation</role>
+<role content-type="http://credit.casrai.org/">Methodology</role>
+<role content-type="http://credit.casrai.org/">Project administration</role>
+<role content-type="http://credit.casrai.org/">Software</role>
+<role content-type="http://credit.casrai.org/">Supervision</role>
+<role content-type="http://credit.casrai.org/">Validation</role>
+<role content-type="http://credit.casrai.org/">Visualization</role>
+<role content-type="http://credit.casrai.org/">Writing – original draft</role>
+<role content-type="http://credit.casrai.org/">Writing – review &amp; editing</role>
+<xref ref-type="corresp" rid="cor001">*</xref>
+<xref ref-type="aff" rid="aff001"/>
+</contrib>
+<contrib contrib-type="author" xlink:type="simple">
+<name name-style="western">
+<surname>Dehnke</surname>
+<given-names>Taylor M.</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Conceptualization</role>
+<role content-type="http://credit.casrai.org/">Data curation</role>
+<role content-type="http://credit.casrai.org/">Methodology</role>
+<xref ref-type="aff" rid="aff001"/>
+</contrib>
+<contrib contrib-type="author" xlink:type="simple">
+<name name-style="western">
+<surname>Fenn</surname>
+<given-names>Kimberly M.</given-names>
+</name>
+<role content-type="http://credit.casrai.org/">Conceptualization</role>
+<role content-type="http://credit.casrai.org/">Methodology</role>
+<role content-type="http://credit.casrai.org/">Project administration</role>
+<role content-type="http://credit.casrai.org/">Resources</role>
+<role content-type="http://credit.casrai.org/">Supervision</role>
+<role content-type="http://credit.casrai.org/">Validation</role>
+<role content-type="http://credit.casrai.org/">Writing – review &amp; editing</role>
+<xref ref-type="aff" rid="aff001"/>
+</contrib>
+</contrib-group>
+<aff id="aff001"><addr-line>Department of Psychology, Michigan State University, East Lansing, MI, United States of America</addr-line></aff>
+<contrib-group>
+<contrib contrib-type="editor" xlink:type="simple">
+<name name-style="western">
+<surname>Ito</surname>
+<given-names>Etsuro</given-names>
+</name>
+<role>Editor</role>
+<xref ref-type="aff" rid="edit1"/>
+</contrib>
+</contrib-group>
+<aff id="edit1"><addr-line>Waseda University, JAPAN</addr-line></aff>
+<author-notes>
+<fn fn-type="conflict" id="coi001">
+<p>The authors have declared that no competing interests exist.</p>
+</fn>
+<corresp id="cor001">* E-mail: <email xlink:type="simple">stepanmi@msu.edu</email></corresp>
+</author-notes>
+<pub-date pub-type="epub">
+<day>6</day>
+<month>9</month>
+<year>2017</year>
+</pub-date>
+<pub-date pub-type="collection">
+<year>2017</year>
+</pub-date>
+<volume>12</volume>
+<issue>9</issue>
+<elocation-id>e0182907</elocation-id>
+<history>
+<date date-type="received">
+<day>11</day>
+<month>3</month>
+<year>2017</year>
+</date>
+<date date-type="accepted">
+<day>26</day>
+<month>7</month>
+<year>2017</year>
+</date>
+</history>
+<permissions>
+<copyright-year>2017</copyright-year>
+<copyright-holder>Stepan et al</copyright-holder>
+<license xlink:href="http://creativecommons.org/licenses/by/4.0/" xlink:type="simple">
+<license-p>This is an open access article distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/4.0/" xlink:type="simple">Creative Commons Attribution License</ext-link>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</license-p>
+</license>
+</permissions>
+<self-uri content-type="pdf" xlink:href="info:doi/10.1371/journal.pone.0182907"/>
+<abstract>
+<p>Inaccurate eyewitness identifications are the leading cause of known false convictions in the United States. Moreover, improving eyewitness memory is difficult and often unsuccessful. Sleep consistently strengthens and protects memory from interference, particularly when a recall test is used. However, the effect of sleep on recognition memory is more equivocal. Eyewitness identification tests are often recognition based, thus leaving open the question of how sleep affects recognition performance in an eyewitness context. In the current study, we investigated the effect of sleep on eyewitness memory. Participants watched a video of a mock-crime and attempted to identify the perpetrator from a simultaneous lineup after a 12-hour retention interval that either spanned a waking day or night of sleep. In Experiment 1, we used a target-present lineup and, in Experiment 2, we used a target-absent lineup in order to investigate correct and false identifications, respectively. Sleep reduced false identifications in the target-absent lineup (Experiment 2) but had no effect on correct identifications in the target-present lineup (Experiment 1). These results are discussed with respect to memory strength and decision making strategies.</p>
+</abstract>
+<funding-group>
+<funding-statement>The authors received no specific funding for this work.</funding-statement>
+</funding-group>
+<counts>
+<fig-count count="0"/>
+<table-count count="2"/>
+<page-count count="10"/>
+</counts>
+<custom-meta-group>
+<custom-meta id="data-availability">
+<meta-name>Data Availability</meta-name>
+<meta-value>All relevant data files are available online at <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.17026/dans-x8e-m8cm" xlink:type="simple">https://doi.org/10.17026/dans-x8e-m8cm</ext-link>.</meta-value>
+</custom-meta>
+</custom-meta-group>
+</article-meta>
+</front>
+<body>
+<sec id="sec001" sec-type="intro">
+<title>Introduction</title>
+<p>Several decades of research have shown that sleep is not only beneficial for physiological function but is also important for memory. Sleep strengthens hippocampal-dependent declarative memory for word pairs [<xref ref-type="bibr" rid="pone.0182907.ref001">1</xref>–<xref ref-type="bibr" rid="pone.0182907.ref004">4</xref>] and spatial information [<xref ref-type="bibr" rid="pone.0182907.ref005">5</xref>–<xref ref-type="bibr" rid="pone.0182907.ref007">7</xref>]. Sleep also protects memory from interference experienced during waking [<xref ref-type="bibr" rid="pone.0182907.ref008">8</xref>–<xref ref-type="bibr" rid="pone.0182907.ref009">9</xref>], likely due to an active consolidation process [<xref ref-type="bibr" rid="pone.0182907.ref010">10</xref>–<xref ref-type="bibr" rid="pone.0182907.ref013">13</xref>, <xref ref-type="bibr" rid="pone.0182907.ref003">3</xref>–<xref ref-type="bibr" rid="pone.0182907.ref004">4</xref>, <xref ref-type="bibr" rid="pone.0182907.ref006">6</xref>–<xref ref-type="bibr" rid="pone.0182907.ref007">7</xref>].</p>
+<p>Although a vast literature supports the positive influence of sleep on memory, the effect of sleep on eyewitness memory remains unexplored. Moreover, it is difficult to predict the effect of sleep on eyewitness memory due to the reliance on free or cued recall tests in the sleep-dependent consolidation literature and a comparable dearth of work using recognition tests. During free recall, participants recall a list of previously studied items, whereas in cued recall, participants are given an item from a set of studied items in order to aid, or cue, recall of a particular item. In contrast, recognition tests differ from recall in that individual items are presented to a participant who must then indicate if the item had been previously studied. It is well-established that sleep strengthens veridical memory when recall tests are used [<xref ref-type="bibr" rid="pone.0182907.ref001">1</xref>–<xref ref-type="bibr" rid="pone.0182907.ref005">5</xref>, <xref ref-type="bibr" rid="pone.0182907.ref007">7</xref>–<xref ref-type="bibr" rid="pone.0182907.ref009">9</xref>], but few studies have used recognition tests (the type of test used in eyewitness identification research).</p>
+<p>Studies directly testing the effect of sleep on recognition memory have been equivocal. Recognition of emotionally salient information is better after sleep [<xref ref-type="bibr" rid="pone.0182907.ref013">13</xref>–<xref ref-type="bibr" rid="pone.0182907.ref014">14</xref>] and recognition of neutral information is enhanced after a daytime nap [<xref ref-type="bibr" rid="pone.0182907.ref015">15</xref>–<xref ref-type="bibr" rid="pone.0182907.ref016">16</xref>]. Studies testing the effect of a full night of sleep on neutral information have used the Deese-Roediger-McDermott (DRM) illusory memory paradigm [<xref ref-type="bibr" rid="pone.0182907.ref017">17</xref>–<xref ref-type="bibr" rid="pone.0182907.ref018">18</xref>]. These studies found no effect of sleep on correct recognition of neutral words but show either a reduction in false recognition following sleep [<xref ref-type="bibr" rid="pone.0182907.ref019">19</xref>–<xref ref-type="bibr" rid="pone.0182907.ref020">20</xref>] or no effect of sleep on false recognition [<xref ref-type="bibr" rid="pone.0182907.ref021">21</xref>]. It should be noted that the effect of sleep on false memory seems to be sensitive to testing format as the reverse effect (higher false memory after sleep) is found when a recall test is used [<xref ref-type="bibr" rid="pone.0182907.ref022">22</xref>–<xref ref-type="bibr" rid="pone.0182907.ref024">24</xref>]. The DRM paradigm, however, is unique in that recognizing one item can improve recognition for other items in the list, which may explain the null result for correct recognition. Thus, it is unclear whether the null effect of sleep on correct recognition is restricted to the DRM paradigm or if this null result accurately reflects the effect of sleep on recognition for neutral information across paradigms.</p>
+<p>We investigated the effect of sleep on recognition in an eyewitness memory paradigm to help disambiguate prior results and to broaden the research on sleep-dependent memory consolidation to an ecologically important stimulus. Participants watched a video of a mock-crime and attempted to identify the perpetrator after a retention interval that either spanned a waking day or night of sleep. Experiment 1 utilized a lineup in which the perpetrator was present in the lineup (target-present); Experiment 2 utilized a lineup in which the perpetrator was not present (target-absent). Given substantial findings that sleep is beneficial for memory, we predicted that sleep would facilitate memory retention, resulting in more correct identifications in the target-present lineup, and protect against false recognition, resulting in fewer false identifications in the target-absent lineup.</p>
+</sec>
+<sec id="sec002">
+<title>Experiment 1</title>
+<sec id="sec003" sec-type="materials|methods">
+<title>Methods</title>
+<sec id="sec004">
+<title>Participants</title>
+<p>This study was approved by the Michigan State University Institutional Review Board and meets the federal guidelines for human subjects. We recruited undergraduate students 18–25 years old from Michigan State University with no sleep or memory disorders and who had not seen the 60 Minutes special on eyewitness memory [<xref ref-type="bibr" rid="pone.0182907.ref025">25</xref>]. Participants were enrolled in an introductory psychology course that had not discussed eyewitness memory and received course credit. After exclusions (See <xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref>), we obtained a sample of 198 participants (138 females, <italic>M</italic><sub>age</sub> = 18.90, <italic>SD</italic> = 1.14).</p>
+</sec>
+<sec id="sec005">
+<title>Materials</title>
+<p><underline>Mock-crime video</underline>. The mock-crime video participants watched was modeled after a rooftop bomber video that was used successfully in prior research [<xref ref-type="bibr" rid="pone.0182907.ref026">26</xref>]. The 13.3-second video was shot from the perspective of a witness viewing a young white male planting a bomb on a rooftop. He looks directly at the camera twice before leaving the premises.</p>
+<p><underline>Recognition lineup test.</underline> Participants were tested using a simultaneous (suspects all shown together) target-present (Experiment 1) or target-absent (Experiment 2) lineup consisting of six headshots centered in a row in grayscale. Target-present lineups consisted of the perpetrator and a random selection of five out of six possible fillers who were found to look similar to the perpetrator in pilot testing. Target-absent lineups contained all six fillers but not the perpetrator. The location of each picture was randomized so that the perpetrator and fillers could appear in any position within the lineup. Numbers 1 through 6 appeared below each photo and participants were instructed to press the number to identify that individual as the perpetrator or to press the spacebar to indicate that the perpetrator was absent.</p>
+<p><underline>Stanford Sleepiness Scale (SSS).</underline> SSS [<xref ref-type="bibr" rid="pone.0182907.ref027">27</xref>] assesses how tired or alert participants feel on a 7-point Likert scale (from “Feeling active, vital, alert, or wide awake” to “No longer fighting sleep, sleep onset soon, having dream-like thoughts” with higher numbers corresponding to greater sleepiness.</p>
+<p><underline>Positive and Negative Affect Schedule (PANAS).</underline> PANAS [<xref ref-type="bibr" rid="pone.0182907.ref028">28</xref>] assesses positive and negative affect. Participants rate 20 adjectives on how well each item describes their current mood ranging from “very slightly or not at all” to “extremely.”</p>
+<p><underline>Operation Span (OSPAN).</underline> OSPAN [<xref ref-type="bibr" rid="pone.0182907.ref029">29</xref>] was used to assess working memory capacity. For each trial, participants verified whether an answer provided to an arithmetic problem was true or false and were shown a letter to remember. Each string contained between three and seven math problems and letters. After each string, participants recalled the letters using a 3X4 grid that had a letter presented in each square of the grid for a total of 12 letter options. Participants received three of each string length for a total of 15 strings or 75 letters.</p>
+<p><underline>Morningness Eveningness Questionnaire (MEQ).</underline> MEQ [<xref ref-type="bibr" rid="pone.0182907.ref030">30</xref>] assesses time-of-day preference using a 19-item scale. Based on the score, participants are categorized as either “Definite Morning,” “Moderate Morning,” “Definite Evening,” “Moderate Evening,” or “Neither Morning nor Evening.”</p>
+<p><underline>Pittsburgh Sleep Quality Index (PSQI)</underline>. PSQI [<xref ref-type="bibr" rid="pone.0182907.ref031">31</xref>] measures overall sleep quality with questions in seven key areas: subjective sleep quality, sleep latency, sleep duration, habitual sleep efficiency, sleep disturbances, use of sleep medication, and daytime dysfunction.</p>
+<p><underline>Sleep diaries.</underline> For approximately one week prior to the experiment, participants recorded their sleep, including the time they went to bed and woke up and the number and duration of awakenings during the night.</p>
+</sec>
+<sec id="sec006">
+<title>Procedure</title>
+<p>All participants completed two phases: Encoding and Test. For experimental participants, the two phases were separated by a 12-hour retention interval. The Wake group (n = 47) completed Encoding in the morning (08:00–10:00) and Test in the evening (20:00–22:00). The Sleep group (n = 41) completed Encoding in the evening (20:00–22:00) and Test the following morning (08:00–10:00). Control participants completed both phases in one session, either in the morning, 08:00–10:00 (AM, n = 51), or evening, 20:00–22:00 (PM, n = 59) and were used to assess diurnal or circadian effects on performance. Control participants completed both phases in a single session since this design controls for time-of-day effects without introducing the confound of awake time after encoding, which is known to influence memory [<xref ref-type="bibr" rid="pone.0182907.ref003">3</xref>].</p>
+<p>At the start of the Encoding phase, informed written consent was obtained from all participants. Participants then completed sleepiness (SSS) and mood (PANAS) assessments and watched a single mock-crime video. Participants were instructed to pay close attention to the video. Although multiple observations per participant would be preferable in eyewitness memory research, this would not be a feasible design given the 12-hour delay between the Encoding and Test phases. We chose to use a single observation per participant in order to avoid interference effects caused by watching multiple mock-crime videos in a row and to prevent confusion if multiple tests were given in succession. Following the video, participants completed OSPAN to reduce rehearsal. This phase took approximately 30 minutes.</p>
+<p>The Test phase consisted of SSS, PANAS, and the target-present recognition lineup test. Before viewing the lineup, we gave participants unbiased instructions highlighting the fact that the perpetrator may not be in the lineup, “Look at each man closely and decide if he was the man who committed the crime. Please be aware that the culprit may or may not be present in the lineup.” After making a response, participants rated their confidence on a 7-point Likert scale and completed the MEQ, PSQI, and a demographic questionnaire. This phase took approximately 20 minutes.</p>
+</sec>
+</sec>
+<sec id="sec007" sec-type="results">
+<title>Results</title>
+<sec id="sec008">
+<title>Memory performance</title>
+<p><underline>Recognition lineup test</underline>. Responses were coded into one of three possible categories: Correct Identification (successful identification of the perpetrator), False Identification (incorrect identification of an innocent filler), or No Identification (indication that the perpetrator was not present). We compared performance between the Wake and Sleep groups using a Chi-Square test. We predicted that Sleep would show a higher percentage of Correct Identifications but the groups did not differ, χ<sup>2</sup>(2, <italic>N =</italic> 88) = .43, <italic>p =</italic> .81 (<xref ref-type="table" rid="pone.0182907.t001">Table 1</xref>).</p>
+<table-wrap id="pone.0182907.t001" position="float">
+<object-id pub-id-type="doi">10.1371/journal.pone.0182907.t001</object-id>
+<label>Table 1</label> <caption><title>Recognition lineup test performance and confidence scores in Experiment 1.</title></caption>
+<alternatives>
+<graphic id="pone.0182907.t001g" mimetype="image" position="float" xlink:href="info:doi/10.1371/journal.pone.0182907.t001" xlink:type="simple"/>
+<table>
+<colgroup>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+</colgroup>
+<thead>
+<tr>
+<th align="left" style="border-top:thick"/>
+<th align="center" colspan="3" style="border-top:thick">Lineup Performance</th>
+<th align="center" colspan="3" style="border-top:thick">Confidence</th>
+</tr>
+<tr>
+<th align="center"/>
+<th align="center">Correct ID</th>
+<th align="center">False ID</th>
+<th align="center">No ID</th>
+<th align="center">Correct ID</th>
+<th align="center">False ID</th>
+<th align="center">No ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><bold>Wake</bold></td>
+<td align="center">51% (24)</td>
+<td align="center">23% (11)</td>
+<td align="center">26% (12)</td>
+<td align="center">4.79 (1.10)</td>
+<td align="center">3.00 (1.48)</td>
+<td align="center">4.50 (1.00)</td>
+</tr>
+<tr>
+<td align="left"><bold>Sleep</bold></td>
+<td align="center">49% (20)</td>
+<td align="center">29% (12)</td>
+<td align="center">22% (9)</td>
+<td align="center">5.15 (.93)</td>
+<td align="center">4.08 (1.00)</td>
+<td align="center">3.89 (1.62)</td>
+</tr>
+<tr>
+<td align="left"><bold>AM</bold></td>
+<td align="center">67% (34)</td>
+<td align="center">12% (6)</td>
+<td align="center">22% (11)</td>
+<td align="center">4.97 (1.11)</td>
+<td align="center">4.00 (1.79)</td>
+<td align="center">4.36 (1.43)</td>
+</tr>
+<tr>
+<td align="left" style="border-bottom:thick"><bold>PM</bold></td>
+<td align="center" style="border-bottom:thick">63% (37)</td>
+<td align="center" style="border-bottom:thick">15% (9)</td>
+<td align="center" style="border-bottom:thick">22% (13)</td>
+<td align="center" style="border-bottom:thick">5.14 (1.38)</td>
+<td align="center" style="border-bottom:thick">3.56 (1.24)</td>
+<td align="center" style="border-bottom:thick">4.69 (1.75)</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="t001fn001"><p>Under lineup performance, the percentage and total number of participants (in parenthesis) who made a Correct, False, or No Identification in the experimental (Wake, Sleep) and control groups (AM, PM) in Experiment 1. Under confidence, the mean reported confidence and standard deviations (in parenthesis) for Correct, False, and No Identifications in the experimental and control groups. Higher numbers indicate more confidence.</p></fn>
+</table-wrap-foot>
+</table-wrap>
+<p>Next, we compared confidence using a two factor between-subjects ANOVA with Identification category and Condition as factors. There was a significant effect of Identification category, <italic>F</italic>(2, 82) = 12.00, <italic>MSE =</italic> 1.33, <italic>p</italic> &lt; .001. Post-hoc Tukey tests confirmed that confidence for Correct Identifications was higher than for False Identifications but not higher than No Identifications. Confidence for False and No Identifications did not differ. There was no main effect of Condition, <italic>F</italic>(1, 82) = 1.12, <italic>MSE =</italic> 1.33, <italic>p =</italic> .29, and no interaction, <italic>F</italic>(2, 82) = 2.93, <italic>MSE =</italic> 1.33, <italic>p =</italic> .06 (<xref ref-type="table" rid="pone.0182907.t001">Table 1</xref>).</p>
+<p>To ensure that there were no diurnal or circadian effects, we compared performance between the AM and PM control groups. As expected, we found no difference in ability to recognize the perpetrator, χ<sup>2</sup>(2, <italic>N</italic> = 110) = .31, <italic>p =</italic> .86 (<xref ref-type="table" rid="pone.0182907.t001">Table 1</xref>). We also compared confidence using a between-subjects ANOVA with Identification category and Time (AM, PM) as factors. There was a significant main effect of Identification, <italic>F</italic>(2, 104) = 5.67, <italic>MSE =</italic> 1.87, <italic>p =</italic> .01; confidence was higher for Correct than False Identifications but not reliably different from No Identifications, based on post-hoc Tukey tests. There was no main effect of Time and no interaction, <italic>F’s</italic> &lt; 0.5, <italic>p’s &gt;</italic> .69 (<xref ref-type="table" rid="pone.0182907.t001">Table 1</xref>).</p>
+</sec>
+<sec id="sec009">
+<title>Control measures</title>
+<p><underline>Sleepiness and mood.</underline> We found group differences between the Wake and Sleep groups in sleepiness and mood. However, follow-up analyses confirmed that neither sleepiness nor mood were significant predictors of performance during the lineup test (see <xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref> for full analyses).</p>
+<p><underline>Other control measures</underline>. We also assessed working memory capacity, chronotype, sleep quality, and sleep duration prior to the experiment and found no significant differences between Wake and Sleep or between AM and PM for any measure (See <xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref> for full analyses).</p>
+</sec>
+</sec>
+</sec>
+<sec id="sec010">
+<title>Experiment 2</title>
+<p>Although the Wake and Sleep groups showed similar ability to correctly identify the perpetrator, sleep may still affect performance in a target-absent lineup. Previous studies found lower false recognition after sleep, despite no effect on correct recognition. Therefore, we next used a target-absent lineup to gain a more complete understanding of the effect of sleep on eyewitness memory. We predicted that there would be fewer False Identifications after a retention interval that included sleep compared to wakefulness.</p>
+<sec id="sec011" sec-type="materials|methods">
+<title>Methods</title>
+<sec id="sec012">
+<title>Participants</title>
+<p>Recruitment used the same criteria from Experiment 1. After exclusions (<xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref>), we attained a sample of 238 participants (174 females, <italic>M</italic><sub>age =</sub> 18.89, <italic>SD =</italic> 1.10).</p>
+</sec>
+<sec id="sec013">
+<title>Procedure</title>
+<p>The materials and procedure were the same as Experiment 1 except that we used a target-absent lineup.</p>
+</sec>
+</sec>
+<sec id="sec014" sec-type="results">
+<title>Results</title>
+<sec id="sec015">
+<title>Memory performance</title>
+<p><underline>Recognition lineup test</underline>. The perpetrator was not in the lineup, so there were two possible response categories: False and No Identifications. We used a Chi-Square test to determine if performance differed between Wake (n = 53) and Sleep (n = 43). As predicted, the Sleep group made fewer False Identifications than Wake, χ<sup>2</sup>(1, <italic>N</italic> = 96) = 5.61, <italic>p =</italic> .02 (<xref ref-type="table" rid="pone.0182907.t002">Table 2</xref>).</p>
+<table-wrap id="pone.0182907.t002" position="float">
+<object-id pub-id-type="doi">10.1371/journal.pone.0182907.t002</object-id>
+<label>Table 2</label> <caption><title>Recognition lineup test performance and confidence scores in Experiment 2.</title></caption>
+<alternatives>
+<graphic id="pone.0182907.t002g" mimetype="image" position="float" xlink:href="info:doi/10.1371/journal.pone.0182907.t002" xlink:type="simple"/>
+<table>
+<colgroup>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+<col align="left" valign="middle"/>
+</colgroup>
+<thead>
+<tr>
+<th align="center" style="border-top:thick"/>
+<th align="center" colspan="2" style="border-top:thick;border-right:thick">Lineup Performance</th>
+<th align="center" colspan="2" style="border-top:thick">Confidence</th>
+</tr>
+<tr>
+<th align="center"/>
+<th align="center">False ID</th>
+<th align="center" style="border-right:thick">No ID</th>
+<th align="center">False ID</th>
+<th align="center">No ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><bold>Wake</bold></td>
+<td align="center">66% (35)</td>
+<td align="center" style="border-right:thick">34% (18)</td>
+<td align="center">3.69 (1.11)</td>
+<td align="center">4.56 (1.46)</td>
+</tr>
+<tr>
+<td align="center"><bold>Sleep</bold></td>
+<td align="center">42% (18)</td>
+<td align="center" style="border-right:thick">58% (25)</td>
+<td align="center">3.67 (1.46)</td>
+<td align="center">4.60 (.91)</td>
+</tr>
+<tr>
+<td align="center"><bold>AM</bold></td>
+<td align="center">43% (31)</td>
+<td align="center" style="border-right:thick">58% (42)</td>
+<td align="center">4.06 (1.18)</td>
+<td align="center">4.81 (1.33)</td>
+</tr>
+<tr>
+<td align="center" style="border-bottom:thick"><bold>PM</bold></td>
+<td align="center" style="border-bottom:thick">41% (28)</td>
+<td align="center" style="border-bottom:thick;border-right:thick">59% (41)</td>
+<td align="center" style="border-bottom:thick">4.36 (1.57)</td>
+<td align="center" style="border-bottom:thick">4.54 (1.47)</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="t002fn001"><p>Under lineup performance, the percentage and total number of participants (in parenthesis) who made a False or No Identification in the experimental (Wake, Sleep) and control groups (AM, PM) in Experiment 2. Under confidence, the mean reported confidence and standard deviations (in parenthesis) for False and No Identifications in the experimental and control groups. Higher numbers indicate more confidence.</p></fn>
+</table-wrap-foot>
+</table-wrap>
+<p>To follow-up on the significant effect of sleep on the lineup test, we conducted an additional analysis to help determine the underlying cause. Although prior literature has established that sleep plays an important role in the consolidation of declarative memories [<xref ref-type="bibr" rid="pone.0182907.ref011">11</xref>, <xref ref-type="bibr" rid="pone.0182907.ref032">32</xref>–<xref ref-type="bibr" rid="pone.0182907.ref033">33</xref>], we cannot entirely rule out that the current results were driven by a passive protection from interference. Therefore, we examined whether time spent awake after encoding (i.e. amount of interference) in the Sleep group was related to lineup test performance. For one week prior to the study, we collected information on participants’ habitual bedtime. The average habitual bedtime for the Sleep group was fifty-three minutes after midnight, meaning that participants in this group remained awake for an average 3 hours and 39 minutes after encoding. A logistic regression showed that estimated time awake after encoding in the Sleep group was not related to lineup test performance (β = -.01, p = .30), as one would predict it would have been from an interference account of the current results. This suggests that sleep may have actively consolidated memory for the perpetrator.</p>
+<p>Next, we compared confidence using a two factor between-subjects ANOVA with Condition and Identification category (False, No Identification) as factors. There was a significant main effect of Identification, <italic>F</italic>(1, 92) = 12.43, <italic>MSE =</italic> 1.46, <italic>p =</italic> .001, with higher confidence for No Identifications than False Identifications. The main effect of Condition and the interaction were not significant, <italic>F’s</italic> &lt; 0.02, <italic>p’s &gt;</italic> .90 (<xref ref-type="table" rid="pone.0182907.t002">Table 2</xref>).</p>
+<p>We also compared performance between the AM (n = 73) and PM (n = 69) control groups and found that lineup performance, χ<sup>2</sup>(1, <italic>N</italic> = 142) = .05, <italic>p =</italic> .82, and confidence, <italic>F</italic>(1, 138) = .002, <italic>MSE =</italic> 1.94, <italic>p =</italic> .97, were similar between groups. Once again, participants reported higher confidence for a No identification than a False identification, <italic>F</italic>(1, 138) = 3.70, <italic>MSE =</italic> 1.94, <italic>p =</italic> .05. The interaction was not significant, <italic>F</italic>(1, 138) = 1.42, <italic>MSE =</italic> 1.94, <italic>p =</italic> .24 (<xref ref-type="table" rid="pone.0182907.t002">Table 2</xref>).</p>
+</sec>
+<sec id="sec016">
+<title>Control measures</title>
+<p><underline>Sleepiness and mood</underline>. There were group differences for sleepiness and mood but follow-up analyses revealed that neither sleepiness nor mood predicted performance (see <xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref> for full analyses).</p>
+<p><underline>Other control measures.</underline> There were no significant differences between Wake and Sleep or AM and PM control groups for working memory capacity, chronotype, sleep quality, or average sleep duration (See <xref ref-type="supplementary-material" rid="pone.0182907.s001">S1 Supporting Information</xref> for full analyses).</p>
+</sec>
+</sec>
+</sec>
+<sec id="sec017">
+<title>General discussion</title>
+<p>The current study extends the literature on sleep-dependent memory consolidation by integrating two disparate fields of inquiry–sleep-dependent memory consolidation and eyewitness memory. Participants watched a video of a mock-crime and attempted to identify the perpetrator from a simultaneous lineup after a 12-hour retention interval that either spanned a waking day or a night of sleep. When the perpetrator was absent from the lineup, participants were more likely to correctly reject all fillers if tested after a period of sleep compared to wakefulness. However, when the perpetrator was in the lineup, sleep did not affect the ability to correctly identify the perpetrator. These results cannot be explained by circadian or diurnal effects because control participants performed similarly in both the target-present and target-absent lineups, regardless of time-of-day. The present results also cannot be explained by floor performance masking effects that otherwise would have been detected. A meta-analysis found that participants made a false identification in target-absent simultaneous lineups 51% of the time and correct identifications of the perpetrator 50% of the time in target-present simultaneous lineups [<xref ref-type="bibr" rid="pone.0182907.ref034">34</xref>]. Consistent with prior research, control participants made a False Identification in the target-absent lineup 42% of the time and experimental participants made a Correct Identification 50% of the time. Lastly, although we found differences in sleepiness and mood between the groups, regression analyses indicate that neither sleepiness nor mood predicted performance during the lineup test.</p>
+<p>The present results also help to disambiguate equivocal findings in the literature regarding the role of sleep on recognition memory, especially correct recognition. Some studies using emotional stimuli show higher correct recognition after sleep [<xref ref-type="bibr" rid="pone.0182907.ref013">13</xref>–<xref ref-type="bibr" rid="pone.0182907.ref014">14</xref>]. However, our pattern of results was consistent with recognition studies using the DRM paradigm which find that sleep protects against false recognition but does not affect correct recognition [<xref ref-type="bibr" rid="pone.0182907.ref019">19</xref>–<xref ref-type="bibr" rid="pone.0182907.ref020">20</xref>]. Our eyewitness memory paradigm is quite different from the DRM paradigm, which suggests that this pattern of results generalizes and may accurately reflect recognition memory performance of neutral information following sleep. Although witnessing an actual crime can be a highly emotional experience, the mock-crime video used in this experiment was not designed to be emotionally arousing. Thus, the relationship between sleep and correct recognition performance may be dependent on the emotional nature of the stimuli.</p>
+<p>Although our results align with previous research on recognition memory, it is unclear why sleep produces this pattern of results. These results could be explained either by an active consolidation process [<xref ref-type="bibr" rid="pone.0182907.ref011">11</xref>] or through passive protection from interference [<xref ref-type="bibr" rid="pone.0182907.ref035">35</xref>]. Although we did not find a difference in correct identifications in the target-present lineup, a long line of research has shown that sleep is beneficial for declarative memory (for reviews see [<xref ref-type="bibr" rid="pone.0182907.ref011">11</xref>, <xref ref-type="bibr" rid="pone.0182907.ref032">32</xref>–<xref ref-type="bibr" rid="pone.0182907.ref033">33</xref>]). Sleep may have actively strengthened memory in our experiments, but our single-trial measure may not have been sensitive enough to detect small differences in memory strength. However, memory strength may have had an indirect effect on performance through decision making strategies, an important component of eyewitness identification tests [<xref ref-type="bibr" rid="pone.0182907.ref036">36</xref>]. For example, absolute strategies (comparing each suspect to memory) and relative strategies (comparing suspects to each other to determine who most resembles the perpetrator <italic>relative</italic> to the others) are both useful in positively identifying the perpetrator when he is in the lineup. However, relative strategies tend to increase false identifications when the perpetrator is absent from the lineup, largely because they ignore the possibility that the perpetrator might not be in the lineup [<xref ref-type="bibr" rid="pone.0182907.ref037">37</xref>–<xref ref-type="bibr" rid="pone.0182907.ref038">38</xref>]. Both strategies are used in simultaneous lineups [<xref ref-type="bibr" rid="pone.0182907.ref039">39</xref>–<xref ref-type="bibr" rid="pone.0182907.ref041">41</xref>]. Individuals likely need strong or easily accessible memories to directly compare suspects to memory and implement an absolute strategy. Those with weak memory may be more likely to show signs of deliberation (e.g. revisiting or comparing lineup members) [<xref ref-type="bibr" rid="pone.0182907.ref040">40</xref>], indicative of a relative strategy. Thus, it is possible that sleep strengthened memory and increased the likelihood of using an absolute strategy, which then more directly affected lineup identifications. This could explain the decrease in False Identifications in the target-absent lineup without a corresponding increase in Correct Identification.</p>
+<p>In contrast, these results could also be explained by passive protection from interference during sleep. In this account, sleep does not strengthen memory but provides a period of time in which the memory for the perpetrator was protected from the damaging effects of interference. In contrast, participants in the Wake group remained awake for 12 hours–likely encountering other faces that may have interfered with their memory for the perpetrator. Although it is possible that interference would decrease performance in both target-present and target-absent lineups, the presence of the actual perpetrator in the target-present lineup may have triggered enough familiarity that participants in the Wake group were able to frequently make a Correct Identification. Therefore, the target-absent lineup may be more sensitive to detecting small changes in memory strength between the groups.</p>
+<p>Although consolidation during sleep or passive protection from interference could account for the pattern of results in the current study, the passive interference account falls short in several regards. First, while the Wake group undoubtedly experienced more interference overall, both the Wake and Sleep groups experienced interference at the most critical time for new memories–immediately after encoding [<xref ref-type="bibr" rid="pone.0182907.ref042">42</xref>–<xref ref-type="bibr" rid="pone.0182907.ref043">43</xref>]. Both groups completed Operation Span, an engaging task that takes approximately 20 minutes to complete, immediately after watching the mock-crime video. Additionally, we estimate that participants in the Sleep group spent an additional 3 hours and 39 minutes awake after encoding, time in which they likely encoded much interfering information. Despite this, the Sleep group made fewer False Identifications in a target-absent lineup. Second, estimated time spent awake after encoding in the Sleep group was not related to lineup performance. If amount of interference experienced during waking hours was driving the current result for the target-absent lineup, then individuals who spent less time awake should show better lineup performance. Therefore, while we do not entirely rule out interference as a factor influencing the current results, a purely interference-based account appears insufficient to fully explain the current findings.</p>
+<p>Using an eyewitness design, this study provides additional insight on sleep and recognition memory. Consistent with previous research using neutral stimuli, we found that sleep reduced false identifications in a target-absent lineup but had no effect on correct identifications in a target-present lineup. These results could reflect changes in memory strength and decision making strategies after sleep, or they could be the result of increased interference after waking. Further research is needed to fully understand how sleep affects eyewitness memory, recognition memory, and decision making. However, the current study provides an important first step towards understanding how the complicated systems of sleep-dependent consolidation, memory, and decision making interact to influence behavior.</p>
+</sec>
+<sec id="sec018">
+<title>Supporting information</title>
+<supplementary-material id="pone.0182907.s001" mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document" position="float" xlink:href="info:doi/10.1371/journal.pone.0182907.s001" xlink:type="simple">
+<label>S1 Supporting Information</label>
+<caption>
+<title>Additional methods and analyses of control measures.</title>
+<p>(DOCX)</p>
+</caption>
+</supplementary-material>
+</sec>
+</body>
+<back>
+<ref-list>
+<title>References</title>
+<ref id="pone.0182907.ref001"><label>1</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Fenn</surname> <given-names>K.M.</given-names></name> &amp; <name name-style="western"><surname>Hambrick</surname> <given-names>D.Z.</given-names></name> (<year>2013</year>). <article-title>What drives sleep-dependent memory consolidation: Greater gain or less loss?</article-title> <source>Psychonomic Bulletin &amp; Review</source>, <volume>20</volume>(<issue>3</issue>), <fpage>501</fpage>–<lpage>506</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref002"><label>2</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Fenn</surname> <given-names>K.M.</given-names></name>, &amp; <name name-style="western"><surname>Hambrick</surname> <given-names>D.Z.</given-names></name> (<year>2015</year>). <article-title>General intelligence predicts memory change across sleep</article-title>. <source>Psychonomic Bulletin &amp; Review</source>, <volume>22</volume>(<issue>3</issue>), <fpage>791</fpage>–<lpage>799</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref003"><label>3</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Gais</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Lucas</surname> <given-names>B.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>2006</year>). <article-title>Sleep after learning aids memory recall</article-title>. <source>Learning &amp; Memory</source>, <volume>13</volume>(<issue>3</issue>), <fpage>259</fpage>–<lpage>262</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref004"><label>4</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Plihal</surname> <given-names>W.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>1997</year>). <article-title>Effects of early and late nocturnal sleep on declarative and procedural memory</article-title>. <source>Journal of cognitive neuroscience</source>, <volume>9</volume>(<issue>4</issue>), <fpage>534</fpage>–<lpage>547</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1162/jocn.1997.9.4.534" xlink:type="simple">10.1162/jocn.1997.9.4.534</ext-link></comment> <object-id pub-id-type="pmid">23968216</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref005"><label>5</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Ferrara</surname> <given-names>M.</given-names></name>, <name name-style="western"><surname>Iaria</surname> <given-names>G.</given-names></name>, <name name-style="western"><surname>Tempesta</surname> <given-names>D.</given-names></name>, <name name-style="western"><surname>Curcio</surname> <given-names>G.</given-names></name>, <name name-style="western"><surname>Moroni</surname> <given-names>F.</given-names></name>, <name name-style="western"><surname>Marzano</surname> <given-names>C.</given-names></name>, <etal>et al</etal>. (<year>2008</year>). <article-title>Sleep to find your way: the role of sleep in the consolidation of memory for navigation in humans</article-title>. <source>Hippocampus</source>, <volume>18</volume>(<issue>8</issue>), <fpage>844</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/hipo.20444" xlink:type="simple">10.1002/hipo.20444</ext-link></comment> <object-id pub-id-type="pmid">18493970</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref006"><label>6</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Peigneux</surname> <given-names>P.</given-names></name>, <name name-style="western"><surname>Laureys</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Fuchs</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Collette</surname> <given-names>F.</given-names></name>, <name name-style="western"><surname>Perrin</surname> <given-names>F.</given-names></name>, <name name-style="western"><surname>Reggers</surname> <given-names>J.</given-names></name>, <etal>et al</etal>. (<year>2004</year>). <article-title>Are spatial memories strengthened in the human hippocampus during slow wave sleep?</article-title> <source>Neuron</source>, <volume>44</volume>(<issue>3</issue>), <fpage>535</fpage>–<lpage>545</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.neuron.2004.10.007" xlink:type="simple">10.1016/j.neuron.2004.10.007</ext-link></comment> <object-id pub-id-type="pmid">15504332</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref007"><label>7</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Plihal</surname> <given-names>W.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>1999</year>). <article-title>Effects of early and late nocturnal sleep on priming and spatial memory</article-title>. <source>Psychophysiology</source>, <volume>36</volume>(<issue>5</issue>), <fpage>571</fpage>–<lpage>582</lpage>. <object-id pub-id-type="pmid">10442025</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref008"><label>8</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Ellenbogen</surname> <given-names>J.M.</given-names></name>, <name name-style="western"><surname>Hulbert</surname> <given-names>J.C.</given-names></name>, <name name-style="western"><surname>Jiang</surname> <given-names>Y.</given-names></name>, &amp; <name name-style="western"><surname>Stickgold</surname> <given-names>R.</given-names></name> (<year>2009</year>). <article-title>The sleeping brain's influence on verbal memory: boosting resistance to interference</article-title>. <source>PLoS One</source>, <volume>4</volume>(<issue>1</issue>), <fpage>e4117</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0004117" xlink:type="simple">10.1371/journal.pone.0004117</ext-link></comment> <object-id pub-id-type="pmid">19127287</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref009"><label>9</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Ellenbogen</surname> <given-names>J.M.</given-names></name>, <name name-style="western"><surname>Hulbert</surname> <given-names>J. C.</given-names></name>, <name name-style="western"><surname>Stickgold</surname> <given-names>R.</given-names></name>, <name name-style="western"><surname>Dinges</surname> <given-names>D.F.</given-names></name>, &amp; <name name-style="western"><surname>Thompson-Schill</surname> <given-names>S.L.</given-names></name> (<year>2006</year>). <article-title>Interfering with theories of sleep and memory: sleep, declarative memory, and associative interference</article-title>. <source>Current Biology</source>, <volume>16</volume>(<issue>13</issue>), <fpage>1290</fpage>–<lpage>1294</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.cub.2006.05.024" xlink:type="simple">10.1016/j.cub.2006.05.024</ext-link></comment> <object-id pub-id-type="pmid">16824917</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref010"><label>10</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Talamini</surname> <given-names>L.M.</given-names></name>, <name name-style="western"><surname>Nieuwenhuis</surname> <given-names>I.L.</given-names></name>, <name name-style="western"><surname>Takashima</surname> <given-names>A.</given-names></name>, &amp; <name name-style="western"><surname>Jensen</surname> <given-names>O.</given-names></name> (<year>2008</year>). <article-title>Sleep directly following learning benefits consolidation of spatial associative memory</article-title>. <source>Learning &amp; Memory</source>, <volume>15</volume>(<issue>4</issue>), <fpage>233</fpage>–<lpage>237</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref011"><label>11</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Walker</surname> <given-names>M.P.</given-names></name> (<year>2009</year>). <article-title>The role of slow wave sleep in memory processing</article-title>. <source>Journal of clinical sleep medicine: JCSM: official publication of the American Academy of Sleep Medicine</source>, <issue>5</issue>(<issue>2</issue> Suppl), <fpage>S20</fpage>–<lpage>6</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref012"><label>12</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Rasch</surname> <given-names>B.</given-names></name>, <name name-style="western"><surname>Büchel</surname> <given-names>C.</given-names></name>, <name name-style="western"><surname>Gais</surname> <given-names>S.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>2007</year>). <article-title>Odor cues during slow-wave sleep prompt declarative memory consolidation</article-title>. <source>Science</source>, <volume>315</volume>(<issue>5817</issue>), <fpage>1426</fpage>–<lpage>1429</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.1138581" xlink:type="simple">10.1126/science.1138581</ext-link></comment> <object-id pub-id-type="pmid">17347444</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref013"><label>13</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Payne</surname> <given-names>J.D.</given-names></name>, <name name-style="western"><surname>Stickgold</surname> <given-names>R.</given-names></name>, <name name-style="western"><surname>Swanberg</surname> <given-names>K.</given-names></name>, &amp; <name name-style="western"><surname>Kensinger</surname> <given-names>E.A.</given-names></name> (<year>2008</year>). <article-title>Sleep preferentially enhances memory for emotional components of scenes</article-title>. <source>Psychological Science</source>, <volume>19</volume>(<issue>8</issue>), <fpage>781</fpage>–<lpage>788</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1467-9280.2008.02157.x" xlink:type="simple">10.1111/j.1467-9280.2008.02157.x</ext-link></comment> <object-id pub-id-type="pmid">18816285</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref014"><label>14</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Hu</surname> <given-names>P.</given-names></name>, <name name-style="western"><surname>Stylos-Allan</surname> <given-names>M.</given-names></name>, &amp; <name name-style="western"><surname>Walker</surname> <given-names>M.P.</given-names></name> (<year>2006</year>). <article-title>Sleep facilitates consolidation of emotional declarative memory</article-title>. <source>Psychological Science</source>, <volume>17</volume>(<issue>10</issue>), <fpage>891</fpage>–<lpage>898</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1467-9280.2006.01799.x" xlink:type="simple">10.1111/j.1467-9280.2006.01799.x</ext-link></comment> <object-id pub-id-type="pmid">17100790</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref015"><label>15</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Alger</surname> <given-names>S.E.</given-names></name>, <name name-style="western"><surname>Lau</surname> <given-names>H.</given-names></name>, &amp; <name name-style="western"><surname>Fishbein</surname> <given-names>W.</given-names></name> (<year>2010</year>). <article-title>Delayed onset of a daytime nap facilitates retention of declarative memory</article-title>. <source>PloS One</source>, <volume>5</volume>(<issue>8</issue>).</mixed-citation></ref>
+<ref id="pone.0182907.ref016"><label>16</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Schönauer</surname> <given-names>M.</given-names></name>, <name name-style="western"><surname>Pawlizki</surname> <given-names>A.</given-names></name>, <name name-style="western"><surname>Köck</surname> <given-names>C.</given-names></name>, &amp; <name name-style="western"><surname>Gais</surname> <given-names>S.</given-names></name> (<year>2014</year>). <article-title>Exploring the effect of sleep and reduced interference on different forms of declarative memory</article-title>. <source>Sleep</source>, <volume>37</volume>(<issue>12</issue>), <fpage>1995</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5665/sleep.4258" xlink:type="simple">10.5665/sleep.4258</ext-link></comment> <object-id pub-id-type="pmid">25325490</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref017"><label>17</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Deese</surname> <given-names>J.</given-names></name> (<year>1959</year>). <article-title>On the prediction of occurrence of particular verbal intrusions in immediate recall</article-title>. <source>Journal of experimental psychology</source>, <volume>58</volume>(<issue>1</issue>), <fpage>17</fpage>. <object-id pub-id-type="pmid">13664879</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref018"><label>18</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Roediger</surname> <given-names>H.L.</given-names></name>, &amp; <name name-style="western"><surname>McDermott</surname> <given-names>K.B.</given-names></name> (<year>1995</year>). <article-title>Creating false memories: Remembering words not presented in lists</article-title>. <source>Journal of experimental psychology: Learning, Memory, and Cognition</source>, <volume>21</volume>(<issue>4</issue>), <fpage>803</fpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref019"><label>19</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Fenn</surname> <given-names>K.M.</given-names></name>, <name name-style="western"><surname>Gallo</surname> <given-names>D.A.</given-names></name>, <name name-style="western"><surname>Margoliash</surname> <given-names>D.</given-names></name>, <name name-style="western"><surname>Roediger</surname> <given-names>H.L.</given-names></name>, &amp; <name name-style="western"><surname>Nusbaum</surname> <given-names>H.C.</given-names></name> (<year>2009</year>). <article-title>Reduced false memory after sleep</article-title>. <source>Learning &amp; Memory</source>, <volume>16</volume>(<issue>9</issue>), <fpage>509</fpage>–<lpage>513</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref020"><label>20</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Lo</surname> <given-names>J.C.</given-names></name>, <name name-style="western"><surname>Sim</surname> <given-names>S.K.</given-names></name>, &amp; <name name-style="western"><surname>Chee</surname> <given-names>M.W.</given-names></name> (<year>2014</year>). <article-title>Sleep reduces false memory in healthy older adults</article-title>. <source>Sleep</source>, <volume>37</volume>(<issue>4</issue>), <fpage>665</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5665/sleep.3564" xlink:type="simple">10.5665/sleep.3564</ext-link></comment> <object-id pub-id-type="pmid">24744453</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref021"><label>21</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Diekelmann</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Landolt</surname> <given-names>H.P.</given-names></name>, <name name-style="western"><surname>Lahl</surname> <given-names>O.</given-names></name>, <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name>, &amp; <name name-style="western"><surname>Wagner</surname> <given-names>U.</given-names></name> (<year>2008</year>). <article-title>Sleep loss produces false memories</article-title>. <source>PLoS One</source>, <volume>3</volume>(<issue>10</issue>), <fpage>e3512</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0003512" xlink:type="simple">10.1371/journal.pone.0003512</ext-link></comment> <object-id pub-id-type="pmid">18946511</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref022"><label>22</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>McKeon</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Pace-Schott</surname> <given-names>E.F.</given-names></name>, &amp; <name name-style="western"><surname>Spencer</surname> <given-names>R.M.</given-names></name> (<year>2012</year>). <article-title>Interaction of sleep and emotional content on the production of false memories</article-title>. <source>PloS one</source>,<volume>7</volume>(<issue>11</issue>), <fpage>e49353</fpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0049353" xlink:type="simple">10.1371/journal.pone.0049353</ext-link></comment> <object-id pub-id-type="pmid">23145159</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref023"><label>23</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Diekelmann</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name>, &amp; <name name-style="western"><surname>Wagner</surname> <given-names>U.</given-names></name> (<year>2010</year>). <article-title>Sleep enhances false memories depending on general memory performance</article-title>. <source>Behavioural brain research</source>, <volume>208</volume>(<issue>2</issue>), <fpage>425</fpage>–<lpage>429</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.bbr.2009.12.021" xlink:type="simple">10.1016/j.bbr.2009.12.021</ext-link></comment> <object-id pub-id-type="pmid">20035789</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref024"><label>24</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Payne</surname> <given-names>J.D.</given-names></name>, <name name-style="western"><surname>Schacter</surname> <given-names>D.L.</given-names></name>, <name name-style="western"><surname>Propper</surname> <given-names>R.E.</given-names></name>, <name name-style="western"><surname>Huang</surname> <given-names>L.W.</given-names></name>, <name name-style="western"><surname>Wamsley</surname> <given-names>E.J.</given-names></name>, <name name-style="western"><surname>Tucker</surname> <given-names>M.A.</given-names></name>, <etal>et al</etal>. (<year>2009</year>). <article-title>The role of sleep in false memory formation</article-title>. <source>Neurobiology of learning and memory</source>, <volume>92</volume>(<issue>3</issue>), <fpage>327</fpage>–<lpage>334</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.nlm.2009.03.007" xlink:type="simple">10.1016/j.nlm.2009.03.007</ext-link></comment> <object-id pub-id-type="pmid">19348959</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref025"><label>25</label><mixed-citation publication-type="other" xlink:type="simple">Stahl, L (Journalist). (2009). 60 Minutes: Eyewitness [Television broadcast]. 60 Minutes. Los Angeles, California: CBS Broadcasting Inc.</mixed-citation></ref>
+<ref id="pone.0182907.ref026"><label>26</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wells</surname> <given-names>G.L.</given-names></name>, <name name-style="western"><surname>Olson</surname> <given-names>E.A.</given-names></name>, &amp; <name name-style="western"><surname>Charman</surname> <given-names>S.D.</given-names></name> (<year>2003</year>). <article-title>Distorted retrospective eyewitness reports as functions of feedback and delay</article-title>. <source>Journal of Experimental Psychology: Applied</source>, <volume>9</volume>(<issue>1</issue>), <fpage>42</fpage>. <object-id pub-id-type="pmid">12710837</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref027"><label>27</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Hoddes</surname> <given-names>E.</given-names></name>, <name name-style="western"><surname>Zarcone</surname> <given-names>V.</given-names></name>, <name name-style="western"><surname>Smythe</surname> <given-names>H.</given-names></name>, <name name-style="western"><surname>Phillips</surname> <given-names>R.</given-names></name>, &amp; <name name-style="western"><surname>Dement</surname> <given-names>W.C.</given-names></name> (<year>1973</year>). <article-title>Quantification of sleepiness: a new approach</article-title>. <source>Psychophysiology</source>, <volume>10</volume>(<issue>4</issue>), <fpage>431</fpage>–<lpage>436</lpage>. <object-id pub-id-type="pmid">4719486</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref028"><label>28</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Watson</surname> <given-names>D.</given-names></name>, <name name-style="western"><surname>Clark</surname> <given-names>L.A.</given-names></name>, &amp; <name name-style="western"><surname>Tellegen</surname> <given-names>A.</given-names></name> (<year>1988</year>). <article-title>Development and validation of brief measures of positive and negative affect: the PANAS scales</article-title>. <source>Journal of personality and social psychology</source>, <volume>54</volume>(<issue>6</issue>), <fpage>1063</fpage>. <object-id pub-id-type="pmid">3397865</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref029"><label>29</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Unsworth</surname> <given-names>N.</given-names></name>, <name name-style="western"><surname>Heitz</surname> <given-names>R.P.</given-names></name>, <name name-style="western"><surname>Schrock</surname> <given-names>J.C.</given-names></name>, &amp; <name name-style="western"><surname>Engle</surname> <given-names>R.W.</given-names></name> (<year>2005</year>). <article-title>An automated version of the operation span task</article-title>. <source>Behavior Research Methods</source>, <volume>37</volume>(<issue>3</issue>), <fpage>498</fpage>–<lpage>505</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3758/BF03192720" xlink:type="simple">10.3758/BF03192720</ext-link></comment> <object-id pub-id-type="pmid">16405146</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref030"><label>30</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Horne</surname> <given-names>J.A.</given-names></name>, &amp; <name name-style="western"><surname>Ostberg</surname> <given-names>O.</given-names></name> (<year>1975</year>). <article-title>A self-assessment questionnaire to determine morningness-eveningness in human circadian rhythms</article-title>. <source>International journal of chronobiology</source>, <volume>4</volume>(<issue>2</issue>), <fpage>97</fpage>–<lpage>110</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref031"><label>31</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Buysse</surname> <given-names>D.J.</given-names></name>, <name name-style="western"><surname>Reynolds</surname> <given-names>C.F.</given-names></name>, <name name-style="western"><surname>Monk</surname> <given-names>T.H.</given-names></name>, <name name-style="western"><surname>Berman</surname> <given-names>S.R.</given-names></name>, &amp; <name name-style="western"><surname>Kupfer</surname> <given-names>D.J.</given-names></name> (<year>1989</year>). <article-title>The Pittsburgh Sleep Quality Index (PSQI): A new instrument for psychiatric research and practice</article-title>. <source>Psychiatry Research</source>, <volume>28</volume>(<issue>2</issue>), <fpage>193</fpage>–<lpage>213</lpage>. <object-id pub-id-type="pmid">2748771</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref032"><label>32</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Diekelmann</surname> <given-names>S.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>2010</year>). <article-title>The memory function of sleep</article-title>. <source>Nature Reviews Neuroscience</source>, <volume>11</volume>(<issue>2</issue>), <fpage>114</fpage>–<lpage>126</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrn2762" xlink:type="simple">10.1038/nrn2762</ext-link></comment> <object-id pub-id-type="pmid">20046194</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref033"><label>33</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Marshall</surname> <given-names>L.</given-names></name>, &amp; <name name-style="western"><surname>Born</surname> <given-names>J.</given-names></name> (<year>2007</year>). <article-title>The contribution of sleep to hippocampus-dependent memory consolidation</article-title>. <source>Trends in cognitive sciences</source>, <volume>11</volume>(<issue>10</issue>), <fpage>442</fpage>–<lpage>450</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.tics.2007.09.001" xlink:type="simple">10.1016/j.tics.2007.09.001</ext-link></comment> <object-id pub-id-type="pmid">17905642</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref034"><label>34</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Steblay</surname> <given-names>N.</given-names></name>, <name name-style="western"><surname>Dysart</surname> <given-names>J.</given-names></name>, <name name-style="western"><surname>Fulero</surname> <given-names>S.</given-names></name>, &amp; <name name-style="western"><surname>Lindsay</surname> <given-names>R.C.</given-names></name> (<year>2001</year>). <article-title>Eyewitness accuracy rates in sequential and simultaneous lineup presentations: a meta-analytic comparison</article-title>. <source>Law and human behavior</source>, <volume>25</volume>(<issue>5</issue>), <fpage>459</fpage>. <object-id pub-id-type="pmid">11688368</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref035"><label>35</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wixted</surname> <given-names>J.T.</given-names></name> (<year>2004</year>). <article-title>The psychology and neuroscience of forgetting</article-title>. <source>Annu. Rev. Psychol.</source>, <volume>55</volume>, <fpage>235</fpage>–<lpage>269</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1146/annurev.psych.55.090902.141555" xlink:type="simple">10.1146/annurev.psych.55.090902.141555</ext-link></comment> <object-id pub-id-type="pmid">14744216</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref036"><label>36</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wells</surname> <given-names>G. L.</given-names></name> (<year>1984</year>). <article-title>The Psychology of Lineup Identifications</article-title>. <source>Journal of Applied Social Psychology</source>, <volume>14</volume>(<issue>2</issue>), <fpage>89</fpage>–<lpage>103</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref037"><label>37</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wells</surname> <given-names>G.L.</given-names></name> (<year>1993</year>). <article-title>What do we know about eyewitness identification?</article-title> <source>American Psychologist</source>, <volume>48</volume>(<issue>5</issue>), <fpage>553</fpage>. <object-id pub-id-type="pmid">8507052</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref038"><label>38</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wells</surname> <given-names>G.L.</given-names></name>, <name name-style="western"><surname>Small</surname> <given-names>M.</given-names></name>, <name name-style="western"><surname>Penrod</surname> <given-names>S.</given-names></name>, <name name-style="western"><surname>Malpass</surname> <given-names>R.S.</given-names></name>, <name name-style="western"><surname>Fulero</surname> <given-names>S.M.</given-names></name>, &amp; <name name-style="western"><surname>Brimacombe</surname> <given-names>C.E.</given-names></name> (<year>1998</year>). <article-title>Eyewitness identification procedures: Recommendations for lineups and photospreads</article-title>. <source>Law and Human behavior</source>, <volume>22</volume>(<issue>6</issue>), <fpage>603</fpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref039"><label>39</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Dunning</surname> <given-names>D.</given-names></name> &amp; <name name-style="western"><surname>Stern</surname> <given-names>L.B.</given-names></name> (<year>1994</year>). <article-title>Distinguishing accurate from inaccurate eyewitness identifications via inquiries about decision processes</article-title>. <source>Journal of Personality and Social Psychology</source>, <volume>67</volume>(<issue>5</issue>), <fpage>818</fpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref040"><label>40</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Flowe</surname> <given-names>H.</given-names></name>, &amp; <name name-style="western"><surname>Cottrell</surname> <given-names>G.W.</given-names></name> (<year>2011</year>). <article-title>An examination of simultaneous lineup identification decision processes using eye tracking</article-title>. <source>Applied Cognitive Psychology</source>, <volume>25</volume>(<issue>3</issue>), <fpage>443</fpage>–<lpage>451</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref041"><label>41</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Kneller</surname> <given-names>W.</given-names></name>, <name name-style="western"><surname>Memon</surname> <given-names>A.</given-names></name>, &amp; <name name-style="western"><surname>Stevenage</surname> <given-names>S.</given-names></name> (<year>2001</year>). <article-title>Simultaneous and sequential lineups: Decision processes of accurate and inaccurate eyewitnesses</article-title>. <source>Applied Cognitive Psychology</source>, <volume>15</volume>(<issue>6</issue>), <fpage>659</fpage>–<lpage>671</lpage>.</mixed-citation></ref>
+<ref id="pone.0182907.ref042"><label>42</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Wixted</surname> <given-names>J. T.</given-names></name> (<year>2004</year>). <article-title>The psychology and neuroscience of forgetting</article-title>. <source>Annu. Rev. Psychol.</source>, <volume>55</volume>, <fpage>235</fpage>–<lpage>269</lpage>. <comment>doi: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1146/annurev.psych.55.090902.141555" xlink:type="simple">10.1146/annurev.psych.55.090902.141555</ext-link></comment> <object-id pub-id-type="pmid">14744216</object-id></mixed-citation></ref>
+<ref id="pone.0182907.ref043"><label>43</label><mixed-citation publication-type="journal" xlink:type="simple"><name name-style="western"><surname>Landauer</surname> <given-names>T. K.</given-names></name> (<year>1974</year>). <article-title>Consolidation in human memory: Retrograde amnestic effects of confusable items in paired-associate learning</article-title>. <source>Journal of Verbal Learning and Verbal Behavior</source>, <volume>13</volume>(<issue>1</issue>), <fpage>45</fpage>–<lpage>53</lpage>.</mixed-citation></ref>
+</ref-list>
+</back>
+</article>

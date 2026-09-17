@@ -1,0 +1,74 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "ppb-open-structure",
+    "title": "Ten simple rules for structuring papers",
+    "text": "## Overview\n\nGood scientific writing is essential to career development and to the progress of science. A well-structured manuscript allows readers and reviewers to get excited about the subject matter, to understand and verify the paper’s contributions, and to integrate these contributions into a broader context. However, many scientists struggle with producing high-quality manuscripts and are typically untrained in paper writing. Focusing on how readers consume information, we present a set of ten simple rules to help you communicate the main idea of your paper. These rules are designed to make your paper more influential and the process of writing more efficient and pleasurable.\n\n## Rule 1: Focus your paper on a central contribution, which you communicate in the title\n\nYour communication efforts are successful if readers can still describe the main contribution of your paper to their colleagues a year after reading it. Although it is clear that a paper often needs to communicate a number of innovations on the way to its final message, it does not pay to be greedy. Focus on a single message; papers that simultaneously focus on multiple contributions tend to be less convincing about each and are therefore less memorable.\n\nThe most important element of a paper is the title—think of the ratio of the number of titles you read to the number of papers you read. The title is typically the first element a reader encounters, so its quality [3] determines whether the reader will invest time in reading the abstract.\n\nThe title not only transmits the paper’s central contribution but can also serve as a constant reminder (to you) to focus the text on transmitting that idea. Science is, after all, the abstraction of simple principles from complex data. The title is the ultimate refinement of the paper’s contribution. Thinking about the title early—and regularly returning to hone it—can help not only the writing of the paper but also the process of designing experiments or developing theories.\n\nThis Rule of One is the most difficult rule to optimally implement because it comes face-to-face with the key challenge of science, which is to make the claim and/or model as simple as the data and logic can support but no simpler. In the end, your struggle to find this balance may appropriately result in “one contribution” that is multifaceted. For example, a technology paper may describe both its new technology and a biological result using it; the bridge that unifies these two facets is a clear description of how the new technology can be used to do new biology.\n\n## Rule 2: Write for flesh-and-blood human beings who do not know your work\n\nBecause you are the world’s leading expert at exactly what you are doing, you are also the world’s least qualified person to judge your writing from the perspective of the naïve reader. The majority of writing mistakes stem from this predicament. Think like a designer—for each element, determine the impact that you want to have on people and then strive to achieve that objective [4]. Try to think through the paper like a naïve reader who must first be made to care about the problem you are addressing (see Rule 6) and then will want to understand your answer with minimal effort.\n\nDefine technical terms clearly because readers can become frustrated when they encounter a word that they don’t understand. Avoid abbreviations and acronyms so that readers do not have to go back to earlier sections to identify them.\n\nThe vast knowledge base of human psychology is useful in paper writing. For example, people have working memory constraints in that they can only remember a small number of items and are better at remembering the beginning and the end of a list than the middle [5]. Do your best to minimize the number of loose threads that the reader has to keep in mind at any one time.",
+    "taskType": "discursive",
+    "prompt": "Brett Mensh, Konrad Kording (2017) · PLOS\nOverview and Rules 1–2. Selected passages, not the complete paper.\nhttps://doi.org/10.1371/journal.pcbi.1005619\nCC BY · http://creativecommons.org/licenses/by/4.0/\nOriginal wording retained; paragraph spacing and Markdown headings adapted. PPB margin notes are editorial teaching commentary, not statements by the authors. Reference numbers refer to the original paper.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "structure-0",
+      "start": 13,
+      "end": 93,
+      "quote": "Good scientific writing is essential to career development and to the progress o",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Source & reuse",
+      "body": "Brett Mensh, Konrad Kording (2017). Ten simple rules for structuring papers. DOI: 10.1371/journal.pcbi.1005619\nCC BY: http://creativecommons.org/licenses/by/4.0/\nSelection: Overview and Rules 1–2. Layout adapted; teaching notes added by PPB. No endorsement implied.",
+      "side": "left",
+      "tag": "gray"
+    },
+    {
+      "id": "structure-1",
+      "start": 1084,
+      "end": 1109,
+      "quote": "Focus on a single message",
+      "kind": "structure",
+      "level": "essay",
+      "label": "Central claim",
+      "body": "Use one main contribution to organise a paragraph or paper. Supporting ideas can be complex while still serving the same claim.",
+      "side": "right",
+      "tag": "blue"
+    },
+    {
+      "id": "structure-2",
+      "start": 2189,
+      "end": 2247,
+      "quote": "as simple as the data and logic can support but no simpler",
+      "kind": "comment",
+      "level": "essay",
+      "label": "Scope and evidence",
+      "body": "The qualification prevents clarity from turning into oversimplification. This is guidance about scientific writing, not experimental evidence.",
+      "side": "left",
+      "tag": "green"
+    },
+    {
+      "id": "structure-3",
+      "start": 3253,
+      "end": 3283,
+      "quote": "Define technical terms clearly",
+      "kind": "vocabulary",
+      "level": "essay",
+      "label": "Reader knowledge",
+      "body": "Make a term understandable before using it to carry an argument. In a classroom, ask the reader to paraphrase the definition.",
+      "side": "right",
+      "tag": "purple"
+    },
+    {
+      "id": "structure-4",
+      "start": 3770,
+      "end": 3806,
+      "quote": "minimize the number of loose threads",
+      "kind": "vocabulary",
+      "level": "essay",
+      "label": "Coherence",
+      "body": "“Loose threads” is a metaphor for unresolved ideas the reader has to remember. Finish one line of reasoning before opening several others.",
+      "side": "left",
+      "tag": "orange"
+    }
+  ]
+}

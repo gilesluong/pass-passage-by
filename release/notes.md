@@ -1,11 +1,9 @@
-## Read together. Work with your own agent.
+## Reading, search and navigation fixes
 
-- A cinematic reading carousel and horizontal document shelves, with a fixed sidebar and one search field.
-- Pin real writing from your library to the homepage. Featured text now matches the file it opens; no invented partner credentials or band claims.
-- Hold Option for pointer highlighting. Option-H switches between hold-to-highlight and continuous highlighting.
-- Settings includes theme previews and a visual reading path: click Paragraph or Sentence to move it into or out of your zoom route.
-- An explicit selection comment action (Option-Command-M); margin annotations no longer open overlays just by hovering.
-- A local, dependency-free Python MCP connector for explicitly shared writing and a separate result Inbox. File/skill exchange remains available for other agents.
-- Preserves native OCR, direct task editing, dictionaries and the 20 annotated IELTS practice samples.
+- Fixed horizontal page drift when swiping. The sidebar stays in place; document shelves still scroll horizontally.
+- Search updates as you type and matches full document text, task prompts and margin annotations. Results use a grid with matching counts and an empty state.
+- Click the task prompt to edit it directly; edits save automatically. Add task remains available for documents without a prompt.
+- Refined Discover hierarchy, card density, featured titles, excerpts and sidebar selection; removed decorative clutter and nonfunctional section arrows.
+- Added four credited CC BY research/writing selections from PLOS, with 20 teaching annotations. The existing 20 IELTS practice essays remain available.
 
-Local MCP requires a supporting host and Python 3. AI usage follows that host's account and plan; PPB does not require API keys or download models. Development preview: Apple Silicon, macOS 13+, Sparkle Ed25519-signed archive; app is not Apple-notarized.
+Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized. No AI model downloads.

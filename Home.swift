@@ -1,5 +1,20 @@
 import Cocoa
+
+func readingType(_ raw:String)->String {
+    switch raw {case "task1":return "IELTS · Task 1";case "task2":return "IELTS · Task 2";case "research":return "Research";case "discursive":return "Essay";default:return "Writing"}
+}
 import UniformTypeIdentifiers
+
+func readingPreview(_ text:String)->String {
+    text.components(separatedBy:"\n").filter{!$0.trimmingCharacters(in:.whitespaces).hasPrefix("#")}.joined(separator:" ")
+}
+func featuredTitle(_ doc:Breakdown)->String {
+    switch doc.document.id {
+    case "ppb-open-workplace": return "Enhancing workplace digital learning"
+    case "ppb-open-sleep": return "Sleep and eyewitness memory"
+    default:return doc.document.title
+    }
+}
 
 final class SidebarItemButton: NSButton {
     override var isFlipped: Bool { true }
@@ -120,7 +135,8 @@ final class AppleTVSidebarItem: NSButton {
     }
 
     func updateItemStyle() {
-        let fgColor: NSColor = isSelected ? .white : (isSearch ? .secondaryLabelColor : .labelColor)
+        let fgColor: NSColor = isSearch ? .secondaryLabelColor : .labelColor
+        setAccessibilityLabel(itemTitle)
         titleLabelView.stringValue = itemTitle
         titleLabelView.font = .systemFont(ofSize: 13, weight: isSelected ? .semibold : .medium)
         titleLabelView.textColor = fgColor
@@ -128,7 +144,7 @@ final class AppleTVSidebarItem: NSButton {
         if let img = NSImage(systemSymbolName: sfSymbol, accessibilityDescription: itemTitle) {
             let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: isSelected ? .semibold : .medium)
             iconImageView.image = img.withSymbolConfiguration(conf)
-            iconImageView.contentTintColor = fgColor
+            iconImageView.contentTintColor = isSelected ? .controlAccentColor : fgColor
         }
         needsDisplay = true
     }
@@ -151,7 +167,7 @@ final class AppleTVSidebarItem: NSButton {
         let path = NSBezierPath(roundedRect: pillBounds, xRadius: radius, yRadius: radius)
         if isSelected {
             // Apple TV Active Blue Pill
-            NSColor(red: 0.04, green: 0.52, blue: 1.0, alpha: 1.0).setFill()
+            NSColor.labelColor.withAlphaComponent(0.13).setFill()
             path.fill()
         } else if isHovered {
             LiquidGlass.hoverFill(isDark: LiquidGlass.isDark(for: self)).setFill()
@@ -489,7 +505,7 @@ final class PartnerShowcaseCarousel: NSView {
         if event.phase == .ended || event.phase == .cancelled {
             accumulatedDeltaX = 0
         }
-        super.scrollWheel(with: event)
+        if abs(event.scrollingDeltaY)>abs(event.scrollingDeltaX) {super.scrollWheel(with:event)}
     }
 
     override func keyDown(with event: NSEvent) {
@@ -571,7 +587,8 @@ final class PartnerShowcaseCarousel: NSView {
         let pad:CGFloat=42,w=max(230,bounds.width-pad*2),textWidth=min(470,w)
         let bottom=bounds.height-62
         partnerBadge.frame=NSRect(x:pad,y:bottom-224,width:textWidth,height:20)
-        titleLabel.font=NSFont(name:"Georgia-Bold",size:bounds.width<600 ? 27:34)
+        titleLabel.font=NSFont(name:"Georgia-Bold",size:bounds.width<600 ? 25:32)
+        titleLabel.maximumNumberOfLines=3;titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.frame=NSRect(x:pad,y:bottom-196,width:textWidth,height:88)
         appleMetaLabel.frame=NSRect(x:pad,y:bottom-104,width:textWidth,height:20)
         excerptLabel.frame=NSRect(x:pad,y:bottom-78,width:textWidth,height:44)
@@ -679,6 +696,7 @@ final class HomeCard: NSView {
     let note = NSTextField(wrappingLabelWithString: "")
     let open = CardActionPill(title: "", target: nil, action: nil)
     var doiButton: GlassPillButton?
+    var searchableText = ""
     var categoryType: String = "ielts"
     var rankNumber: Int? {
         didSet {
@@ -717,6 +735,7 @@ final class HomeCard: NSView {
     init(title: String, excerpt: String, annotation: String, categoryTag: String = "PRACTICE ESSAY", categoryType: String = "ielts", target: AnyObject, action: Selector, path: String) {
         super.init(frame: .zero)
         self.categoryType = categoryType
+        searchableText = title+" "+excerpt+" "+annotation+" "+categoryTag
         wantsLayer = true
         if let l = layer { LiquidGlass.configureLayer(l) }
 
@@ -730,12 +749,14 @@ final class HomeCard: NSView {
         heading.stringValue = title
         heading.font = .systemFont(ofSize: 16, weight: .semibold)
         heading.textColor = .labelColor
+        heading.maximumNumberOfLines=3
         heading.lineBreakMode = .byTruncatingTail
 
         detail.stringValue = excerpt
         detail.font = NSFont(name: "Georgia", size: 13) ?? .systemFont(ofSize: 13)
         detail.textColor = .secondaryLabelColor
-        detail.lineBreakMode = .byTruncatingTail
+        detail.maximumNumberOfLines=3
+        detail.lineBreakMode = .byWordWrapping
 
         badge.stringValue = bText
         badge.font = .systemFont(ofSize: 10.5, weight: .semibold)
@@ -800,10 +821,10 @@ final class HomeCard: NSView {
             rankLabel.isHidden = true
             categoryBadge.frame = NSRect(x: pad, y: 14, width: w, height: 16)
         }
-        heading.frame = NSRect(x: pad, y: 32, width: w, height: 22)
-        detail.frame = NSRect(x: pad, y: 56, width: w, height: 44)
-        badge.frame = NSRect(x: pad, y: 104, width: w, height: 16)
-        note.frame = NSRect(x: pad, y: 124, width: w, height: 68)
+        heading.frame = NSRect(x: pad, y: 36, width: w, height: 60)
+        detail.frame = NSRect(x: pad, y: 102, width: w, height: 42)
+        badge.frame = NSRect(x: pad, y: 150, width: w, height: 30)
+        note.isHidden = true
 
         if let doiBtn = doiButton {
             let doiW: CGFloat = 68
@@ -818,7 +839,10 @@ final class HomeCard: NSView {
         let isDark = LiquidGlass.isDark(for: self)
 
         // Liquid Glass card fill + gradient specular rim with hover elevation
-        LiquidGlass.drawCard(in: bounds, isDark: isDark, elevated: isHovered)
+        (isDark ? NSColor(white:isHovered ? 0.22:0.17,alpha:1):NSColor(white:isHovered ? 0.96:1,alpha:1)).setFill()
+        NSBezierPath(roundedRect:bounds.insetBy(dx:0.5,dy:0.5),xRadius:12,yRadius:12).fill()
+        (isDark ? NSColor.white:NSColor.black).withAlphaComponent(0.08).setStroke()
+        NSBezierPath(roundedRect:bounds.insetBy(dx:0.5,dy:0.5),xRadius:12,yRadius:12).stroke()
 
         rankLabel.textColor = isDark ? NSColor(white: 1.0, alpha: 0.16) : NSColor(white: 0.0, alpha: 0.12)
         heading.textColor = .labelColor
@@ -867,7 +891,7 @@ final class HomeSectionHeader: NSView {
         tagBadge.font = .systemFont(ofSize: 11, weight: .bold)
         tagBadge.textColor = accentColor
 
-        let chevronTitle = title.contains("❯") ? title : title + "  ❯"
+        let chevronTitle = title
         titleLabel.stringValue = chevronTitle
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .labelColor
@@ -911,7 +935,21 @@ final class HomeDashboardSection {
     }
 }
 
-final class HomeDashboard: NSView {
+// The page never scrolls horizontally. Shelves have independent clip views.
+final class HomePageClipView: NSClipView {
+    override func scroll(to point:NSPoint) {super.scroll(to:NSPoint(x:0,y:point.y))}
+    override func setBoundsOrigin(_ point:NSPoint) {super.setBoundsOrigin(NSPoint(x:0,y:point.y))}
+    override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
+        var rect=super.constrainBoundsRect(proposedBounds);rect.origin.x=0;return rect
+    }
+}
+final class HomePageScrollView: NSScrollView {
+    override func scrollWheel(with event:NSEvent) {
+        guard abs(event.scrollingDeltaY)>=abs(event.scrollingDeltaX) else{return}
+        super.scrollWheel(with:event)
+    }
+}
+final class HomeDashboard: NSView, NSSearchFieldDelegate {
     override var isFlipped: Bool { true }
     var sidebar = MarginCanvas(), main = MarginCanvas()
     var header: [NSView] = [], cards: [HomeCard] = [], footer: [NSView] = []
@@ -944,9 +982,12 @@ final class HomeDashboard: NSView {
     var sidebarTerms: NSButton?
     var sidebarVersionLabel: NSView?
 
+    func controlTextDidChange(_ notification:Notification) {searchTextChanged(searchField)}
     @objc func searchTextChanged(_ sender: NSSearchField) {
-        let query = sender.stringValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let query = sender.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         applyFilter(query: query)
+        enclosingScrollView?.contentView.scroll(to:.zero)
+        if let parent=enclosingScrollView {parent.reflectScrolledClipView(parent.contentView)}
     }
 
     func applyFilter(query: String) {
@@ -964,31 +1005,35 @@ final class HomeDashboard: NSView {
         carousel?.isHidden = true
         categoryBar?.isHidden = true
 
+        let terms=query.split(whereSeparator:{$0.isWhitespace}).map(String.init)
         let matches = allCards.filter { item in
-            let text = (item.card.heading.stringValue + " " + item.card.detail.stringValue + " " + item.card.note.stringValue + " " + item.category).lowercased()
-            return text.contains(query)
-        }
-
-        for item in allCards {
-            item.card.isHidden = !matches.contains(where: { $0.card === item.card })
+            terms.allSatisfy{item.card.searchableText.localizedStandardContains($0)}
         }
         for sec in sections {
-            let secMatches = sec.cards.filter { !($0.isHidden) }
-            sec.header.isHidden = secMatches.isEmpty
-            sec.shelf.isHidden = secMatches.isEmpty
-            sec.isHidden = false
+            sec.isHidden=false
             for card in sec.cards {card.isHidden = !matches.contains(where:{$0.card === card})}
-            sec.header.isHidden = secMatches.isEmpty;sec.shelf.isHidden=secMatches.isEmpty
+            let visibleCount=sec.cards.filter{!$0.isHidden}.count
+            sec.header.tagBadge.stringValue="\(visibleCount) " + (visibleCount == 1 ? "DOCUMENT" : "DOCUMENTS")
+            let empty=visibleCount == 0
+            sec.header.isHidden=empty;sec.shelf.isHidden=empty
+            sec.shelf.contentView.scroll(to:.zero)
         }
+        header.first.flatMap{$0 as? NSTextField}?.stringValue="Search results"
+        (header.count>1 ? header[1] as? NSTextField:nil)?.stringValue="\(matches.count) " + (matches.count == 1 ? "document" : "documents") + " matching “\(query)”"
+        footer.forEach{$0.isHidden=true}
+
         cards = matches.map { $0.card }
         needsLayout = true
     }
 
     func filterCards(categoryIndex: Int) {
         selectedCategoryIndex = categoryIndex
+        header.first.flatMap{$0 as? NSTextField}?.stringValue = categoryIndex==0 ? "Discover" : ["Discover","IELTS Writing","Research","Essays"][categoryIndex]
+        (header.count>1 ? header[1] as? NSTextField:nil)?.stringValue="Read closely. Find your next perspective."
+        footer.forEach{$0.isHidden=false}
         searchField.stringValue = ""
         sidebarSearch?.isSelected = false
-        carousel?.isHidden = false
+        carousel?.isHidden = categoryIndex != 0
         categoryBar?.isHidden = false
         for (i, item) in sidebarNavItems.enumerated() {
             item.isSelected = (i == categoryIndex)
@@ -1018,6 +1063,7 @@ final class HomeDashboard: NSView {
             }
         } else {
             for sec in sections {
+                sec.header.tagBadge.stringValue="\(sec.cards.count) DOCUMENTS"
                 if let filter = catFilter {
                     sec.isHidden = (sec.key != filter)
                 } else {
@@ -1057,7 +1103,8 @@ final class HomeDashboard: NSView {
         let side: CGFloat = compact ? 200 : 240
         let sideW = side - 16
         let sideH = max(400, clip.bounds.height - 40)
-        sidebar.frame = NSRect(x: 20, y: clip.bounds.minY + 20, width: sideW, height: sideH)
+        sidebar.wantsLayer=true;sidebar.layer?.backgroundColor=NSColor.windowBackgroundColor.withAlphaComponent(0.94).cgColor;sidebar.layer?.cornerRadius=12
+        sidebar.frame = NSRect(x: 12, y: clip.bounds.minY + 20, width: sideW+8, height: sideH)
 
         let profileHeight: CGFloat = 42
         let profileY = sideH - profileHeight - 6
@@ -1068,6 +1115,7 @@ final class HomeDashboard: NSView {
         super.layout()
         guard let clip = superview else { return }
         let width = max(600, clip.bounds.width)
+        if frame.width != width {frame.size.width=width}
         let compact = width < 960
         let side: CGFloat = compact ? 200 : 240
         let contentWidth = width - side - 56
@@ -1128,7 +1176,7 @@ final class HomeDashboard: NSView {
 
         var curMainY: CGFloat = 68
         if let carousel = carousel, !carousel.isHidden {
-            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: max(340,min(480,contentWidth*0.56)))
+            carousel.frame = NSRect(x: 0, y: curMainY, width: contentWidth, height: max(340,min(440,contentWidth*0.52)))
             curMainY += carousel.frame.height + 20
         }
 
@@ -1160,11 +1208,16 @@ final class HomeDashboard: NSView {
                 guard !sec.isHidden,!visibleCards.isEmpty else {sec.shelf.isHidden=true;continue}
                 sec.shelf.isHidden=false
                 sec.header.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:68);curMainY+=76
-                sec.shelf.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:294)
-                let tileWidth=min(330,contentWidth-12)
-                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i)*(tileWidth+16),y:0,width:tileWidth,height:276)}
-                sec.strip.frame=NSRect(x:0,y:0,width:max(contentWidth,CGFloat(visibleCards.count)*(tileWidth+16)-16),height:280)
-                curMainY+=324
+                let searching = !searchField.stringValue.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty
+                let tileWidth=min(310,contentWidth-12)
+                let columns=searching ? max(1,Int(contentWidth/(tileWidth+16))):visibleCards.count
+                let cellWidth=searching ? (contentWidth-CGFloat(columns-1)*16)/CGFloat(columns):tileWidth
+                let rows=searching ? (visibleCards.count+columns-1)/columns:1
+                let height=CGFloat(rows)*246
+                sec.shelf.frame=NSRect(x:0,y:curMainY,width:contentWidth,height:height)
+                for (i,card) in visibleCards.enumerated(){card.frame=NSRect(x:CGFloat(i%columns)*(cellWidth+16),y:CGFloat(i/columns)*246,width:cellWidth,height:230)}
+                sec.strip.frame=NSRect(x:0,y:0,width:searching ? contentWidth:max(contentWidth,CGFloat(visibleCards.count)*(tileWidth+16)-16),height:height-4)
+                curMainY+=height+28
             }
         }
 
@@ -1189,12 +1242,15 @@ final class HomeDashboard: NSView {
         super.init(frame: frame)
         main.addSubview(emptyResults);emptyResults.font = .systemFont(ofSize:15);emptyResults.textColor = .secondaryLabelColor
         searchField.placeholderString = "Search writing..."
-        searchField.font = .systemFont(ofSize: 12)
+        searchField.font = .systemFont(ofSize: 13)
+        searchField.delegate=self
+        searchField.sendsWholeSearchString=false
+        searchField.sendsSearchStringImmediately=true
         searchField.target = self
         searchField.action = #selector(searchTextChanged(_:))
         sidebar.addSubview(searchField)
-        addSubview(sidebar)
         addSubview(main)
+        addSubview(sidebar)
     }
     required init?(coder: NSCoder) { fatalError() }
 }
@@ -1205,10 +1261,13 @@ extension Passage {
         opened = false
         lookupWork?.cancel()
         base()
-        (root as? PaperBackdrop)?.decorated = true
+        (root as? PaperBackdrop)?.decorated = false
 
         let dashboard = HomeDashboard(frame: root.bounds)
-        let scroll = NSScrollView()
+        let scroll = HomePageScrollView()
+        scroll.contentView=HomePageClipView()
+        scroll.horizontalScrollElasticity = .none
+        scroll.hasHorizontalScroller=false
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.documentView = dashboard
@@ -1358,8 +1417,8 @@ extension Passage {
         dashboard.sidebarVersionLabel = verLabel
 
         // Main Content Header
-        let head0 = label("Learn from a closer reading.", 28, true)
-        let head1 = label("Featured writing · discover the choices behind a stronger essay.", 14)
+        let head0 = label("Discover", 28, true)
+        let head1 = label("Read closely. Find your next perspective.", 14)
         head1.textColor = .secondaryLabelColor
         head1.toolTip = "A curated showcase of annotated writing."
         dashboard.header = [head0, head1]
@@ -1370,16 +1429,16 @@ extension Passage {
         carousel.openTarget = self
         carousel.openAction = #selector(loadExample(_:))
 
-        let p1Path = resourceDirectory.appendingPathComponent("Samples/000-task2-3.json").path
-        let p2Path = resourceDirectory.appendingPathComponent("Samples/000-task2-1.json").path
-        let p3Path = resourceDirectory.appendingPathComponent("Samples/013.json").path
+        let p1Path = resourceDirectory.appendingPathComponent("Reading/workplace.json").path
+        let p2Path = resourceDirectory.appendingPathComponent("Reading/structure.json").path
+        let p3Path = resourceDirectory.appendingPathComponent("Samples/000-task2-1.json").path
 
         let pinned=showcaseDocuments()
         let defaults=[p1Path,p2Path,p3Path].compactMap {path -> (Breakdown,String)? in
             guard let bytes=try? Data(contentsOf:URL(fileURLWithPath:path)),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,path)
         }
         let slides=(pinned.isEmpty ? defaults:pinned).map {doc,path in
-            PartnerSlide(partnerName:"",educator:"",badgeText:pinned.isEmpty ? "FEATURED READING":"PINNED TO YOUR SHOWCASE",title:doc.document.title,excerpt:truncateWords(doc.document.text,maxChars:150),pedagogyHighlight:"",tags:[doc.document.taskType,"\(doc.annotations.count) margin notes"],path:path,isResearch:doc.document.taskType=="research",accentColor:NSColor(calibratedRed:0.80,green:0.89,blue:0.76,alpha:1))
+            PartnerSlide(partnerName:"",educator:"",badgeText:pinned.isEmpty ? "FEATURED READING":"PINNED TO YOUR SHOWCASE",title:featuredTitle(doc),excerpt:truncateWords(readingPreview(doc.document.text),maxChars:150),pedagogyHighlight:"",tags:[readingType(doc.document.taskType),"\(doc.annotations.count) margin notes"],path:path,isResearch:doc.document.taskType=="research",accentColor:NSColor(calibratedRed:0.80,green:0.89,blue:0.76,alpha:1))
         }
         carousel.coverImage=NSImage(contentsOf:resourceDirectory.appendingPathComponent("Assets/reading-cover.png"))
         carousel.setupSlides(slides)
@@ -1398,16 +1457,20 @@ extension Passage {
         let sampleURLs=((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Samples"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension=="json"}.sorted{$0.lastPathComponent<$1.lastPathComponent}
         let sampleDocs=sampleURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes=try? Data(contentsOf:url),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
         let localDocs=LibraryStore.records(in:saveURL.deletingLastPathComponent().appendingPathComponent("Library")).map{($0.document,$0.url)}
+        let readingURLs=((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Reading"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension=="json" && $0.lastPathComponent != "manifest.json"}.sorted{$0.lastPathComponent<$1.lastPathComponent}
+        let readings=readingURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes=try? Data(contentsOf:url),let doc=try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
         let groups:[(String,String,String,[(Breakdown,URL)])]=[
-            ("ielts","IELTS Writing","Original practice · Task 1 and Task 2",sampleDocs),
-            ("research","Research & academic reading","Your imported papers and source notes",localDocs.filter{$0.0.document.taskType=="research"}),
+            ("research","Research, close up","Open-access selections · credited authors · CC BY",readings.filter{$0.0.document.taskType=="research"}+localDocs.filter{$0.0.document.taskType=="research"}),
+            ("essays","The craft of writing","Read the original advice, explore the margin notes",readings.filter{$0.0.document.taskType=="discursive"}),
+            ("ielts","IELTS Writing","20 original practice essays · Task 1 and Task 2",sampleDocs),
             ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research"})]
         for (key,title,subtitle,documents) in groups where !documents.isEmpty {
             let header=HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
             dashboard.main.addSubview(header)
             var cards:[HomeCard]=[]
             for (doc,url) in documents {
-                let card=HomeCard(title:doc.document.title,excerpt:truncateWords(doc.document.text,maxChars:140),annotation:doc.annotations.first.map{$0.label+" · "+$0.body} ?? "Open to add your perspective.",categoryTag:doc.document.taskType,categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
+                let card=HomeCard(title:doc.document.title,excerpt:truncateWords(readingPreview(doc.document.text),maxChars:140),annotation:"\(doc.annotations.count) margin notes · \(max(1,doc.document.text.split(whereSeparator:{$0.isWhitespace}).count/200)) min read",categoryTag:readingType(doc.document.taskType),categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
+                card.searchableText=doc.document.title+" "+doc.document.text+" "+(doc.document.prompt ?? "")+" "+doc.annotations.map{$0.label+" "+$0.body}.joined(separator:" ")
                 cards.append(card);dashboard.allCards.append((card:card,category:key))
             }
             let section=HomeDashboardSection(key:key,header:header,cards:cards)
