@@ -1,3 +1,28 @@
+# Current: Pass Passage By! 1.9.2 (Track Expansion & Modifier Isolation) — 17 September 2026
+
+Antigravity session continuation before Codex resumes at 8:25 PM:
+- **Modifier Isolation (`PointerPolicy.isModifierActive`)**:
+  - Fixed modifier conflict where holding `Option` triggered sentence hover highlight even when the user selected `pointerMode == "Hold fn"`.
+  - In `ReadingControls.swift`: Added `PointerPolicy.isModifierActive(mode:flags:)` with strict mapping: `"Hold fn"` requires `flags.contains(.function)`, `"Hold Option"` requires `flags.contains(.option)`.
+  - In `Passage.swift`: Updated `showsPointerHighlight` and hover preview to use `PointerPolicy.isModifierActive`.
+  - Preserved backward-compatible `PointerPolicy.isActive(mode:option:)` for existing layout test assertions.
+- **Vietnamese Official & Administrative Documents (Nghị định 30/2020/NĐ-CP)**:
+  - Added Track D in `AgentKit/SKILL.md` (`--task-type administrative`).
+  - Created `AgentKit/administrative_sample.md`, `AgentKit/administrative_notes.json`, `AgentKit/administrative_prompt.txt`.
+  - Assembled and validated `AgentKit/administrative_sample.json`.
+- **Corporate SOP & Employee Onboarding**:
+  - Added Track F in `AgentKit/SKILL.md` (`--task-type onboarding`).
+  - Created `AgentKit/onboarding_sample.md`, `AgentKit/onboarding_notes.json`, `AgentKit/onboarding_prompt.txt`.
+  - Assembled and validated `AgentKit/onboarding_sample.json`.
+- **Speech & Rhetorical Analysis**:
+  - Added Track E in `AgentKit/SKILL.md` (`--task-type speech`) covering Pathos, Logos, Ethos, and Rhetorical Devices for Loom recordings and close reading.
+- **Quality & Invariants**:
+  - SwiftLint reports 0 errors, 0 warnings.
+  - 100% pass rate across unit tests (`test.sh`) and AppKit offscreen layout tests (`test-layout.sh`).
+  - `Model.swift` schema, `NativeLayoutTests.swift`, and all 20 curated IELTS samples remain 100% intact.
+
+---
+
 # Current: Pass Passage By! 1.9.1 (15) — 17 September 2026
 
 Continues Antigravity 1.9.0. Full-title clickable reading cards, authors and topical tags from Reading/manifest.json (no Essay schema changes). Centered task disclosure collapses to zero height; simplified editor toolbar; bounded margin cards and scrollable full-note previews. Preserve user-provided home background and existing dictionary/gesture behavior.

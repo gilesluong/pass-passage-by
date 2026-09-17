@@ -2,7 +2,24 @@ import Cocoa
 import QuartzCore
 
 enum PointerPolicy {
-    static func isActive(mode:String,option:Bool)->Bool {mode == "Always" || ((mode == "Hold Option" || mode == "Hold fn") && option)}
+    static func isActive(mode: String, option: Bool) -> Bool {
+        mode == "Always" || ((mode == "Hold Option" || mode == "Hold fn") && option)
+    }
+
+    static func isModifierActive(mode: String, flags: NSEvent.ModifierFlags) -> Bool {
+        switch mode {
+        case "Always":
+            return true
+        case "Off":
+            return false
+        case "Hold Option":
+            return flags.contains(.option)
+        case "Hold fn":
+            return flags.contains(.function)
+        default:
+            return flags.contains(.function)
+        }
+    }
 }
 
 final class ZoomPathPicker:NSView {

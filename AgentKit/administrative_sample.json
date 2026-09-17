@@ -1,0 +1,73 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "2f73d3ad-447f-4868-8381-b2c203cbbdf9",
+    "title": "Quyết định hành chính (Nghị định 30)",
+    "text": "ỦY BAN NHÂN DÂN\nTHÀNH PHỐ HÀ NỘI\nSố: 128/QĐ-UBND\n\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nHà Nội, ngày 15 tháng 9 năm 2026\n\nQUYẾT ĐỊNH\nVề việc ban hành Quy chế làm việc của Ủy ban nhân dân thành phố\n\nỦY BAN NHÂN DÂN THÀNH PHỐ HÀ NỘI\n\nCăn cứ Luật Tổ chức chính quyền địa phương ngày 19 tháng 6 năm 2015;\nCăn cứ Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019;\nCăn cứ Nghị định số 30/2020/NĐ-CP ngày 05 tháng 3 năm 2020 của Chính phủ về công tác văn thư;\nTheo đề nghị của Chánh Văn phòng Ủy ban nhân dân thành phố.\n\nQUYẾT ĐỊNH:\n\nĐiều 1. Ban hành kèm theo Quyết định này Quy chế làm việc của Ủy ban nhân dân thành phố Hà Nội nhiệm kỳ 2026 - 2031.\n\nĐiều 2. Quyết định này có hiệu lực thi hành kể từ ngày ký và thay thế Quyết định số 45/2021/QĐ-UBND ngày 20 tháng 8 năm 2021 của Ủy ban nhân dân thành phố.\n\nĐiều 3. Chánh Văn phòng Ủy ban nhân dân thành phố, Giám đốc các Sở, Thủ trưởng các ban, ngành, Chủ tịch Ủy ban nhân dân các quận, huyện, thị xã chịu trách nhiệm thi hành Quyết định này./.\n\nNơi nhận:\n- Như Điều 3;\n- Thường trực Thành ủy;\n- Thường trực HĐND thành phố;\n- Lưu: VT, TH.\n\nTM. ỦY BAN NHÂN DÂN\nCHỦ TỊCH\n(Đã ký)\nTrần Văn Minh",
+    "taskType": "administrative",
+    "prompt": "THỰC HÀNH SOẠN THẢO VĂN BẢN HÀNH CHÍNH\nTheo Nghị định số 30/2020/NĐ-CP của Chính phủ về công tác văn thư.\n\nYêu cầu học viên và cán bộ soạn thảo:\n1. Xác định đúng các thành phần thể thức bắt buộc (Quốc hiệu, Tiêu ngữ, Tên cơ quan, Số ký hiệu, Trích yếu).\n2. Viện dẫn đầy đủ các căn cứ pháp lý đang còn hiệu lực thi hành.\n3. Sử dụng đúng văn phong hành chính: mệnh lệnh, trang trọng, đơn nghĩa, không dùng từ ngữ cảm thán.\n4. Quy định rõ ràng trách nhiệm thi hành tại các điều khoản và nơi nhận."
+  },
+  "annotations": [
+    {
+      "quote": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc",
+      "label": "NĐ 30 · Quốc hiệu & Tiêu ngữ",
+      "body": "Quốc hiệu in hoa 12-13pt, đứng đậm. Tiêu ngữ in thường 13-14pt, đứng đậm, chữ cái đầu các từ viết hoa, nối nhau bằng dấu gạch nối ngắn có dấu cách. Dưới tiêu ngữ có đường kẻ ngang bằng độ dài dòng chữ.",
+      "kind": "structure",
+      "level": "paragraph",
+      "side": "right",
+      "tag": "blue",
+      "id": "df5818d2-f8e1-4155-b65c-106d35a4c015",
+      "start": 50,
+      "end": 112
+    },
+    {
+      "quote": "Số: 128/QĐ-UBND",
+      "label": "NĐ 30 · Số & Ký hiệu",
+      "body": "Số văn bản ghi bằng chữ số Ả Rập. Ký hiệu gồm chữ viết tắt tên loại văn bản (QĐ) và tên cơ quan ban hành (UBND), cách nhau bởi dấu gạch chéo (/), không có khoảng trắng.",
+      "kind": "comment",
+      "level": "sentence",
+      "side": "left",
+      "tag": "purple",
+      "id": "168fec8e-55bc-48e3-ad36-d7b2d339bc4c",
+      "start": 33,
+      "end": 48
+    },
+    {
+      "quote": "Căn cứ Nghị định số 30/2020/NĐ-CP ngày 05 tháng 3 năm 2020 của Chính phủ về công tác văn thư;",
+      "label": "Căn cứ pháp lý",
+      "body": "Viện dẫn trực tiếp Nghị định quy định về thể thức. Viết nghiêng, kết thúc bằng dấu chấm phẩy (;). Phải là văn bản QPPL đang còn hiệu lực.",
+      "kind": "structure",
+      "level": "sentence",
+      "side": "left",
+      "tag": "orange",
+      "id": "c622fae2-06bd-44e4-9f45-ae9206fc45cf",
+      "start": 460,
+      "end": 553
+    },
+    {
+      "quote": "Điều 1. Ban hành kèm theo Quyết định này Quy chế làm việc của Ủy ban nhân dân thành phố Hà Nội nhiệm kỳ 2026 - 2031.",
+      "label": "Văn phong mệnh lệnh hành chính",
+      "body": "Từ ngữ hành chính quy chuẩn: 'Ban hành kèm theo...'. Tránh lối hành văn diễn giải hoặc biểu cảm cá nhân.",
+      "kind": "comment",
+      "level": "sentence",
+      "side": "right",
+      "tag": "green",
+      "id": "02510a85-58e6-494a-af93-663e3bd97e62",
+      "start": 628,
+      "end": 744
+    },
+    {
+      "quote": "Điều 2. Quyết định này có hiệu lực thi hành kể từ ngày ký và thay thế Quyết định số 45/2021/QĐ-UBND ngày 20 tháng 8 năm 2021 của Ủy ban nhân dân thành phố.",
+      "label": "Hiệu lực & Thay thế",
+      "body": "Quy định rõ thời điểm phát sinh hiệu lực và xác định cụ thể văn bản bị thay thế để tránh khoảng trống pháp lý.",
+      "kind": "structure",
+      "level": "sentence",
+      "side": "right",
+      "tag": "red",
+      "id": "8539222d-c826-461e-b7d7-d394775e8395",
+      "start": 746,
+      "end": 901
+    }
+  ]
+}

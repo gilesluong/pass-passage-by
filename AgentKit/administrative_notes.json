@@ -1,0 +1,47 @@
+[
+  {
+    "quote": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc",
+    "label": "NĐ 30 · Quốc hiệu & Tiêu ngữ",
+    "body": "Quốc hiệu in hoa 12-13pt, đứng đậm. Tiêu ngữ in thường 13-14pt, đứng đậm, chữ cái đầu các từ viết hoa, nối nhau bằng dấu gạch nối ngắn có dấu cách. Dưới tiêu ngữ có đường kẻ ngang bằng độ dài dòng chữ.",
+    "kind": "structure",
+    "level": "paragraph",
+    "side": "right",
+    "tag": "blue"
+  },
+  {
+    "quote": "Số: 128/QĐ-UBND",
+    "label": "NĐ 30 · Số & Ký hiệu",
+    "body": "Số văn bản ghi bằng chữ số Ả Rập. Ký hiệu gồm chữ viết tắt tên loại văn bản (QĐ) và tên cơ quan ban hành (UBND), cách nhau bởi dấu gạch chéo (/), không có khoảng trắng.",
+    "kind": "comment",
+    "level": "sentence",
+    "side": "left",
+    "tag": "purple"
+  },
+  {
+    "quote": "Căn cứ Nghị định số 30/2020/NĐ-CP ngày 05 tháng 3 năm 2020 của Chính phủ về công tác văn thư;",
+    "label": "Căn cứ pháp lý",
+    "body": "Viện dẫn trực tiếp Nghị định quy định về thể thức. Viết nghiêng, kết thúc bằng dấu chấm phẩy (;). Phải là văn bản QPPL đang còn hiệu lực.",
+    "kind": "structure",
+    "level": "sentence",
+    "side": "left",
+    "tag": "orange"
+  },
+  {
+    "quote": "Điều 1. Ban hành kèm theo Quyết định này Quy chế làm việc của Ủy ban nhân dân thành phố Hà Nội nhiệm kỳ 2026 - 2031.",
+    "label": "Văn phong mệnh lệnh hành chính",
+    "body": "Từ ngữ hành chính quy chuẩn: 'Ban hành kèm theo...'. Tránh lối hành văn diễn giải hoặc biểu cảm cá nhân.",
+    "kind": "comment",
+    "level": "sentence",
+    "side": "right",
+    "tag": "green"
+  },
+  {
+    "quote": "Điều 2. Quyết định này có hiệu lực thi hành kể từ ngày ký và thay thế Quyết định số 45/2021/QĐ-UBND ngày 20 tháng 8 năm 2021 của Ủy ban nhân dân thành phố.",
+    "label": "Hiệu lực & Thay thế",
+    "body": "Quy định rõ thời điểm phát sinh hiệu lực và xác định cụ thể văn bản bị thay thế để tránh khoảng trống pháp lý.",
+    "kind": "structure",
+    "level": "sentence",
+    "side": "right",
+    "tag": "red"
+  }
+]

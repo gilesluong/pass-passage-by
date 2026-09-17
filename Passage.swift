@@ -249,9 +249,7 @@ class WritingView: NSTextView {
     var onHoverIndex: ((Int?, NSPoint) -> Void)?
     var pointerMode: () -> String = { UserDefaults.standard.string(forKey:"pointerMode") ?? "Hold Option" }
     var showsPointerHighlight: Bool {
-        let flags = NSEvent.modifierFlags
-        let active = flags.contains(.function) || flags.contains(.option)
-        return PointerPolicy.isActive(mode: pointerMode(), option: active)
+        PointerPolicy.isModifierActive(mode: pointerMode(), flags: NSEvent.modifierFlags)
     }
     private var hover: NSRange?
     var pointerIndex: Int?
@@ -2016,8 +2014,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                 showHoverPreview(for: note, at: point)
             }
         } else {
-            let flags = NSEvent.modifierFlags
-            if flags.contains(.function) || flags.contains(.option) {
+            let mode = prefs.string(forKey: "pointerMode") ?? "Hold fn"
+            if PointerPolicy.isModifierActive(mode: mode, flags: NSEvent.modifierFlags) {
                 let sentRange = data.range(level: 2, offset: docOffset)
                 let sentId = "sent-\(sentRange.location)-\(sentRange.length)"
                 if lastHoverNoteId != sentId && sentRange.length > 5 {

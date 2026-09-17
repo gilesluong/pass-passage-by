@@ -43,6 +43,31 @@ Pass Passage By! supports three specialized annotation tracks:
 - **Rhetorical Strategies & Flow**: Tag `blue`. Topic sentences, dialectical transitions, persuasive framing.
 - **Counter-Argument & Refutation**: Tag `red` or `orange`. Antagonist perspective and rebuttal.
 
+### D. Vietnamese Official & Administrative Documents (`--task-type administrative`)
+Based on **Nghị định 30/2020/NĐ-CP** (Thể thức & Kỹ thuật trình bày văn bản hành chính):
+- **National Motto, Organization & Ref (`label: "NĐ 30 · Thể thức"` / `tag: "blue"`)**:
+  - Validates National Motto typography, issue number/reference format (e.g. `Số: .../QĐ-UBND`), place and date line.
+- **Legal Authority & Precedents (`label: "Căn cứ pháp lý"` / `tag: "orange"`)**:
+  - Highlights enabling legislation, decrees and governing decisions with citation verification.
+- **Administrative Diction & Formality (`label: "Văn phong hành chính"` / `tag: "green"`)**:
+  - Enforces objective, unambiguous, non-personal statutory register; diagnoses colloquial or subjective phrasing.
+- **Enacting Clauses & Directives (`label: "Điều khoản & Chế tài"` / `tag: "red"`)**:
+  - Logical structure of Articles, Clauses, Points (Điều, Khoản, Điểm) and clear recipient actions.
+
+### E. Rhetorical Analysis & Political Speeches (`--task-type speech`)
+Designed for deep literary and political discourse dissection while recording Loom walkthroughs:
+- **Pathos (`tag: "purple"`)**: Emotional resonance, narrative framing, vivid metaphors, shared grief/hope.
+- **Logos (`tag: "blue"`)**: Empirical claims, deductive reasoning, causal links, syllogisms.
+- **Ethos (`tag: "orange"`)**: Moral authority, constitutional precedent, humility, civic virtue.
+- **Diction & Rhetorical Devices (`tag: "green"`)**: Anaphora, antithesis, parallel syntax, cadence, word choice choices.
+- **Historical & Contextual Anchor (`tag: "yellow"`)**: Background events, opposing geopolitical climate, crisis context.
+
+### F. Corporate SOP & Employee Onboarding (`--task-type onboarding`)
+Designed for onboarding walkthroughs, company policies and Loom video handoffs:
+- **Company Policy & Thresholds (`label: "Quy định công ty"` / `tag: "blue"`)**: Approval thresholds, delegation of authority, compliance mandates.
+- **Workflow & SOP Steps (`label: "Quy trình thực hiện"` / `tag: "green"`)**: Exact sequencing of operational procedures.
+- **Mentor Guidance & Common Pitfalls (`label: "Lưu ý cho bạn mới"` / `kind: "comment"` / `tag: "orange"`)**: Practical advice from team leads to accelerate ramp-up.
+
 ## 2. Assembling and Exporting Documents
 
 Always use `AgentKit/bridge.py` to assemble text and compute UTF-16 code unit offsets accurately for macOS:

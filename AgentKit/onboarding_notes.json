@@ -1,0 +1,47 @@
+[
+  {
+    "quote": "1. Chi phí dưới 5.000.000 VNĐ: Do Trưởng bộ phận (Team Lead) trực tiếp phê duyệt qua hệ thống nội bộ.",
+    "label": "Hạn mức cấp 1 · Team Lead",
+    "body": "Khoản chi dưới 5 triệu chỉ cần Team Lead duyệt. Bạn có thể gửi link đề xuất trên Slack cho Lead kèm lý do chi tiết.",
+    "kind": "structure",
+    "level": "sentence",
+    "side": "right",
+    "tag": "blue"
+  },
+  {
+    "quote": "3. Chi phí trên 20.000.000 VNĐ: Bắt buộc phải có phê duyệt trước bằng văn bản của Tổng Giám đốc (CEO).",
+    "label": "Hạn mức đặc biệt · CEO Approval",
+    "body": "Mọi khoản chi lớn trên 20 triệu phải trình CEO phê duyệt trước khi cam kết với nhà cung cấp. Tuyệt đối không chi trước rồi xin hợp thức hóa sau.",
+    "kind": "comment",
+    "level": "sentence",
+    "side": "left",
+    "tag": "purple"
+  },
+  {
+    "quote": "Bước 1: Tạo phiếu đề xuất tạm ứng trên cổng ERP trước ngày phát sinh chi phí tối thiểu 03 ngày làm việc.",
+    "label": "Quy trình SOP · Tạm ứng trước 3 ngày",
+    "body": "Lưu ý deadline 3 ngày làm việc để kế toán kịp chuẩn bị dòng tiền. Các đề xuất gấp trong ngày sẽ bị trừ điểm đánh giá quy trình.",
+    "kind": "comment",
+    "level": "sentence",
+    "side": "right",
+    "tag": "green"
+  },
+  {
+    "quote": "gửi hồ sơ hoàn ứng trong vòng 05 ngày làm việc.",
+    "label": "Thời hạn nộp chứng từ",
+    "body": "Quá hạn 5 ngày mà chưa nộp hóa đơn quyết toán, hệ thống ERP sẽ tự động khóa tài khoản tạo đề xuất mới của nhân viên.",
+    "kind": "structure",
+    "level": "word",
+    "side": "left",
+    "tag": "orange"
+  },
+  {
+    "quote": "Hóa đơn bán lẻ hoặc biên lai không có mã số thuế chỉ được chấp nhận đối với các khoản chi dưới 200.000 VNĐ trong trường hợp bất khả kháng.",
+    "label": "Lưu ý chứng từ · Rủi ro thuế",
+    "body": "Kế toán chỉ chấp nhận hóa đơn VAT điện tử có mã cơ quan thuế. Các biên lai viết tay trên 200k sẽ bị xuất toán và người chi phải tự chịu trách nhiệm.",
+    "kind": "comment",
+    "level": "sentence",
+    "side": "right",
+    "tag": "red"
+  }
+]
