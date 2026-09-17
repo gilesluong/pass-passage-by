@@ -37,8 +37,38 @@ extension Passage {
         do{try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true)}catch{showAlert(error.localizedDescription);return}
         let panel = NSOpenPanel();panel.directoryURL = folder;panel.allowedContentTypes = [.json];panel.prompt = "Open writing";panel.title = "Agent Inbox"
         panel.begin { [weak self] response in
-            guard let self = self,response == .OK,let url = panel.url else{return}
-            do{if self.opened{self.saveDraft()};try self.loadJSON(Data(contentsOf:url));self.infoWindow?.close();self.openWorkspace()}catch{self.showAlert(error.localizedDescription)}
+            guard let self = self, response == .OK, let url = panel.url else { return }
+            do {
+                if self.opened { self.saveDraft() }
+                try self.loadJSON(Data(contentsOf: url))
+                self.infoWindow?.close()
+                self.openWorkspace()
+            } catch {
+                self.showAlert(error.localizedDescription)
+            }
         }
+    }
+
+    @objc func agentHarnessMenu(_ sender: NSButton) {
+        let menu = NSMenu(title: "AI Agent")
+        let shareItem = NSMenuItem(title: "Share Snapshot to Antigravity (MCP)", action: #selector(shareAgentContext), keyEquivalent: "")
+        shareItem.image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: nil)
+        menu.addItem(shareItem)
+
+        let inboxItem = NSMenuItem(title: "Open Agent Inbox…", action: #selector(openAgentInbox), keyEquivalent: "")
+        inboxItem.image = NSImage(systemSymbolName: "tray.and.arrow.down", accessibilityDescription: nil)
+        menu.addItem(inboxItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let copyItem = NSMenuItem(title: "Copy MCP Configuration", action: #selector(copyMCPSetup), keyEquivalent: "")
+        copyItem.image = NSImage(systemSymbolName: "doc.on.doc", accessibilityDescription: nil)
+        menu.addItem(copyItem)
+
+        let clearItem = NSMenuItem(title: "Clear Shared Snapshots", action: #selector(clearAgentContext), keyEquivalent: "")
+        clearItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        menu.addItem(clearItem)
+
+        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: sender.bounds.maxY), in: sender)
     }
 }

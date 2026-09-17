@@ -10,6 +10,17 @@ enum CaptureError:LocalizedError {
     var errorDescription:String? {if case .message(let text) = self{return text};return nil}
 }
 enum LocalOCR {
+    static func extractDirectText(from url: URL) -> String? {
+        guard url.pathExtension.lowercased() == "pdf", let pdf = PDFDocument(url: url), !pdf.isLocked else { return nil }
+        var full = ""
+        for i in 0..<pdf.pageCount {
+            if let p = pdf.page(at: i), let str = p.string?.trimmingCharacters(in: .whitespacesAndNewlines), !str.isEmpty {
+                full += (full.isEmpty ? "" : "\n\n") + str
+            }
+        }
+        let trimmed = full.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.count >= 40 ? trimmed : nil
+    }
     static func page(_ image:NSImage)throws->CapturedPage {
         var rect = NSRect(origin:.zero,size:image.size)
         guard let cg = image.cgImage(forProposedRect:&rect,context:nil,hints:nil),let png = NSBitmapImageRep(cgImage:cg).representation(using:.png,properties:[:]),png.count <= 8_000_000 else {throw CaptureError.message("Use an image under 8 MB. Crop the page or reduce its resolution.")}
@@ -259,6 +270,13 @@ extension Passage {
         }
         if urls.count == 1,["json","md","markdown","txt"].contains(urls[0].pathExtension.lowercased()) {
             let item = NSButton();item.identifier = .init(urls[0].path);openRecent(item)
+        } else if urls.count == 1, urls[0].pathExtension.lowercased() == "pdf", let direct = LocalOCR.extractDirectText(from: urls[0]) {
+            if opened { saveDraft() }
+            let title = urls[0].deletingPathExtension().lastPathComponent
+            data = .plain(direct, title: title)
+            past = []; future = []
+            level = 0; focus = 0
+            openWorkspace(); saveDraft()
         } else {scanFiles(urls)}
     }
     func scanPasteboard(_ board:NSPasteboard)->Bool {

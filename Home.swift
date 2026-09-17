@@ -190,10 +190,29 @@ final class AppleTVProfileView: NSView {
     override var isFlipped: Bool { true }
 
     private let avatarCircle = NSView()
-    private let initialsLabel = NSTextField(labelWithString: "CR")
-    private let nameLabel = NSTextField(labelWithString: "Casper Ryou")
-    private let roleLabel = NSTextField(labelWithString: "Writing Studio")
+    private let initialsLabel = NSTextField(labelWithString: "")
+    private let nameLabel = NSTextField(labelWithString: "")
+    private let roleLabel = NSTextField(labelWithString: "Close Reading Studio")
     let settingsButton = NSButton()
+
+    private static func resolvedUserName() -> String {
+        let full = NSFullUserName().trimmingCharacters(in: .whitespacesAndNewlines)
+        if !full.isEmpty { return full }
+        let user = NSUserName().trimmingCharacters(in: .whitespacesAndNewlines)
+        return user.isEmpty ? "Close Reader" : user
+    }
+
+    private static func resolvedInitials(from name: String) -> String {
+        let parts = name.split(separator: " ").filter { !$0.isEmpty }
+        if parts.count >= 2 {
+            let first = parts[0].prefix(1)
+            let last = parts[parts.count - 1].prefix(1)
+            return "\(first)\(last)".uppercased()
+        } else if let single = parts.first {
+            return String(single.prefix(2)).uppercased()
+        }
+        return "PP"
+    }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -204,14 +223,18 @@ final class AppleTVProfileView: NSView {
         avatarCircle.layer?.masksToBounds = true
         avatarCircle.layer?.backgroundColor = NSColor(red: 0.16, green: 0.20, blue: 0.28, alpha: 1.0).cgColor
 
+        let userName = Self.resolvedUserName()
+        initialsLabel.stringValue = Self.resolvedInitials(from: userName)
         initialsLabel.font = .systemFont(ofSize: 11, weight: .bold)
         initialsLabel.textColor = .white
         initialsLabel.alignment = .center
         avatarCircle.addSubview(initialsLabel)
 
+        nameLabel.stringValue = userName
         nameLabel.font = .systemFont(ofSize: 12.5, weight: .semibold)
         nameLabel.textColor = .labelColor
 
+        roleLabel.stringValue = "Close Reading Studio"
         roleLabel.font = .systemFont(ofSize: 10, weight: .medium)
         roleLabel.textColor = .secondaryLabelColor
 
@@ -1511,12 +1534,37 @@ extension Passage {
         let agentURLs = ((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("AgentKit"),includingPropertiesForKeys:nil)) ?? []).filter{$0.lastPathComponent.hasSuffix("_sample.json")}.sorted{$0.lastPathComponent < $1.lastPathComponent}
         let agentDocs = agentURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes = try? Data(contentsOf:url),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
         let studioDocs = agentDocs + localDocs.filter{$0.0.document.taskType == "administrative" || $0.0.document.taskType == "onboarding" || $0.0.document.taskType == "speech"}
-        let groups:[(String,String,String,[(Breakdown,URL)])] = [
-            ("essays","Structured Documents & SOP Studio","Nghị định 30/2020/NĐ-CP · Quy chế doanh nghiệp & Loom Onboarding",studioDocs),
-            ("research","Research, close up","Open-access selections · credited authors · CC BY",readings.filter{$0.0.document.taskType == "research"} + localDocs.filter{$0.0.document.taskType == "research"}),
-            ("essays","The craft of writing","Read the original advice, explore the margin notes",readings.filter{$0.0.document.taskType == "discursive"}),
-            ("ielts","IELTS Writing","20 original practice essays · Task 1 and Task 2",sampleDocs),
-            ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research" && $0.0.document.taskType != "administrative" && $0.0.document.taskType != "onboarding" && $0.0.document.taskType != "speech"})]
+        var incomingDocs: [(Breakdown, URL)] = []
+        var inboxDirs = [saveURL.deletingLastPathComponent().appendingPathComponent("AgentExchange/Inbox")]
+        if let docDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            inboxDirs.append(docDir.appendingPathComponent("Passage/Inbox"))
+        }
+        for dir in inboxDirs {
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            if let urls = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
+                for u in urls {
+                    let ext = u.pathExtension.lowercased()
+                    if ext == "json", let bytes = try? Data(contentsOf: u), let doc = try? JSONDecoder().decode(Breakdown.self, from: bytes) {
+                        incomingDocs.append((doc, u))
+                    } else if ext == "pdf", let text = LocalOCR.extractDirectText(from: u) {
+                        incomingDocs.append((Breakdown.plain(text, title: u.deletingPathExtension().lastPathComponent), u))
+                    } else if ["md", "markdown", "txt"].contains(ext), let text = try? String(contentsOf: u, encoding: .utf8), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        incomingDocs.append((Breakdown.plain(text, title: u.deletingPathExtension().lastPathComponent), u))
+                    }
+                }
+            }
+        }
+        var groups: [(String, String, String, [(Breakdown, URL)])] = []
+        if !incomingDocs.isEmpty {
+            groups.append(("essays", "Inbox · Incoming Documents", "Ready to read and annotate from ~/Documents/Passage/Inbox", incomingDocs))
+        }
+        groups.append(contentsOf: [
+            ("essays", "Structured Documents & SOP Studio", "Nghị định 30/2020/NĐ-CP · Quy chế doanh nghiệp & Loom Onboarding", studioDocs),
+            ("research", "Research, close up", "Open-access selections · credited authors · CC BY", readings.filter{$0.0.document.taskType == "research"} + localDocs.filter{$0.0.document.taskType == "research"}),
+            ("essays", "The craft of writing", "Read the original advice, explore the margin notes", readings.filter{$0.0.document.taskType == "discursive"}),
+            ("ielts", "IELTS Writing", "20 original practice essays · Task 1 and Task 2", sampleDocs),
+            ("essays", "Your writing", "Continue reading and revising", localDocs.filter{$0.0.document.taskType != "research" && $0.0.document.taskType != "administrative" && $0.0.document.taskType != "onboarding" && $0.0.document.taskType != "speech"})
+        ])
         for (key,title,subtitle,documents) in groups where !documents.isEmpty {
             let header = HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
             dashboard.main.addSubview(header)
@@ -1528,12 +1576,13 @@ extension Passage {
                 let topic = doc.document.title.components(separatedBy: "·").last?.components(separatedBy: "—").first?.trimmingCharacters(in: .whitespaces) ?? "Writing"
                 let author: String = {
                     if let a = credit?.authors { return a }
+                    if title.contains("Inbox") { return "Incoming document · Ready to review" }
                     if doc.document.taskType == "administrative" { return "Nghị định 30/2020/NĐ-CP · Thể thức chuẩn" }
                     if doc.document.taskType == "onboarding" { return "SOP Hướng dẫn · Onboarding nhân sự mới" }
                     if key == "ielts" { return "Pass Passage By! · Original practice" }
                     return "Personal document"
                 }()
-                let tags = credit?.tags ?? (doc.document.taskType == "administrative" ? ["Văn bản hành chính", "Nghị định 30"] : (doc.document.taskType == "onboarding" ? ["SOP Quy trình", "Onboarding"] : (key == "ielts" ? [topic, readingType(doc.document.taskType)] : [readingType(doc.document.taskType)])))
+                let tags = credit?.tags ?? (title.contains("Inbox") ? ["Incoming", url.pathExtension.uppercased()] : (doc.document.taskType == "administrative" ? ["Văn bản hành chính", "Nghị định 30"] : (doc.document.taskType == "onboarding" ? ["SOP Quy trình", "Onboarding"] : (key == "ielts" ? [topic, readingType(doc.document.taskType)] : [readingType(doc.document.taskType)]))))
                 let card = HomeCard(title:doc.document.title,excerpt:truncateWords(readingPreview(doc.document.text),maxChars:140),annotation:author + "\n" + tags.joined(separator: "  ·  "),categoryTag:readingType(doc.document.taskType),categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
                 card.searchableText = doc.document.title + " " + doc.document.text + " " + (doc.document.prompt ?? "") + " " + doc.annotations.map{$0.label + " " + $0.body}.joined(separator:" ")
                 cards.append(card);dashboard.allCards.append((card:card,category:key))

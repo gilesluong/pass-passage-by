@@ -799,9 +799,36 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
         let scroll = NSScrollView();scroll.hasVerticalScroller = true;scroll.documentView = list;panel.contentView = scroll;infoWindow = panel;panel.center();panel.makeKeyAndOrderFront(nil)
     }
-    @objc func loadExample(_ sender:NSButton){
-        guard let path = sender.identifier?.rawValue else{return}
-        do{if opened {saveDraft()};try loadJSON(Data(contentsOf:URL(fileURLWithPath:path)));infoWindow?.close();openWorkspace()}catch{showAlert(error.localizedDescription)}
+    @objc func loadExample(_ sender: NSButton) {
+        guard let path = sender.identifier?.rawValue else { return }
+        do {
+            if opened { saveDraft() }
+            let url = URL(fileURLWithPath: path)
+            let ext = url.pathExtension.lowercased()
+            if ext == "pdf", let direct = LocalOCR.extractDirectText(from: url) {
+                let title = url.deletingPathExtension().lastPathComponent
+                data = .plain(direct, title: title)
+                past = []; future = []
+                level = 0; focus = 0
+                infoWindow?.close()
+                openWorkspace()
+                saveDraft()
+            } else if ["md", "markdown", "txt"].contains(ext), let text = try? String(contentsOf: url, encoding: .utf8) {
+                let title = url.deletingPathExtension().lastPathComponent
+                data = .plain(text, title: title)
+                past = []; future = []
+                level = 0; focus = 0
+                infoWindow?.close()
+                openWorkspace()
+                saveDraft()
+            } else {
+                try loadJSON(Data(contentsOf: url))
+                infoWindow?.close()
+                openWorkspace()
+            }
+        } catch {
+            showAlert(error.localizedDescription)
+        }
     }
     @objc func openExample() {
         do {
@@ -949,7 +976,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let noteBtn = button("Comments",#selector(toggleComments),symbol:"bubble.left.and.bubble.right")
         let notesBtn = button("Library",#selector(showWritingLibrary),symbol:"folder")
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
-        let topTrailing = stack([briefEdit, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
+        let agentBtn = button("AI Agent", #selector(agentHarnessMenu(_:)), symbol: "sparkles")
+        let topTrailing = stack([briefEdit, agentBtn, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
         _ = [scanBtn, notesBtn, importBtn]
         for control in topTrailing.arrangedSubviews.compactMap({ $0 as? NSButton }) + [homeBtn, briefToggle] {
             control.isBordered = false

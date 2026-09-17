@@ -73,6 +73,8 @@ final class TestPassage:Passage {
         app.deleteTaskBrief();app.root.layoutSubtreeIfNeeded()
         precondition(app.data.document.prompt==nil && app.taskBrief.isHidden)
         precondition(app.briefEditButton?.title=="Add task")
+        let agentBtn = app.topBar?.subviews.compactMap{$0 as? NSStackView}.flatMap{$0.arrangedSubviews}.compactMap{$0 as? NSButton}.first{$0.action == #selector(app.agentHarnessMenu(_:))}
+        precondition(agentBtn != nil && agentBtn?.toolTip == "AI Agent", "AI Agent harness button must be present in editor top bar")
         let settings=app.makePreferencesWindow()
         for button in app.preferencesNavigation {
             app.selectPreferencesSection(button);settings.contentView!.layoutSubtreeIfNeeded()
@@ -198,6 +200,24 @@ final class TestPassage:Passage {
         let page=try LocalOCR.page(fixture)
         let recognized=try LocalOCR.recognize([page])
         precondition(recognized.text.contains("Public transport") && recognized.text.contains("Teachers"),"Vision must read the local fixture")
+        let pdfData = NSMutableData()
+        var mediaBox = CGRect(x: 0, y: 0, width: 612, height: 792)
+        if let consumer = CGDataConsumer(data: pdfData as CFMutableData),
+           let pdfCtx = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) {
+            pdfCtx.beginPDFPage(nil)
+            let font = CTFontCreateWithName("Helvetica" as CFString, 14, nil)
+            let attr = CFAttributedStringCreate(nil, "This is an administrative document extracted directly without OCR for studio close reading." as CFString, [kCTFontAttributeName: font] as CFDictionary)!
+            let line = CTLineCreateWithAttributedString(attr)
+            pdfCtx.textPosition = CGPoint(x: 50, y: 700)
+            CTLineDraw(line, pdfCtx)
+            pdfCtx.endPDFPage()
+            pdfCtx.closePDF()
+            let pdfURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-direct-\(UUID().uuidString).pdf")
+            pdfData.write(to: pdfURL, atomically: true)
+            let extracted = LocalOCR.extractDirectText(from: pdfURL)
+            precondition(extracted != nil && extracted!.contains("administrative document"), "Direct PDFKit text extraction must work")
+            try? FileManager.default.removeItem(at: pdfURL)
+        }
         let source="😀 Improve public transport. Improve public transport."
         let notes=try LocalFeedback.anchors([SuggestedNote(quote:"public transport",label:"Topic",body:"Name the specific service.",occurrence:1)],source:source)
         precondition(notes[0].start>30)
