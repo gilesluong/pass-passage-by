@@ -67,8 +67,9 @@ final class TestPassage:Passage {
         app.taskPromptField?.stringValue="Updated task directly."
         app.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:app.taskPromptField))
         precondition(app.data.document.prompt=="Updated task directly.")
-        let labels=app.taskBrief.documentView!.subviews.compactMap{$0 as? NSTextField}
-        precondition(labels.first!.font!.pointSize>=19)
+        precondition(app.taskPromptField!.font!.pointSize>=19)
+        precondition(app.taskPromptField!.frame.width<=920)
+        precondition(app.taskBrief.layer?.masksToBounds==true)
         app.deleteTaskBrief();app.root.layoutSubtreeIfNeeded()
         precondition(app.data.document.prompt==nil && app.taskBrief.isHidden)
         precondition(app.briefEditButton?.title=="Add task")

@@ -457,8 +457,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var briefHidden = false
     var promptEditor:NSTextView?
     var taskPromptField:NSTextField?
-    var taskBrief = NSScrollView()
+    var taskBrief = ClipScrollView()
     var taskBriefHeight:NSLayoutConstraint?
+    var briefTransition = 0
+    var briefAnimating = false
     var annotationSave:DispatchWorkItem?
     var appearanceToggle:NSButton?
     var shareController:ShareController?
@@ -525,7 +527,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     let appUpdates = AppUpdates()
     var preferencesWindow: NSWindow?
     var settings: NSPopover?
-    var commentsPane = NSView()
+    var commentsPane = InspectorSurface()
     var commentsWidth: NSLayoutConstraint?
     var commentsVisible = false
     var commentsEditing = false
@@ -926,7 +928,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         titleField.placeholderString = "Essay title"
         titleField.isBordered = false
         titleField.drawsBackground = false
-        titleField.font = .systemFont(ofSize: 20, weight: .semibold)
+        titleField.font = .systemFont(ofSize: 16, weight: .semibold)
         titleField.target = self
         titleField.action = #selector(renameTitle)
 
@@ -949,15 +951,20 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
         let topTrailing = stack([briefEdit, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
         _ = [scanBtn, notesBtn, importBtn]
+        for control in topTrailing.arrangedSubviews.compactMap({ $0 as? NSButton }) + [homeBtn, briefToggle] {
+            control.isBordered = false
+            control.contentTintColor = .secondaryLabelColor
+            control.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        }
         let taskControl = NSView()
-        taskControl.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        taskControl.heightAnchor.constraint(equalToConstant: 32).isActive = true
         briefToggle.translatesAutoresizingMaskIntoConstraints = false
         taskControl.addSubview(briefToggle)
         NSLayoutConstraint.activate([
             briefToggle.centerXAnchor.constraint(equalTo: taskControl.centerXAnchor),
             briefToggle.centerYAnchor.constraint(equalTo: taskControl.centerYAnchor),
             briefToggle.widthAnchor.constraint(equalToConstant: 48),
-            briefToggle.heightAnchor.constraint(equalToConstant: 24)
+            briefToggle.heightAnchor.constraint(equalToConstant: 30)
         ])
         taskToggleRow = taskControl
         topTrailing.spacing = 10
@@ -1088,7 +1095,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         ])
 
         // Main Center Stack
-        commentsPane = NSView()
+        commentsPane = InspectorSurface()
         commentsEditing = false
         commentsVisible = false
         commentsWidth = commentsPane.widthAnchor.constraint(equalToConstant: 300)
@@ -1108,11 +1115,11 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
         exitPresentation = button("End presentation", #selector(togglePresentation))
         exitPresentation.isHidden = true
-        taskBrief = NSScrollView();taskBrief.hasVerticalScroller = true;taskBrief.drawsBackground = false
+        taskBrief = ClipScrollView();taskBrief.hasVerticalScroller = true;taskBrief.drawsBackground = false
         taskBriefHeight = taskBrief.heightAnchor.constraint(equalToConstant:220);taskBriefHeight?.isActive = true
         refreshTaskBrief()
-        let all = stack([top, taskControl, taskBrief, header, center, definitionButton, exitPresentation], vertical: true)
-        all.alignment = .width; all.spacing = 10
+        let all = stack([top, taskBrief, taskControl, header, center, definitionButton, exitPresentation], vertical: true)
+        all.alignment = .width; all.spacing = 6
         attach(all, to: root, inset: 24)
         header.widthAnchor.constraint(equalTo: all.widthAnchor).isActive = true
         if let token = scrollObserver { NotificationCenter.default.removeObserver(token) }
@@ -1304,7 +1311,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func paperColor() -> NSColor {
         if isDarkMode() {
-            return NSColor(calibratedRed: 0.11, green: 0.12, blue: 0.15, alpha: 1)
+            return WorkspaceStyle.background(dark: true)
         }
         switch prefs.string(forKey: "theme") ?? "Paper" {
         case "Comic":
@@ -1314,9 +1321,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         case "Forest":
             return NSColor(calibratedRed: 0.92, green: 0.96, blue: 0.93, alpha: 1)
         case "Midnight":
-            return NSColor(calibratedRed: 0.11, green: 0.12, blue: 0.15, alpha: 1)
+            return WorkspaceStyle.background(dark: true)
         default:
-            return prefs.string(forKey: "canvas") == "Warm paper" ? NSColor(calibratedRed: 0.98, green: 0.96, blue: 0.91, alpha: 1) : NSColor(calibratedRed: 0.96, green: 0.96, blue: 0.97, alpha: 1)
+            return prefs.string(forKey: "canvas") == "Warm paper" ? NSColor(calibratedRed: 0.98, green: 0.96, blue: 0.91, alpha: 1) : WorkspaceStyle.background(dark: false)
         }
     }
 
@@ -1475,6 +1482,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         layoutRefresh = job;DispatchQueue.main.async(execute:job)
     }
     func updateConnectors() {
+        guard !briefAnimating else { return }
         guard opened, level < 3, prefs.bool(forKey: "notes") else {
             connectorView.connections = []
             return
@@ -2420,12 +2428,41 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     @objc func toggleTaskBrief() {
         let origin = scroll.contentView.bounds.origin
+        let oldHeight = taskBriefHeight?.constant ?? 0
+        briefTransition += 1
+        let transition = briefTransition
+        briefAnimating = false
         briefHidden.toggle()
         refreshTaskBrief()
+        let targetHeight = taskBriefHeight?.constant ?? 0
+        let animate = window.isVisible && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        guard animate else {
+            root.layoutSubtreeIfNeeded()
+            scroll.contentView.scroll(to: origin)
+            scheduleAnnotationLayout()
+            return
+        }
+        // Clip the details while the disclosure changes size; never animate individual text/anchors.
+        taskBrief.isHidden = false
+        taskBriefHeight?.constant = oldHeight
         root.layoutSubtreeIfNeeded()
-        scroll.contentView.scroll(to: origin)
-        scroll.reflectScrolledClipView(scroll.contentView)
-        scheduleAnnotationLayout()
+        briefAnimating = true
+        connectorView.connections = []
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = BrandMotion.disclosure
+            context.timingFunction = BrandMotion.smoothOut
+            context.allowsImplicitAnimation = true
+            taskBriefHeight?.constant = targetHeight
+            root.layoutSubtreeIfNeeded()
+        } completionHandler: { [weak self] in
+            guard let self = self, self.briefTransition == transition else { return }
+            self.briefAnimating = false
+            self.taskBrief.isHidden = self.briefHidden
+            self.root.layoutSubtreeIfNeeded()
+            self.scroll.contentView.scroll(to: origin)
+            self.scroll.reflectScrolledClipView(self.scroll.contentView)
+            self.scheduleAnnotationLayout()
+        }
     }
     @objc func editTaskBrief(){
         if briefHidden { briefHidden = false; refreshTaskBrief(); updateBriefToggleIcon() }
@@ -2433,7 +2470,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             window.makeFirstResponder(field)
             field.currentEditor()?.selectedRange = NSRange(location: (field.stringValue as NSString).length, length: 0)
         } else {
-            data.document.prompt = "WRITING TASK 2\nAllow about 40 minutes.\n\nEnter task prompt here..."
+            snapshot()
+            data.document.prompt = "Add a prompt, context or instructions for this document."
+            saveDraft()
             refreshTaskBrief()
             updateBriefToggleIcon()
             if let field = taskPromptField {
@@ -2459,14 +2498,32 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             taskBriefHeight?.constant = 0
             return
         }
-        let width = max(300,taskBrief.contentSize.width > 100 ? taskBrief.contentSize.width : (window.contentView?.bounds.width ?? 1000) - 60)
+        let width = max(300, (window.contentView?.bounds.width ?? 1000) - 48)
+        let innerWidth = min(920, width - 48)
+        let leading = (width - innerWidth) / 2
         let content = MarginCanvas(frame:NSRect(x:0,y:0,width:width,height:220));content.autoresizesSubviews = false
-        let paired = !(data.images ?? []).isEmpty && width > 620
-        let textWidth = paired ? width * 0.47 : width - 32
-        var y:CGFloat = 12
+        let paired = !(data.images ?? []).isEmpty && innerWidth > 620
+        let textWidth = paired ? innerWidth * 0.47 : innerWidth
+        let detailLabel = NSTextField(labelWithString: "DOCUMENT DETAILS  ·  " + readingType(data.document.taskType))
+        detailLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        detailLabel.textColor = .secondaryLabelColor
+        detailLabel.frame = NSRect(x: leading, y: 16, width: innerWidth - 100, height: 18)
+        content.addSubview(detailLabel)
+        let removeDetails = button("Remove details", #selector(deleteTaskBrief))
+        removeDetails.isBordered = false
+        removeDetails.font = .systemFont(ofSize: 11)
+        removeDetails.contentTintColor = .secondaryLabelColor
+        removeDetails.frame = NSRect(x: leading + innerWidth - 100, y: 12, width: 100, height: 24)
+        content.addSubview(removeDetails)
+        var y:CGFloat = 44
         if !prompt.isEmpty {
-            let size = max(20,prefs.double(forKey:"briefSize"))
+            let size = max(19,prefs.double(forKey:"briefSize"))
             let label = NSTextField(wrappingLabelWithString:prompt)
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineSpacing = 4
+            paragraph.paragraphSpacing = 8
+            let attributes: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: size), .foregroundColor: NSColor.labelColor, .paragraphStyle: paragraph]
+            label.attributedStringValue = NSAttributedString(string: prompt, attributes: attributes)
             label.font = .systemFont(ofSize:size, weight: .regular)
             label.isEditable = true
             label.isSelectable = true
@@ -2477,18 +2534,18 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             label.setAccessibilityLabel("Task prompt — click to edit")
             label.delegate = self
             taskPromptField = label
-            let height = (prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:NSFont.systemFont(ofSize:size)]).height + 28
-            label.frame = NSRect(x:16,y:12,width:textWidth,height:height)
+            let height = (prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:attributes).height + 20
+            label.frame = NSRect(x:leading,y:44,width:textWidth,height:height)
             content.addSubview(label)
-            y = height + 24
+            y = height + 60
         } else {
             taskPromptField = nil
         }
-        var imageY:CGFloat = paired ? 8 : y
+        var imageY:CGFloat = paired ? 44 : y
         for picture in data.images ?? [] {
             guard let image = NSImage(data:picture.data) else{continue}
-            let x:CGFloat = paired ? width * 0.51 : 16
-            let imageWidth = paired ? width * 0.47 : width - 32
+            let x:CGFloat = leading + (paired ? innerWidth * 0.53 : 0)
+            let imageWidth = paired ? innerWidth * 0.47 : innerWidth
             let remove = button("Remove image",#selector(removeImage(_:)));remove.identifier = .init(picture.id);remove.frame = NSRect(x:x,y:imageY,width:116,height:24);content.addSubview(remove)
             let height = min(175,imageWidth * image.size.height / max(1,image.size.width))
             let view = NSImageView(frame:NSRect(x:x,y:imageY + 28,width:imageWidth,height:height));view.image = image;view.imageScaling = .scaleProportionallyUpOrDown;content.addSubview(view);imageY += height + 40

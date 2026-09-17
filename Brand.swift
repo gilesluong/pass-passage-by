@@ -1,7 +1,41 @@
 import Cocoa
 import QuartzCore
 // Native adaptation of transitions.dev: short text swap, reversible page motion.
-enum BrandMotion { static let textSwap = 0.15; static let page = 0.25 }
+enum BrandMotion {
+    static let textSwap = 0.15
+    static let page = 0.25
+    static let disclosure = 0.25
+    static let smoothOut = CAMediaTimingFunction(controlPoints: 0.22, 1, 0.36, 1)
+}
+
+/// Quiet native chrome. Reading-paper preferences are independent of workspace surfaces.
+enum WorkspaceStyle {
+    static func background(dark: Bool) -> NSColor { NSColor(calibratedWhite: dark ? 0.09 : 0.985, alpha: 1) }
+    static func panel(dark: Bool) -> NSColor { NSColor(calibratedWhite: dark ? 0.12 : 0.96, alpha: 1) }
+}
+
+final class InspectorSurface: NSView {
+    override func draw(_ dirtyRect: NSRect) {
+        WorkspaceStyle.panel(dark: LiquidGlass.isDark(for: self)).setFill()
+        dirtyRect.fill()
+        NSColor.separatorColor.withAlphaComponent(0.5).setFill()
+        NSRect(x: 0, y: 0, width: 1, height: bounds.height).fill()
+    }
+}
+
+/// Scroll container that clips its content at the layer level, so disclosures can animate height without spilling.
+final class ClipScrollView: NSScrollView {
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        wantsLayer = true
+    }
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+    override func layout() {
+        layer?.masksToBounds = true
+        contentView.layer?.masksToBounds = true
+        super.layout()
+    }
+}
 
 // MARK: - Apple Liquid Glass Design Tokens (macOS 27 HIG)
 enum LiquidGlass {
@@ -11,13 +45,13 @@ enum LiquidGlass {
     static let smallCornerRadius: CGFloat = 10
 
     // Specular rim gradient (top-lit glass refraction)
-    static let specularTopAlpha: CGFloat = 0.18
+    static let specularTopAlpha: CGFloat = 0.06
     static let specularBottomAlpha: CGFloat = 0.04
 
     // Ambient shadow
     static let shadowRadius: CGFloat = 18
     static let shadowOffset = CGSize(width: 0, height: -4)
-    static let shadowOpacity: Float = 0.12
+    static let shadowOpacity: Float = 0.03
 
     static func isDark(for view: NSView) -> Bool {
         // swiftlint:disable:next raw_appearance_check
@@ -27,14 +61,14 @@ enum LiquidGlass {
     // MARK: - Card Backgrounds
     static func cardBackground(isDark: Bool) -> NSColor {
         isDark
-            ? NSColor(calibratedRed: 0.14, green: 0.17, blue: 0.23, alpha: 0.92)
-            : NSColor(calibratedRed: 0.98, green: 0.98, blue: 1.0, alpha: 0.96)
+            ? NSColor(calibratedWhite: 0.13, alpha: 1)
+            : NSColor(calibratedWhite: 0.975, alpha: 1)
     }
 
     static func elevatedCardBackground(isDark: Bool) -> NSColor {
         isDark
-            ? NSColor(calibratedRed: 0.16, green: 0.19, blue: 0.26, alpha: 0.94)
-            : NSColor(calibratedRed: 0.99, green: 0.99, blue: 1.0, alpha: 0.97)
+            ? NSColor(calibratedWhite: 0.16, alpha: 1)
+            : NSColor.white
     }
 
     // MARK: - Accent Colors
@@ -146,7 +180,7 @@ final class PaperBackdrop:NSView {
  var backgroundImage: NSImage? {didSet{needsDisplay = true}}
  override func draw(_ dirtyRect:NSRect){
   let dark = LiquidGlass.isDark(for: self)
-  let bg = dark ? NSColor(calibratedRed:0.11,green:0.12,blue:0.15,alpha:1) : NSColor(calibratedRed:0.96,green:0.96,blue:0.97,alpha:1)
+  let bg = WorkspaceStyle.background(dark: dark)
   bg.setFill()
   dirtyRect.fill()
   super.draw(dirtyRect)
