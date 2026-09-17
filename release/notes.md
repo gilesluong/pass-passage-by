@@ -1,12 +1,11 @@
-## Pass Passage By! 1.9.5
+## Pass Passage By! 1.9.6
 
-- Unified ZCode-style quiet workspace and refined density:
-  - Document Details disclosure with smooth animated chevron toggle and 19pt editable task prompt.
-  - Dedicated right-side Comments Inspector with structured cards: colored tags, vertical accent bars, anchored quotes, and body text.
-  - Margin Annotations remain cleanly isolated on document margins with connector lines (no duplication across columns).
-  - Added Tag Palette Presets under Settings → Tags: Quick one-click palettes for Administrative Documents (Nghị định 30), Corporate SOP Onboarding, IELTS Writing, and Standard Colors.
-  - Portable presentation metadata sidecar (`presentation.json`) on export/import, preserving frozen Model schema while restoring annotation vs comment surfaces.
-  - Annotated PDF export now outputs comments to a dedicated appendix with purple anchors.
+- Margin Annotations & Sample Documents Overhaul:
+  - Tagless margin cards: removed tag pills from margin annotation cards for a cleaner, focused reading experience.
+  - Compact margin notes: annotation labels are limited to ~20 characters, displayed in 34pt Liquid Glass cards with specular refraction rims.
+  - Zero duplication: margin cards only show concise titles; detailed substantive critique and commentary live strictly in the Comments Inspector and popovers.
+  - 100% regenerated sample documents: 20 brand-new standardized sample documents covering Administrative Documents (Nghị định 30/2020/NĐ-CP), Corporate SOP & Onboarding guidelines, Academic Research & Close-Reading, and Advanced Rhetorical Analysis.
+  - Full AI Agent Harness: 1-click editor header menu, automatic background sync to AgentExchange folder, offline close-reading generation, and direct PDF extraction without intermediate OCR.
 - 100% strict SwiftLint compliance (0 warnings, 0 errors) and all native layout test suites pass.
 
 Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized.
