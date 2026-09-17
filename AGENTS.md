@@ -48,9 +48,12 @@ All agents must respect the following constraints to prevent regressions:
   - **Vietnamese Administrative Documents (Nghị định 30/2020/NĐ-CP)**: Structured drafting blocks (Quốc hiệu, Tiêu ngữ, Căn cứ pháp lý, Điều khoản, Nơi nhận) replacing Word formatting friction.
   - **Corporate SOP & Employee Onboarding**: Interactive procedures and financial thresholds paired with Loom screen recordings.
   - **Speech & Rhetorical Analysis**: Dissection of Pathos, Logos, Ethos, and historical context.
-- **Separation of Annotation vs Comment (v1.9.4)**:
-  - **Annotations (✦)**: Objective structural and legal facts. Placed in side margins with solid Liquid Glass borders, category badges, and connector lines.
-  - **Comments (💬)**: Subjective reviews, feedback, and questions. Triggered via `⌥⌘M` or selection popups, rendered on margins with purple dashed borders (`[4.0, 3.0]`), `"💬 "` prefix, and `"View comment ↗"`.
+- **Annotation vs Comment — updated user direction (17 September, evening)**:
+  - Annotation: a short contextual note, reminder, state or observation in the margin. It need not be objective or legal/structural. Keep it lightweight.
+  - Comment: richer feedback and eventual human/agent discussion, shown in a dedicated inspector/thread surface, not another full margin card.
+  - Version 1.9.4 only distinguishes border/color/labels; the shared margin renderer is NOT a completed separation.
+  - Read `NEXT-STEPS.md` before implementing this change. Preserve existing note IDs, text, anchors and exports; no silent kind-based reclassification of historical notes.
+- **Visual direction**: quiet neutral workspace inspired by the supplied ZCode screenshot; remove decorative wallpaper. Reserve imagery for actual document covers. Editor clarity precedes new showcase/template features.
 - **$0 Subscription Model**:
   - Native on-device Apple Intelligence, Apple Dictionaries, and BYO AI agent connection via stdio MCP. No recurring subscription for reading tools.
 

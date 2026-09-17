@@ -1320,18 +1320,8 @@ extension Passage {
         attach(scroll, to: root)
         dashboard.autoresizingMask = [.width]
 
-        // Fixed background image drawn directly on PaperBackdrop root
-        if let backdrop = root as? PaperBackdrop {
-            let bgPath = resourceDirectory.appendingPathComponent("Assets/home-background.jpg")
-            if let img = NSImage(contentsOf: bgPath) {
-                backdrop.backgroundImage = img
-            } else {
-                let devPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("Assets/home-background.jpg")
-                if let img = NSImage(contentsOf: devPath) {
-                    backdrop.backgroundImage = img
-                }
-            }
-        }
+        // Keep the workspace quiet; imagery belongs to document covers only.
+        (root as? PaperBackdrop)?.backgroundImage = nil
 
         func label(_ text: String, _ size: CGFloat, _ bold: Bool = false) -> NSTextField {
             let v = NSTextField(wrappingLabelWithString: text)
