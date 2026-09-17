@@ -1,3 +1,34 @@
+# Current: Pass Passage By! 1.9.5 (19) — 17 September 2026
+
+**Batch Completion: ZCode-style UI Polish, Separation of Annotations vs Comments, Tag Palette Presets, and Portable Export Metadata.**
+All 5 tasks in `TASK-LEDGER.md` are marked DONE and verified. Sparkle release `1.9.5 (19)` is live on GitHub Releases (`https://github.com/gilesluong/pass-passage-by/releases/tag/v1.9.5`).
+
+1. **Task 1: Neutral ZCode-style Shell & Document Details**:
+   - `Brand.swift`: `WorkspaceStyle`, `InspectorSurface`, `ClipScrollView`, and restrained `BrandMotion`.
+   - `Passage.swift`: Compact 16pt document title, 30pt borderless header controls, centered max-width 920pt prompt column, editable `taskPromptField` (19pt), smooth animated chevron toggle for "DOCUMENT DETAILS".
+2. **Task 2: Portable Presentation Metadata (`presentation.json`)**:
+   - Preserves frozen `Model.swift` schema while enabling portable separation between annotations and comments.
+   - Bundle exports include `presentation.json` (`ppb-note-surfaces/v1`). Dragging/dropping an exported bundle folder back into the editor re-imports and restores exact surface assignments.
+   - `annotatedPDF` routes comments to a dedicated appendix (*"Comments · feedback & discussion"*) with purple anchors.
+3. **Task 3: Structured Comments Inspector (`Comments.swift`)**:
+   - Comments now live exclusively in the dedicated right-hand Comments Inspector, completely eliminating margin duplication.
+   - Cards feature rounded corners, colored tag headers, vertical purple accent bars, anchored quote snippets, and 13pt body text.
+4. **Task 4: Density Polish & Tag Palette Presets in Settings (`Passage.swift`)**:
+   - Reviewed density and removed decorative chrome / misleading copy in Home and Settings.
+   - Added interactive **Tag Palette Presets** in Settings → Tags:
+     - **Nghị định 30** (Văn bản hành chính): `Thể thức chuẩn`, `Căn cứ pháp lý`, `Thẩm quyền & Ban hành`, `Điều khoản quy định`, `Hiệu lực thi hành`, `Văn phong hành chính`, `Nơi nhận & Lưu trữ`.
+     - **SOP Onboarding**: `Quy định chung`, `Quy trình thực hiện`, `Hạn mức duyệt chi`, `Lưu ý quan trọng`, `Nghiêm cấm / Chế tài`, `Biểu mẫu đính kèm`, `Hỗ trợ & Liên hệ`.
+     - **IELTS Writing**: `Task Response`, `Coherence & Cohesion`, `Lexical Resource`, `Grammatical Accuracy`, `Critical Correction`, `Thesis & Topic`, `Academic Register`.
+     - **Mặc định**: Khôi phục 7 màu tiêu chuẩn.
+   - Instant roundtrip updates the textfields and live notes without breaking layout test assertions.
+5. **Task 5: Quality Gate & Release 1.9.5**:
+   - Zero SwiftLint warnings/errors (`bash lint.sh`).
+   - 100% pass across core unit tests (`bash test.sh`) and native AppKit layout tests (`bash test-layout.sh`).
+   - Rebuilt `dist/PPB-macOS.zip`, refreshed `../Passage-Antigravity-Source.zip`, generated signed appcast with Ed25519, and published `v1.9.5` to GitHub Releases.
+   - Preview binary running locally at `/tmp/PPBPreview/Pass Passage By!.app`.
+
+---
+
 # Latest implementation — vision + first annotation/comment separation slice
 
 See PRODUCT-VISION.md and the new first section of NEXT-STEPS.md. Native Comments inspector implemented; explicit local presentation routing preserves legacy note data; compact click-to-edit margin annotations; broken popover content controller fixed. Strict lint and test suites pass; preview builds. No public release/version change. Surface routing is local UserDefaults only, so portable export/MCP metadata and conversion undo are next prerequisites. Do not claim collaboration, production migration, or complete editor overhaul. Build/test scripts include Comments.swift and NotePresentation.swift. Model.swift and sample schemas untouched.
