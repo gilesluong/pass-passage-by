@@ -2763,12 +2763,33 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let label = NSTextField(labelWithString:"●  " + color.capitalized);label.textColor = tagColor(color);label.widthAnchor.constraint(equalToConstant:150).isActive = true;field.widthAnchor.constraint(equalToConstant:270).isActive = true
             return stack([label,field])
         }
+        let presetTitle = NSTextField(labelWithString:"Tag Palettes")
+        presetTitle.textColor = .secondaryLabelColor
+        presetTitle.font = .systemFont(ofSize:12,weight:.semibold)
+        presetTitle.widthAnchor.constraint(equalToConstant:150).isActive = true
+        let presetStack = NSStackView()
+        presetStack.orientation = .horizontal
+        presetStack.spacing = 6
+        presetStack.alignment = .centerY
+        func makePresetButton(_ title: String, _ action: Selector) -> NSButton {
+            let b = NSButton(title: title, target: self, action: action)
+            b.bezelStyle = .rounded
+            b.controlSize = .small
+            b.font = .systemFont(ofSize: 11, weight: .medium)
+            return b
+        }
+        let b1 = makePresetButton("NĐ 30", #selector(applyPresetAdministrative))
+        let b2 = makePresetButton("Onboarding", #selector(applyPresetOnboarding))
+        let b3 = makePresetButton("IELTS", #selector(applyPresetIelts))
+        let b4 = makePresetButton("Mặc định", #selector(applyPresetDefault))
+        for btn in [b1, b2, b3, b4] { presetStack.addArrangedSubview(btn) }
+        let presetRow = stack([presetTitle, presetStack])
         let sections:[(String,String,[NSView])] = [
             ("Appearance","Choose the page and pointer colors you read comfortably.",[dark,row("Pointer highlight",popup("pointerMode",["Hold fn","Hold Option","Always","Off"])),themePicker,row("Hover effect",popup("hoverStyle",["Solid","Gradient","Stardust"])),check("notes","Show margin annotations")]),
             ("Typography","Essay and task text have separate reading sizes.",[row("Writing font",popup("font",["Georgia","Baskerville","Helvetica Neue","Menlo"])),numericSetting("size",label:"Essay size (pt)",minimum:16,maximum:32),numericSetting("briefSize",label:"Task size (pt)",minimum:17,maximum:28),numericSetting("spacing",label:"Line spacing",minimum:1.2,maximum:2.2),numericSetting("paragraphSpacing",label:"Paragraph gap",minimum:0,maximum:60),numericSetting("lineWidth",label:"Writing width",minimum:400,maximum:1100),numericSetting("indent",label:"First line indent",minimum:0,maximum:60)]),
             ("Gestures","Configure shortcuts and reading navigation path.",[row("Reading path",preset),picker,path]),
             ("Dictionary","Only dictionaries installed on this Mac are listed.",[row("Dictionary",dict)]),
-            ("Tags","Rename each color to match your feedback categories.",tagRows),
+            ("Tags","Rename each color or pick a preconfigured palette for your workflow.",[presetRow] + tagRows),
             ("Updates","Signed updates are delivered through Sparkle.",updateSettingsControls()),
             ("Intelligence","OCR uses Apple Vision and works without model downloads.",[NSTextField(wrappingLabelWithString:LocalFeedback.appleStatus),NSTextField(wrappingLabelWithString:"AI feedback runs locally when Apple Intelligence is available. No automatic model downloads. Review suggestions before teaching.")])
         ]
@@ -2802,6 +2823,72 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     }
 
     @objc func renameTag(_ sender:NSTextField){guard let key = sender.identifier?.rawValue else{return};prefs.set(sender.stringValue,forKey:key);if opened {renderNotes()}}
+    @objc func applyPresetAdministrative() {
+        applyTagPreset([
+            ("blue", "Thể thức chuẩn"),
+            ("orange", "Căn cứ pháp lý"),
+            ("purple", "Thẩm quyền ban hành"),
+            ("green", "Điều khoản quy định"),
+            ("red", "Hiệu lực thi hành"),
+            ("yellow", "Văn phong hành chính"),
+            ("gray", "Nơi nhận & Lưu trữ")
+        ])
+    }
+    @objc func applyPresetOnboarding() {
+        applyTagPreset([
+            ("blue", "Quy định chung"),
+            ("orange", "Quy trình thực hiện"),
+            ("purple", "Hạn mức duyệt chi"),
+            ("green", "Lưu ý quan trọng"),
+            ("red", "Nghiêm cấm / Chế tài"),
+            ("yellow", "Biểu mẫu đính kèm"),
+            ("gray", "Hỗ trợ & Liên hệ")
+        ])
+    }
+    @objc func applyPresetIelts() {
+        applyTagPreset([
+            ("blue", "Task Response"),
+            ("orange", "Coherence & Cohesion"),
+            ("purple", "Lexical Resource"),
+            ("green", "Grammatical Accuracy"),
+            ("red", "Critical Correction"),
+            ("yellow", "Thesis & Topic"),
+            ("gray", "Academic Register")
+        ])
+    }
+    @objc func applyPresetDefault() {
+        applyTagPreset([
+            ("blue", "Blue"),
+            ("orange", "Orange"),
+            ("red", "Red"),
+            ("purple", "Purple"),
+            ("green", "Green"),
+            ("yellow", "Yellow"),
+            ("gray", "Gray")
+        ])
+    }
+    func applyTagPreset(_ list: [(String, String)]) {
+        for (color, name) in list {
+            prefs.set(name, forKey: "tag." + color)
+        }
+        if let tabs = preferencesTabs {
+            for item in tabs.tabViewItems where item.identifier as? String == "Tags" {
+                if let page = item.view {
+                    let fields = page.subviews.compactMap { $0 as? NSStackView }
+                        .flatMap { $0.arrangedSubviews }
+                        .compactMap { $0 as? NSTextField }
+                        .filter { $0.isEditable }
+                    for field in fields {
+                        if let id = field.identifier?.rawValue, id.hasPrefix("tag.") {
+                            let color = String(id.dropFirst(4))
+                            field.stringValue = tagName(color)
+                        }
+                    }
+                }
+            }
+        }
+        if opened { renderNotes() }
+    }
     func numericSetting(_ key: String, label: String, minimum: Double, maximum: Double) -> NSView {
         let field = NSTextField(string: String(format:key == "spacing" ? "%.2f" : "%.0f",prefs.double(forKey:key)))
         let formatter = NumberFormatter();formatter.minimum = NSNumber(value:minimum);formatter.maximum = NSNumber(value:maximum);formatter.maximumFractionDigits = 2

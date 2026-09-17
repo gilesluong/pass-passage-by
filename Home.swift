@@ -1473,7 +1473,7 @@ extension Passage {
         dashboard.header = [head0, head1]
         for view in dashboard.header { dashboard.main.addSubview(view) }
 
-        // Partner Showcase Carousel (Top Advertisement for Centers/Teachers)
+        // Featured Writing Showcase Carousel
         let carousel = PartnerShowcaseCarousel(frame: .zero)
         carousel.openTarget = self
         carousel.openAction = #selector(loadExample(_:))

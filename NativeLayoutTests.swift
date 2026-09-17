@@ -83,6 +83,14 @@ final class TestPassage:Passage {
                 let fields=page.subviews.compactMap{$0 as? NSStackView}.flatMap{$0.arrangedSubviews}.compactMap{$0 as? NSTextField}.filter{$0.isEditable}
                 precondition(fields.count==7)
                 for field in fields {precondition(field.frame.width>=260,"Tag names must not collapse")}
+                app.applyPresetAdministrative()
+                precondition(app.tagName("blue")=="Thể thức chuẩn" && app.tagName("orange")=="Căn cứ pháp lý")
+                app.applyPresetOnboarding()
+                precondition(app.tagName("blue")=="Quy định chung" && app.tagName("purple")=="Hạn mức duyệt chi")
+                app.applyPresetIelts()
+                precondition(app.tagName("blue")=="Task Response" && app.tagName("orange")=="Coherence & Cohesion")
+                app.applyPresetDefault()
+                precondition(app.tagName("blue")=="Blue" && app.tagName("orange")=="Orange")
             }
         }
         app.prefs.set(true,forKey:"dark")
