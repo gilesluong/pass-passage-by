@@ -146,6 +146,29 @@ enum LocalFeedback {
         }
         return try anchors(suggestions,source:source)
     }
+    static func analyzeSentence(_ sentence: String) -> (label: String, body: String, isApple: Bool) {
+        let clean = sentence.trimmingCharacters(in: .whitespacesAndNewlines)
+        let words = clean.split(separator: " ").count
+        if words > 32 {
+            return ("Sentence Length & Clarity", "This sentence contains \(words) words. Consider dividing into two clearer sentences to strengthen reading flow.", appleReady)
+        }
+        let markers = [
+            ("However", "Contrast marker: Ensures smooth transition highlighting counter-evidence or nuances."),
+            ("Furthermore", "Addition marker: Reinforces the supporting evidence in argument flow."),
+            ("Moreover", "Reinforcement marker: Strengthens and escalates persuasion of central claims."),
+            ("In conclusion", "Conclusion signpost: Clearly and authoritatively signals summary of main ideas."),
+            ("Therefore", "Causal inference: Logical deductive transition connecting premise to conclusion.")
+        ]
+        for (m, desc) in markers {
+            if clean.localizedCaseInsensitiveContains(m) {
+                return ("Cohesion Marker: \(m)", desc, appleReady)
+            }
+        }
+        if clean.localizedCaseInsensitiveContains("because") || clean.localizedCaseInsensitiveContains("since") {
+            return ("Subordination & Reasoning", "Complex clause structure effectively provides direct explanatory causation.", appleReady)
+        }
+        return ("Writing Structure", "Well-formed sentence structure. Maintain focus on evidence and analytical rigor.", appleReady)
+    }
     static func generate(_ source:String,language:String)async throws->[Note] {
         guard source.count<=7000 else {throw CaptureError.message("For local feedback, use up to 7,000 characters at a time. You can still import the full OCR text.")}
         if appleReady {

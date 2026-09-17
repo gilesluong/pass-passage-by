@@ -213,7 +213,7 @@ final class AppleTVProfileView: NSView {
         }
         settingsButton.contentTintColor = .secondaryLabelColor
         settingsButton.target = self
-        settingsButton.action = #selector(showProfileMenu(_:))
+        settingsButton.action = #selector(openDirectSettings(_:))
 
         addSubview(avatarCircle)
         addSubview(nameLabel)
@@ -222,6 +222,10 @@ final class AppleTVProfileView: NSView {
     }
 
     required init?(coder: NSCoder) { fatalError() }
+
+    @objc func openDirectSettings(_ sender: NSButton) {
+        (NSApp.delegate as? Passage)?.showSettings(sender)
+    }
 
     @objc func showProfileMenu(_ sender: NSButton) {
         let app = NSApp.delegate as? Passage

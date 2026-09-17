@@ -66,7 +66,6 @@ final class AppleDictionaryToolbar: NSView {
     let backButton = NSButton()
     let forwardButton = NSButton()
     let countLabel = NSTextField(labelWithString: "")
-    let searchField = NSSearchField()
     var tabButtons: [DictionaryTabButton] = []
     var onSelectTab: ((Int) -> Void)?
     var selectedIndex: Int = 0
@@ -84,8 +83,6 @@ final class AppleDictionaryToolbar: NSView {
         countLabel.font = .systemFont(ofSize: 11, weight: .medium)
         countLabel.textColor = .secondaryLabelColor
 
-        searchField.placeholderString = "Search dictionary…"
-
         let titles = ["All", "Lạc Việt", "Oxford", "Thesaurus", "Tiếng Việt"]
         for (i, t) in titles.enumerated() {
             let b = DictionaryTabButton(title: t, target: self, action: #selector(tabClicked(_:)))
@@ -99,7 +96,7 @@ final class AppleDictionaryToolbar: NSView {
             addSubview(b)
         }
 
-        for v in [backButton, forwardButton, countLabel, searchField] { addSubview(v) }
+        for v in [backButton, forwardButton, countLabel] { addSubview(v) }
     }
     required init?(coder: NSCoder) { fatalError() }
 
@@ -119,13 +116,9 @@ final class AppleDictionaryToolbar: NSView {
 
     override func layout() {
         super.layout()
-        let w = bounds.width
-        backButton.frame = NSRect(x: 8, y: 7, width: 28, height: 24)
-        forwardButton.frame = NSRect(x: 38, y: 7, width: 28, height: 24)
-        countLabel.frame = NSRect(x: 72, y: 9, width: 70, height: 20)
-
-        let searchW: CGFloat = min(200, max(120, w * 0.22))
-        searchField.frame = NSRect(x: w - searchW - 10, y: 7, width: searchW, height: 24)
+        backButton.frame = NSRect(x: 10, y: 7, width: 28, height: 24)
+        forwardButton.frame = NSRect(x: 40, y: 7, width: 28, height: 24)
+        countLabel.frame = NSRect(x: 74, y: 9, width: 66, height: 20)
 
         var tabX: CGFloat = 145
         let widths: [CGFloat] = [46, 76, 68, 86, 84]
@@ -140,7 +133,7 @@ final class AppleDictionaryToolbar: NSView {
 final class AppleDictionaryPaneView: NSView {
     override var isFlipped: Bool { true }
     var toolbar: AppleDictionaryToolbar!
-    var wordListScroll: NSScrollView!
+    var wordListScroll: NSScrollView?
     var divider = NSBox()
     var definitionScroll: NSScrollView!
 
@@ -148,8 +141,6 @@ final class AppleDictionaryPaneView: NSView {
         super.init(frame: frameRect)
         wantsLayer = true
         if let l = layer { LiquidGlass.configureLayer(l, radius: LiquidGlass.smallCornerRadius, shadow: true) }
-        divider.boxType = .separator
-        addSubview(divider)
     }
     required init?(coder: NSCoder) { fatalError() }
 
@@ -159,10 +150,7 @@ final class AppleDictionaryPaneView: NSView {
         let h = bounds.height
         if let tb = toolbar { tb.frame = NSRect(x: 0, y: 0, width: w, height: 38) }
         let contentH = max(100, h - 38)
-        let listW: CGFloat = min(170, max(120, w * 0.22))
-        if let wl = wordListScroll { wl.frame = NSRect(x: 0, y: 38, width: listW, height: contentH) }
-        divider.frame = NSRect(x: listW, y: 38, width: 1, height: contentH)
-        if let ds = definitionScroll { ds.frame = NSRect(x: listW + 1, y: 38, width: max(100, w - listW - 1), height: contentH) }
+        if let ds = definitionScroll { ds.frame = NSRect(x: 0, y: 39, width: w, height: contentH) }
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -257,7 +245,11 @@ class WritingView: NSTextView {
     var editAnnotation: ((Int, NSPoint) -> Bool)?
     var onHoverIndex: ((Int?, NSPoint) -> Void)?
     var pointerMode: () -> String = { UserDefaults.standard.string(forKey:"pointerMode") ?? "Hold Option" }
-    var showsPointerHighlight: Bool { PointerPolicy.isActive(mode:pointerMode(),option:NSEvent.modifierFlags.contains(.option)) }
+    var showsPointerHighlight: Bool {
+        let flags = NSEvent.modifierFlags
+        let active = flags.contains(.function) || flags.contains(.option)
+        return PointerPolicy.isActive(mode: pointerMode(), option: active)
+    }
     private var hover: NSRange?
     var pointerIndex: Int?
     private var hoverTimer: Timer?
@@ -284,7 +276,7 @@ class WritingView: NSTextView {
         pointerIndex = index
         hover = showsPointerHighlight ? hoverRange?(index) : nil
         if !showsPointerHighlight {hoverTimer?.invalidate();hoverTimer=nil}
-        onHoverIndex?(nil, point)
+        onHoverIndex?(index, point)
         if showsPointerHighlight && hoverTimer == nil && UserDefaults.standard.string(forKey: "hoverStyle") == "Stardust" && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             hoverTimer = Timer.scheduledTimer(withTimeInterval: 1.0/30, repeats: true) { [weak self] _ in self?.needsDisplay = true }
         }
@@ -539,15 +531,15 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         prefs.register(defaults: [
-            "pointerMode": "Hold Option",
+            "pointerMode": "Hold fn",
             "font": "Georgia",
             "size": 22,
             "spacing": 1.65,
             "dark": false,
             "canvas": "Plain paper",
             "notes": true,
-            "theme": "Paper", "briefSize": 19.0,
-            "onboarded": false, "zoomPreset": "Teacher", "zoomParagraph": true, "zoomSentence": true, "paragraphSpacing": 36.0, "lineWidth": 820.0, "indent": 0.0
+            "theme": "Paper", "briefSize": 21.0,
+            "onboarded": false, "zoomPreset": "Student", "zoomParagraph": false, "zoomSentence": false, "paragraphSpacing": 36.0, "lineWidth": 820.0, "indent": 0.0
         ])
         // Restore the approved paper/serif direction once, without touching drafts.
         if prefs.integer(forKey: "referenceDesignRevision") < 1 {
@@ -866,7 +858,6 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let homeBtn = button("Home", #selector(showHome), symbol: "house")
         let importBtn = button("Import", #selector(importFile), symbol: "square.and.arrow.down")
         let exportBtn = button("Share", #selector(showSharePreview), symbol: "square.and.arrow.up")
-        let settingsBtn = button("Settings", #selector(showSettings), symbol: "gearshape")
 
         levels = NSSegmentedControl(labels: ["Essay", "Paragraph", "Sentence", "Word"], trackingMode: .selectOne, target: self, action: #selector(levelChanged))
         levels.selectedSegment = 0
@@ -875,11 +866,12 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let topLeading = stack([homeBtn, titleField])
         topLeading.spacing = 10
         let briefEdit=button("Add task",#selector(editTaskBrief));briefEditButton=briefEdit
-        let briefToggle=button("Hide task",#selector(toggleTaskBrief));briefToggleButton=briefToggle
+        let briefToggle = button("Task Prompt", #selector(toggleTaskBrief), symbol: briefHidden ? "chevron.down" : "chevron.up")
+        briefToggleButton = briefToggle
         let scanBtn=button("Scan",#selector(captureDocument),symbol:"camera")
         let noteBtn=button("Note",#selector(comment),symbol:"plus.bubble")
         let notesBtn=button("Library",#selector(showWritingLibrary),symbol:"folder")
-        let topTrailing = stack([briefToggle,briefEdit,noteBtn,scanBtn,button("Attachments",#selector(attachmentMenu(_:)),symbol:"paperclip"),notesBtn,importBtn,exportBtn,settingsBtn])
+        let topTrailing = stack([briefToggle, briefEdit, noteBtn, scanBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), notesBtn, importBtn, exportBtn])
         topTrailing.spacing = 10
 
         let top = NSStackView(views: [topLeading, topTrailing])
@@ -911,7 +903,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         editor.pointerMode = { [weak self] in self?.prefs.string(forKey:"pointerMode") ?? "Hold Option" }
         editor.hoverRange = { [weak self] index in
             guard let self = self else { return NSRange(location: 0, length: 0) }
-            let r = self.data.range(level: self.nextZoomLevel(1), offset: self.visible.location + index)
+            let r = self.data.range(level: 2, offset: self.visible.location + index)
             let overlap = NSIntersectionRange(r, self.visible)
             return NSRange(location: max(0, overlap.location - self.visible.location), length: overlap.length)
         }
@@ -972,21 +964,18 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         dictToolbar.backButton.target = self
         dictToolbar.backButton.action = #selector(dictNavBackAction)
         dictToolbar.forwardButton.target = self
+        dictToolbar.forwardButton.action = #selector(dictNavForwardAction)
         dictToolbar.onSelectTab = { [weak self] tab in
             self?.selectedDictTab = tab
             if let word = self?.currentWord, !word.isEmpty {
                 self?.lookupWord(word, addToHistory: false)
             }
         }
-        dictToolbar.searchField.target = self
-        dictToolbar.searchField.action = #selector(performDictSearch)
 
         dictionaryPane = AppleDictionaryPaneView()
         dictionaryPane.toolbar = dictToolbar
-        dictionaryPane.wordListScroll = dictWordListScroll
         dictionaryPane.definitionScroll = dictionaryScroll
         dictionaryPane.addSubview(dictToolbar)
-        dictionaryPane.addSubview(dictWordListScroll)
         dictionaryPane.addSubview(dictionaryScroll)
         dictionaryPane.isHidden = true
 
@@ -1369,10 +1358,19 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                 : noteColor(n)
 
             let body = NSTextField(wrappingLabelWithString: n.body + (n.suggestion.map { "\n\nSuggested: " + $0 } ?? ""))
-            body.font = .systemFont(ofSize: presentation ? 17 : 14)
-            body.textColor = .labelColor
+            body.font = .systemFont(ofSize: presentation ? 15 : 12)
+            body.textColor = isDark ? NSColor(calibratedWhite: 0.88, alpha: 1) : NSColor(calibratedWhite: 0.2, alpha: 1)
+            body.maximumNumberOfLines = 3
+            body.lineBreakMode = .byTruncatingTail
 
-            var cardViews: [NSView] = [kind, titleBtn, body]
+            let previewBtn = NSButton(title: "View full note ↗", target: self, action: #selector(openNotePreview(_:)))
+            previewBtn.identifier = NSUserInterfaceItemIdentifier(n.id)
+            previewBtn.isBordered = false
+            previewBtn.bezelStyle = .regularSquare
+            previewBtn.font = .systemFont(ofSize: 11, weight: .semibold)
+            previewBtn.contentTintColor = noteColor(n)
+
+            var cardViews: [NSView] = [kind, titleBtn, body, previewBtn]
 
             if isResearchSource {
                 let doiRegex = try? NSRegularExpression(pattern: #"(?:doi(?::|\.org\/)|\b)(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)"#, options: .caseInsensitive)
@@ -1383,14 +1381,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                     doiBtn.bezelStyle = .regularSquare
                     doiBtn.isBordered = false
                     doiBtn.toolTip = "Open https://doi.org/\(doi) in browser"
-                    doiBtn.heightAnchor.constraint(equalToConstant: 24).isActive = true
+                    doiBtn.heightAnchor.constraint(equalToConstant: 22).isActive = true
                     cardViews.append(doiBtn)
                 }
             }
 
             let card = stack(cardViews, vertical: true)
-            card.spacing = 8
-            card.edgeInsets = NSEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            card.spacing = 6
+            card.edgeInsets = NSEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
             card.wantsLayer = true
             let cardRadius: CGFloat = isComicTheme() ? 14 : LiquidGlass.smallCornerRadius
             if let l = card.layer { LiquidGlass.configureLayer(l, radius: cardRadius, shadow: isResearchSource) }
@@ -1463,16 +1461,21 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let anchor = targetStack.convert(glyphPoint, from: editor)
             let width = max(160, targetStack.bounds.width - 24)
             card.constraints.first(where: { $0.firstAttribute == .width })?.constant = width
-            let height = max(90, card.fittingSize.height)
-            let y = min(max(0,targetStack.bounds.height-height-12), max(nextY[isLeft] ?? 20, anchor.y - 24))
+            let height = max(70, card.fittingSize.height)
+            let idealY = max(nextY[isLeft] ?? 20, anchor.y - 16)
+            let y = idealY
             card.frame = NSRect(x: 12, y: y, width: width, height: height)
-            nextY[isLeft] = y + height + 22
+            nextY[isLeft] = y + height + 16
             let cardMidInContainer = connectorView.convert(NSPoint(x:isLeft ? card.bounds.maxX:card.bounds.minX,y:card.bounds.midY),from:card)
             let color = noteColor(n)
 
             let start = NSPoint(x: isLeft ? 0 : editorContainer.bounds.width, y: cardMidInContainer.y)
             let end = NSPoint(x: isLeft ? textPtInContainer.x : min(editorContainer.bounds.maxX-20,textPtInContainer.x+textRect.width), y: textPtInContainer.y)
             list.append(ConnectorOverlayView.Connection(startPoint: start, endPoint: end, color: color))
+        }
+        for (canvas, pane, isL) in [(leftNotes, leftScroll, true), (rightNotes, rightScroll, false)] {
+            let requiredH = max(pane.contentView.bounds.height, (nextY[isL] ?? 20) + 40)
+            canvas.frame = NSRect(x: 0, y: 0, width: pane.contentView.bounds.width, height: requiredH)
         }
         connectorView.connections = list
     }
@@ -1541,12 +1544,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
     }
 
-    @objc func performDictSearch() {
-        let q = dictToolbar.searchField.stringValue.trimmingCharacters(in: CharacterSet.punctuationCharacters.union(.whitespacesAndNewlines))
-        guard !q.isEmpty else { return }
-        lookupWord(q)
-        populateWordList()
-    }
+    @objc func performDictSearch() {}
 
     func fetchDictionaryEntries(word: String, tab: Int) -> [(title: String, content: String)] {
         let clean = word.lowercased()
@@ -1599,81 +1597,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         return results
     }
 
-    func populateWordList() {
-        dictWordListView.subviews.forEach { $0.removeFromSuperview() }
-        guard opened else { return }
-
-        let sentenceRange = data.range(level: 2, offset: focus)
-        let sentenceText = (data.document.text as NSString).substring(with: sentenceRange)
-        let tokens = sentenceText.components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { $0.count > 1 }
-
-        var seen = Set<String>()
-        var words: [String] = []
-        if !currentWord.isEmpty {
-            words.append(currentWord)
-            seen.insert(currentWord.lowercased())
-        }
-        for t in tokens {
-            let low = t.lowercased()
-            if !seen.contains(low) {
-                seen.insert(low)
-                words.append(t)
-            }
-        }
-
-        let isDark = isDarkMode()
-        let accent = LiquidGlass.accent(isDark: isDark)
-
-        var y: CGFloat = 8
-        for w in words {
-            let b = NSButton(title: w, target: self, action: #selector(wordListItemClicked(_:)))
-            b.isBordered = false
-            b.bezelStyle = .regularSquare
-            b.wantsLayer = true
-            b.layer?.cornerRadius = 6
-            b.alignment = .left
-            b.identifier = .init(w)
-            let isCurrent = (w.lowercased() == currentWord.lowercased())
-            if isCurrent {
-                b.layer?.backgroundColor = accent.withAlphaComponent(0.22).cgColor
-                b.contentTintColor = accent
-                b.font = .systemFont(ofSize: 13, weight: .bold)
-            } else {
-                b.layer?.backgroundColor = NSColor.clear.cgColor
-                b.contentTintColor = isDark ? NSColor.white.withAlphaComponent(0.85) : NSColor.black.withAlphaComponent(0.85)
-                b.font = .systemFont(ofSize: 13, weight: .medium)
-            }
-            b.frame = NSRect(x: 6, y: y, width: 154, height: 26)
-            dictWordListView.addSubview(b)
-            y += 28
-        }
-        dictWordListView.frame = NSRect(x: 0, y: 0, width: 166, height: max(y + 20, dictWordListScroll.bounds.height))
-    }
-
-    func updateWordListHighlight() {
-        let isDark = isDarkMode()
-        let accent = LiquidGlass.accent(isDark: isDark)
-        for sub in dictWordListView.subviews {
-            guard let b = sub as? NSButton, let id = b.identifier?.rawValue else { continue }
-            let isCurrent = (id.lowercased() == currentWord.lowercased())
-            if isCurrent {
-                b.layer?.backgroundColor = accent.withAlphaComponent(0.22).cgColor
-                b.contentTintColor = accent
-                b.font = .systemFont(ofSize: 13, weight: .bold)
-            } else {
-                b.layer?.backgroundColor = NSColor.clear.cgColor
-                b.contentTintColor = isDark ? NSColor.white.withAlphaComponent(0.85) : NSColor.black.withAlphaComponent(0.85)
-                b.font = .systemFont(ofSize: 13, weight: .medium)
-            }
-        }
-    }
-
-    @objc func wordListItemClicked(_ sender: NSButton) {
-        guard let w = sender.identifier?.rawValue, !w.isEmpty else { return }
-        lookupWord(w)
-    }
+    func populateWordList() {}
+    func updateWordListHighlight() {}
+    @objc func wordListItemClicked(_ sender: NSButton) {}
 
     @objc func toggleDefinition() {
         fullDefinition.toggle()
@@ -1686,8 +1612,6 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     func displayAppleDefinition() {
         let isDark = isDarkMode()
-        let accent = LiquidGlass.accent(isDark: isDark)
-
         let result = NSMutableAttributedString()
 
         // Sentence context
@@ -1704,49 +1628,136 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                 attributes: [.font: NSFont.systemFont(ofSize: 15), .foregroundColor: NSColor.secondaryLabelColor]
             ))
         } else {
-            for (i, entry) in currentDefinitionEntries.enumerated() {
-                if i > 0 || currentDefinitionEntries.count > 1 || selectedDictTab == 0 {
-                    let div = NSMutableAttributedString(
-                        string: "▼ ──  \(entry.title)  " + String(repeating: "─", count: max(4, 30 - entry.title.count)) + "\n\n",
-                        attributes: [
-                            .font: NSFont.systemFont(ofSize: 11, weight: .bold),
-                            .foregroundColor: accent
-                        ]
-                    )
-                    result.append(div)
+            for (_, entry) in currentDefinitionEntries.enumerated() {
+                var cleanTitle = entry.title
+                if let pIdx = cleanTitle.firstIndex(of: "(") {
+                    cleanTitle = String(cleanTitle[..<pIdx]).trimmingCharacters(in: .whitespaces)
                 }
 
+                // Section divider matching Apple Dictionary
+                let dividerText = "▼ ───  \(cleanTitle)  " + String(repeating: "─", count: max(4, 38 - cleanTitle.count)) + "\n\n"
+                result.append(NSAttributedString(
+                    string: dividerText,
+                    attributes: [
+                        .font: NSFont.systemFont(ofSize: 11, weight: .semibold),
+                        .foregroundColor: isDark ? NSColor(white: 0.52, alpha: 1) : NSColor(white: 0.48, alpha: 1)
+                    ]
+                ))
+
                 var text = entry.content
+                var headword = currentWord
+                var phonetics = ""
+
+                if let firstPipe = text.firstIndex(of: "|"), let secondPipe = text[text.index(after: firstPipe)...].firstIndex(of: "|") {
+                    let hw = String(text[..<firstPipe]).trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !hw.isEmpty { headword = hw }
+                    phonetics = String(text[firstPipe...secondPipe])
+                    text = String(text[text.index(after: secondPipe)...]).trimmingCharacters(in: .whitespacesAndNewlines)
+                } else if text.hasPrefix(currentWord) {
+                    text = String(text.dropFirst(currentWord.count)).trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+
+                // Headword + Phonetic transcript line
+                let headAttr = NSMutableAttributedString()
+                headAttr.append(NSAttributedString(string: headword, attributes: [
+                    .font: NSFont.systemFont(ofSize: 22, weight: .bold),
+                    .foregroundColor: isDark ? NSColor.white : NSColor.black
+                ]))
+                if !phonetics.isEmpty {
+                    headAttr.append(NSAttributedString(string: "  " + phonetics, attributes: [
+                        .font: NSFont.systemFont(ofSize: 14, weight: .regular),
+                        .foregroundColor: NSColor.secondaryLabelColor
+                    ]))
+                }
+                headAttr.append(NSAttributedString(string: "\n\n"))
+                result.append(headAttr)
+
+                // Synonyms marker
+                for marker in ["từ đồng nghĩa", "từ trái nghĩa", "synonyms", "antonyms", "thesaurus"] {
+                    if let r = text.range(of: marker, options: .caseInsensitive) {
+                        let before = String(text[..<r.lowerBound])
+                        let after = String(text[r.upperBound...])
+                        text = before + "\n__SYNONYMS__" + marker.uppercased() + "\n" + after.trimmingCharacters(in: .whitespacesAndNewlines)
+                        break
+                    }
+                }
+
                 text = text.replacingOccurrences(of: " ▸ ", with: "\n    ▸ ")
                 text = text.replacingOccurrences(of: " ▹ ", with: "\n    ▹ ")
                 text = text.replacingOccurrences(of: " • ", with: "\n    • ")
 
+                if let regex = try? NSRegularExpression(pattern: "(\\s+)(\\d+)(\\s+)") {
+                    let ns = text as NSString
+                    text = regex.stringByReplacingMatches(in: text, range: NSRange(location: 0, length: ns.length), withTemplate: "\n__NUM__$2 ")
+                }
+
                 let lines = text.components(separatedBy: "\n")
-                var count = 0
+                var isFirstContentLine = true
                 for line in lines {
                     let trimmed = line.trimmingCharacters(in: .whitespaces)
                     if trimmed.isEmpty { continue }
-                    if !fullDefinition && count > 10 {
-                        result.append(NSAttributedString(string: "    …\n", attributes: [.font: NSFont.systemFont(ofSize: 14), .foregroundColor: NSColor.tertiaryLabelColor]))
-                        break
-                    }
-                    count += 1
 
-                    if trimmed.hasPrefix("▸") || trimmed.hasPrefix("▹") || trimmed.hasPrefix("•") {
+                    if trimmed.hasPrefix("__SYNONYMS__") {
+                        let label = String(trimmed.dropFirst("__SYNONYMS__".count))
+                        let p = NSMutableParagraphStyle()
+                        p.paragraphSpacingBefore = 10
+                        p.paragraphSpacing = 4
+                        result.append(NSAttributedString(string: label + "\n", attributes: [
+                            .font: NSFont.systemFont(ofSize: 11, weight: .bold),
+                            .foregroundColor: isDark ? NSColor(white: 0.65, alpha: 1) : NSColor(white: 0.45, alpha: 1),
+                            .paragraphStyle: p
+                        ]))
+                    } else if trimmed.hasPrefix("__NUM__") {
+                        let item = String(trimmed.dropFirst("__NUM__".count))
+                        let p = NSMutableParagraphStyle()
+                        p.firstLineHeadIndent = 0
+                        p.headIndent = 18
+                        p.lineSpacing = 3
+                        p.paragraphSpacing = 6
+
+                        let numAttr = NSMutableAttributedString()
+                        if let firstSpace = item.firstIndex(of: " ") {
+                            let num = String(item[..<firstSpace])
+                            let rest = String(item[firstSpace...])
+                            numAttr.append(NSAttributedString(string: num + " ", attributes: [
+                                .font: NSFont.systemFont(ofSize: 15, weight: .bold),
+                                .foregroundColor: isDark ? NSColor.white : NSColor.black
+                            ]))
+                            numAttr.append(NSAttributedString(string: rest.trimmingCharacters(in: .whitespaces) + "\n", attributes: [
+                                .font: NSFont.systemFont(ofSize: 15, weight: .regular),
+                                .foregroundColor: isDark ? NSColor.white : NSColor.black,
+                                .paragraphStyle: p
+                            ]))
+                        } else {
+                            numAttr.append(NSAttributedString(string: item + "\n", attributes: [
+                                .font: NSFont.systemFont(ofSize: 15, weight: .regular),
+                                .foregroundColor: isDark ? NSColor.white : NSColor.black,
+                                .paragraphStyle: p
+                            ]))
+                        }
+                        result.append(numAttr)
+                        isFirstContentLine = false
+                    } else if trimmed.hasPrefix("▸") || trimmed.hasPrefix("▹") || trimmed.hasPrefix("•") {
                         let p = NSMutableParagraphStyle()
                         p.firstLineHeadIndent = 16
                         p.headIndent = 26
                         p.lineSpacing = 3
+                        p.paragraphSpacing = 3
                         result.append(NSAttributedString(string: "  " + trimmed + "\n", attributes: [
-                            .font: NSFont.systemFont(ofSize: 14),
-                            .foregroundColor: isDark ? NSColor(calibratedWhite: 0.82, alpha: 1) : NSColor(calibratedWhite: 0.28, alpha: 1),
+                            .font: NSFont.systemFont(ofSize: 13, weight: .regular),
+                            .foregroundColor: isDark ? NSColor(white: 0.80, alpha: 1) : NSColor(white: 0.30, alpha: 1),
                             .paragraphStyle: p
                         ]))
-                    } else if trimmed.lowercased().hasPrefix("từ đồng nghĩa") || trimmed.lowercased().hasPrefix("từ trái nghĩa") || trimmed.lowercased().hasPrefix("antonyms") || trimmed.lowercased().hasPrefix("thesaurus") {
-                        result.append(NSAttributedString(string: "\n" + trimmed.uppercased() + "\n", attributes: [
-                            .font: NSFont.systemFont(ofSize: 11, weight: .bold),
-                            .foregroundColor: isDark ? NSColor(calibratedWhite: 0.65, alpha: 1) : NSColor(calibratedWhite: 0.45, alpha: 1)
+                    } else if isFirstContentLine && (trimmed.contains("danh từ") || trimmed.contains("động từ") || trimmed.contains("tính từ") || trimmed.contains("noun") || trimmed.contains("verb") || trimmed.contains("adjective")) {
+                        let p = NSMutableParagraphStyle()
+                        p.paragraphSpacing = 6
+                        let font = NSFontManager.shared.convert(NSFont.systemFont(ofSize: 13, weight: .regular), toHaveTrait: .italicFontMask)
+                        result.append(NSAttributedString(string: trimmed + "\n", attributes: [
+                            .font: font,
+                            .foregroundColor: isDark ? NSColor(white: 0.70, alpha: 1) : NSColor(white: 0.38, alpha: 1),
+                            .paragraphStyle: p
                         ]))
+                        isFirstContentLine = false
                     } else {
                         let p = NSMutableParagraphStyle()
                         p.lineSpacing = 4
@@ -1756,6 +1767,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                             .foregroundColor: isDark ? NSColor.white : NSColor.black,
                             .paragraphStyle: p
                         ]))
+                        isFirstContentLine = false
                     }
                 }
                 result.append(NSAttributedString(string: "\n\n"))
@@ -1767,10 +1779,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             p.lineSpacing = 4
             result.append(NSAttributedString(string: "IN YOUR ESSAY\n", attributes: [
                 .font: NSFont.systemFont(ofSize: 11, weight: .bold),
-                .foregroundColor: isDark ? NSColor(calibratedWhite: 0.65, alpha: 1) : NSColor(calibratedWhite: 0.45, alpha: 1)
+                .foregroundColor: isDark ? NSColor(white: 0.65, alpha: 1) : NSColor(white: 0.45, alpha: 1)
             ]))
-            result.append(NSAttributedString(string: ctx + "\n", attributes: [
-                .font: NSFont(name: "Georgia", size: 16) ?? NSFont.systemFont(ofSize: 16),
+            result.append(NSAttributedString(string: "“" + ctx + "”\n", attributes: [
+                .font: NSFont(name: "Georgia-Italic", size: 15) ?? NSFont.systemFont(ofSize: 15),
                 .foregroundColor: isDark ? NSColor.white : NSColor.black,
                 .paragraphStyle: p
             ]))
@@ -1949,9 +1961,95 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
     }
 
+    @objc func openNotePreview(_ sender: NSButton) {
+        guard let id = sender.identifier?.rawValue,
+              let note = displayedNotes.first(where: { $0.id == id }) else { return }
+        showHoverPreview(for: note, at: sender.convert(NSPoint(x: sender.bounds.midX, y: sender.bounds.minY), to: editor))
+    }
+
     func handleTextHover(index: Int?, point: NSPoint) {
-        // Margin annotations never cover the source while the pointer passes over it.
-        hoverSourcePopover?.close();lastHoverNoteId=nil
+        guard opened, let idx = index, idx >= 0, idx < (data.document.text as NSString).length else {
+            hoverSourcePopover?.close()
+            lastHoverNoteId = nil
+            return
+        }
+        let docOffset = visible.location + idx
+        if let note = displayedNotes.first(where: { docOffset >= $0.start && docOffset <= $0.end }) {
+            if lastHoverNoteId != note.id {
+                lastHoverNoteId = note.id
+                showHoverPreview(for: note, at: point)
+            }
+        } else {
+            let flags = NSEvent.modifierFlags
+            if flags.contains(.function) || flags.contains(.option) {
+                let sentRange = data.range(level: 2, offset: docOffset)
+                let sentId = "sent-\(sentRange.location)-\(sentRange.length)"
+                if lastHoverNoteId != sentId && sentRange.length > 5 {
+                    lastHoverNoteId = sentId
+                    let rawSent = (data.document.text as NSString).substring(with: sentRange)
+                    showSentenceInsight(for: rawSent, at: point)
+                }
+            } else {
+                hoverSourcePopover?.close()
+                lastHoverNoteId = nil
+            }
+        }
+    }
+
+    func showSentenceInsight(for sentence: String, at point: NSPoint) {
+        hoverSourcePopover?.close()
+        let isDark = isDarkMode()
+        let analysis = LocalFeedback.analyzeSentence(sentence)
+
+        let pop = NSPopover()
+        pop.behavior = .transient
+        pop.animates = !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+
+        let vc = NSViewController()
+        let popView = NSView(frame: NSRect(x: 0, y: 0, width: 340, height: 140))
+        popView.wantsLayer = true
+
+        let badgeLabel = NSTextField(labelWithString: analysis.isApple ? "✦ APPLE INTELLIGENCE · WRITING INSIGHT" : "✦ WRITING ANALYZER · ON-DEVICE")
+        badgeLabel.font = .systemFont(ofSize: 10, weight: .bold)
+        badgeLabel.textColor = LiquidGlass.accent(isDark: isDark)
+
+        let titleLabel = NSTextField(wrappingLabelWithString: analysis.label)
+        titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        titleLabel.textColor = .labelColor
+
+        let quoteLabel = NSTextField(wrappingLabelWithString: "“" + sentence.trimmingCharacters(in: .whitespacesAndNewlines) + "”")
+        quoteLabel.font = NSFont(name: "Georgia-Italic", size: 12) ?? .systemFont(ofSize: 12)
+        quoteLabel.textColor = .secondaryLabelColor
+        quoteLabel.maximumNumberOfLines = 3
+        quoteLabel.lineBreakMode = .byTruncatingTail
+
+        let bodyLabel = NSTextField(wrappingLabelWithString: analysis.body)
+        bodyLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        bodyLabel.textColor = .labelColor
+
+        let containerStack = NSStackView(views: [badgeLabel, titleLabel, quoteLabel, bodyLabel])
+        containerStack.orientation = .vertical
+        containerStack.alignment = .leading
+        containerStack.spacing = 6
+        containerStack.translatesAutoresizingMaskIntoConstraints = false
+        popView.addSubview(containerStack)
+
+        NSLayoutConstraint.activate([
+            containerStack.leadingAnchor.constraint(equalTo: popView.leadingAnchor, constant: 14),
+            containerStack.trailingAnchor.constraint(equalTo: popView.trailingAnchor, constant: -14),
+            containerStack.topAnchor.constraint(equalTo: popView.topAnchor, constant: 12),
+            containerStack.bottomAnchor.constraint(equalTo: popView.bottomAnchor, constant: -12)
+        ])
+
+        let fittingSize = containerStack.fittingSize
+        popView.frame.size = NSSize(width: max(320, fittingSize.width + 28), height: max(100, fittingSize.height + 24))
+
+        vc.view = popView
+        pop.contentViewController = vc
+        hoverSourcePopover = pop
+
+        let targetRect = NSRect(origin: point, size: NSSize(width: 1, height: 18))
+        pop.show(relativeTo: targetRect, of: editor, preferredEdge: .maxY)
     }
 
     func showHoverPreview(for note: Note, at point: NSPoint) {
@@ -2221,36 +2319,83 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             snapshot();data.images=images;saveDraft();showImages()
         } catch {showAlert("Could not add image. Use up to 12 images, 8 MB each and 48 MB total.")}
     }
+    func updateBriefToggleIcon() {
+        let sym = briefHidden ? "chevron.down" : "chevron.up"
+        if #available(macOS 11.0, *), let img = NSImage(systemSymbolName: sym, accessibilityDescription: briefHidden ? "Show task details" : "Hide task details") {
+            let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
+            briefToggleButton?.image = img.withSymbolConfiguration(conf)
+        }
+        briefToggleButton?.toolTip = briefHidden ? "Show task prompt & images" : "Hide task prompt"
+    }
+
     @objc func toggleTaskBrief(){
         let origin=scroll.contentView.bounds.origin
-        briefHidden.toggle();refreshTaskBrief()
-        root.layoutSubtreeIfNeeded();scroll.contentView.scroll(to:origin);scroll.reflectScrolledClipView(scroll.contentView)
-        scheduleAnnotationLayout()
+        briefHidden.toggle()
+        updateBriefToggleIcon()
+
+        let hasTask = !(data.document.prompt ?? "").isEmpty || !(data.images ?? []).isEmpty
+        if !hasTask {
+            taskBrief.isHidden = true
+            taskBriefHeight?.constant = 0
+            scheduleAnnotationLayout()
+            return
+        }
+
+        if !briefHidden {
+            taskBrief.isHidden = false
+            refreshTaskBrief()
+            let targetH = taskBriefHeight?.constant ?? 140
+            taskBriefHeight?.constant = 0
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.28
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                taskBriefHeight?.animator().constant = targetH
+            }, completionHandler: { [weak self] in
+                guard let self = self else { return }
+                self.scroll.contentView.scroll(to: origin)
+                self.scroll.reflectScrolledClipView(self.scroll.contentView)
+                self.scheduleAnnotationLayout()
+            })
+        } else {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.25
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                taskBriefHeight?.animator().constant = 0
+            }, completionHandler: { [weak self] in
+                guard let self = self else { return }
+                self.taskBrief.isHidden = true
+                self.scroll.contentView.scroll(to: origin)
+                self.scroll.reflectScrolledClipView(self.scroll.contentView)
+                self.scheduleAnnotationLayout()
+            })
+        }
+        root.layoutSubtreeIfNeeded()
     }
     @objc func editTaskBrief(){
-        if briefHidden { briefHidden=false; refreshTaskBrief() }
+        if briefHidden { briefHidden=false; refreshTaskBrief(); updateBriefToggleIcon() }
         if let field = taskPromptField {
             window.makeFirstResponder(field)
             field.currentEditor()?.selectedRange = NSRange(location: (field.stringValue as NSString).length, length: 0)
         } else {
             data.document.prompt = "WRITING TASK 2\nAllow about 40 minutes.\n\nEnter task prompt here..."
             refreshTaskBrief()
+            updateBriefToggleIcon()
             if let field = taskPromptField {
                 window.makeFirstResponder(field)
                 field.selectText(nil)
             }
         }
     }
-    @objc func saveTaskBrief(){snapshot();if let pe=promptEditor{data.document.prompt=pe.string};briefHidden=false;closeOnboarding();saveDraft();refreshTaskBrief()}
-    @objc func deleteTaskBrief(){snapshot();data.document.prompt=nil;data.images=nil;taskPromptField=nil;closeOnboarding();saveDraft();refreshTaskBrief()}
-    @objc func showImages() { briefHidden=false;refreshTaskBrief() }
+    @objc func saveTaskBrief(){snapshot();if let pe=promptEditor{data.document.prompt=pe.string};briefHidden=false;closeOnboarding();saveDraft();refreshTaskBrief();updateBriefToggleIcon()}
+    @objc func deleteTaskBrief(){snapshot();data.document.prompt=nil;data.images=nil;taskPromptField=nil;closeOnboarding();saveDraft();refreshTaskBrief();updateBriefToggleIcon()}
+    @objc func showImages() { briefHidden=false;refreshTaskBrief();updateBriefToggleIcon() }
     func refreshTaskBrief(){
         let prompt=data.document.prompt ?? ""
         let hasTask = !prompt.isEmpty || !(data.images ?? []).isEmpty
         briefEditButton?.title="Add task"
         briefEditButton?.isHidden = !prompt.isEmpty
         briefToggleButton?.isHidden = !hasTask
-        briefToggleButton?.title=briefHidden ? "Show task":"Hide task"
+        updateBriefToggleIcon()
         defer {scheduleAnnotationLayout()}
         taskBrief.isHidden=briefHidden || !hasTask
         guard !taskBrief.isHidden else{return}
@@ -2260,9 +2405,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let textWidth=paired ? width*0.47:width-32
         var y:CGFloat=12
         if !prompt.isEmpty {
-            let size=max(17,prefs.double(forKey:"briefSize"))
+            let size=max(20,prefs.double(forKey:"briefSize"))
             let label=NSTextField(wrappingLabelWithString:prompt)
-            label.font = .systemFont(ofSize:size)
+            label.font = .systemFont(ofSize:size, weight: .regular)
             label.isEditable = true
             label.isSelectable = true
             label.drawsBackground = false
@@ -2272,7 +2417,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             label.setAccessibilityLabel("Task prompt — click to edit")
             label.delegate = self
             taskPromptField = label
-            let height=(prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:NSFont.systemFont(ofSize:size)]).height+24
+            let height=(prompt as NSString).boundingRect(with:NSSize(width:textWidth,height:10000),options:[.usesLineFragmentOrigin,.usesFontLeading],attributes:[.font:NSFont.systemFont(ofSize:size)]).height+28
             label.frame=NSRect(x:16,y:12,width:textWidth,height:height)
             content.addSubview(label)
             y=height+24
@@ -2289,7 +2434,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             let view=NSImageView(frame:NSRect(x:x,y:imageY+28,width:imageWidth,height:height));view.image=image;view.imageScaling = .scaleProportionallyUpOrDown;content.addSubview(view);imageY+=height+40
         }
         let height=max(y,imageY);content.setFrameSize(NSSize(width:width,height:height));taskBrief.documentView=content
-        taskBriefHeight?.constant=min(min(240,window.contentView!.bounds.height*0.32),max(90,height))
+        taskBriefHeight?.constant=min(min(260,window.contentView!.bounds.height*0.35),max(100,height))
     }
     @objc func removeImage(_ sender:NSButton){snapshot();data.images?.removeAll{$0.id==sender.identifier?.rawValue};saveDraft();showImages()}
 
@@ -2502,16 +2647,16 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             return stack([label,field])
         }
         let sections:[(String,String,[NSView])]=[
-            ("Appearance","Choose the page and pointer colors you read comfortably.",[dark,row("Pointer highlight",popup("pointerMode",["Hold Option","Always","Off"])),themePicker,row("Hover effect",popup("hoverStyle",["Solid","Gradient","Stardust"])),check("notes","Show margin annotations")]),
+            ("Appearance","Choose the page and pointer colors you read comfortably.",[dark,row("Pointer highlight",popup("pointerMode",["Hold fn","Hold Option","Always","Off"])),themePicker,row("Hover effect",popup("hoverStyle",["Solid","Gradient","Stardust"])),check("notes","Show margin annotations")]),
             ("Typography","Essay and task text have separate reading sizes.",[row("Writing font",popup("font",["Georgia","Baskerville","Helvetica Neue","Menlo"])),numericSetting("size",label:"Essay size (pt)",minimum:16,maximum:32),numericSetting("briefSize",label:"Task size (pt)",minimum:17,maximum:28),numericSetting("spacing",label:"Line spacing",minimum:1.2,maximum:2.2),numericSetting("paragraphSpacing",label:"Paragraph gap",minimum:0,maximum:60),numericSetting("lineWidth",label:"Writing width",minimum:400,maximum:1100),numericSetting("indent",label:"First line indent",minimum:0,maximum:60)]),
-            ("Zoom","Click a step to add it to your path. Click again to put it back.",[row("Reading path",preset),picker,path]),
+            ("Gestures","Configure shortcuts and reading navigation path.",[row("Reading path",preset),picker,path]),
             ("Dictionary","Only dictionaries installed on this Mac are listed.",[row("Dictionary",dict)]),
             ("Tags","Rename each color to match your feedback categories.",tagRows),
             ("Updates","Signed updates are delivered through Sparkle.",updateSettingsControls()),
             ("Intelligence","OCR uses Apple Vision and works without model downloads.",[NSTextField(wrappingLabelWithString:LocalFeedback.appleStatus),NSTextField(wrappingLabelWithString:"AI feedback runs locally when Apple Intelligence is available. No automatic model downloads. Review suggestions before teaching.")])
         ]
         for (index,section) in sections.enumerated(){
-            let nav=button(section.0,#selector(selectPreferencesSection(_:)));nav.image=NSImage(systemSymbolName:["paintpalette","textformat","plus.magnifyingglass","character.book.closed","tag","arrow.triangle.2.circlepath","sparkles"][index],accessibilityDescription:section.0);nav.imagePosition = .imageLeading;nav.isBordered=false;nav.alignment = .left;nav.tag=index;nav.frame=NSRect(x:16,y:72+index*42,width:162,height:36);content.addSubview(nav);preferencesNavigation.append(nav)
+            let nav=button(section.0,#selector(selectPreferencesSection(_:)));nav.image=NSImage(systemSymbolName:["paintpalette","textformat","hand.point.up.left","character.book.closed","tag","arrow.triangle.2.circlepath","sparkles"][index],accessibilityDescription:section.0);nav.imagePosition = .imageLeading;nav.isBordered=false;nav.alignment = .left;nav.tag=index;nav.frame=NSRect(x:16,y:72+index*42,width:162,height:36);content.addSubview(nav);preferencesNavigation.append(nav)
             let page=MarginCanvas(frame:NSRect(x:0,y:0,width:570,height:540));page.autoresizesSubviews=false
             let title=NSTextField(labelWithString:section.0);title.font = .systemFont(ofSize:22,weight:.semibold);title.frame=NSRect(x:24,y:24,width:510,height:30);page.addSubview(title)
             let subtitle=NSTextField(wrappingLabelWithString:section.1);subtitle.font = .systemFont(ofSize:12);subtitle.textColor = .secondaryLabelColor;subtitle.frame=NSRect(x:24,y:60,width:510,height:34);page.addSubview(subtitle)

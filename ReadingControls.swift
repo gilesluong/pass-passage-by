@@ -2,7 +2,7 @@ import Cocoa
 import QuartzCore
 
 enum PointerPolicy {
-    static func isActive(mode:String,option:Bool)->Bool {mode == "Always" || (mode == "Hold Option" && option)}
+    static func isActive(mode:String,option:Bool)->Bool {mode == "Always" || ((mode == "Hold Option" || mode == "Hold fn") && option)}
 }
 
 final class ZoomPathPicker:NSView {
