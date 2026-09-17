@@ -1,9 +1,9 @@
-## Pass Passage By! 1.9.1
+## Pass Passage By! 1.9.2
 
-- Reading cards show complete titles, author credits and topical tags. Click anywhere on a card to open it; redundant reading buttons and note-count metadata are removed.
-- A centered task chevron completely collapses the prompt. A simpler editor toolbar groups secondary actions under More.
-- Margin notes have bounded widths, wrapped previews and first-line anchors. Full notes use a compact, scrollable preview.
-- Blank documents show a writing placeholder. Existing dictionary and gesture behavior is retained.
-- Strict SwiftLint is now a build requirement; configured rules pass with zero warnings or errors.
+- Fix modifier isolation: holding Option will no longer trigger sentence hover highlight when "Hold fn" is selected in Gestures settings.
+- Expanded AgentKit tracks: added official Vietnamese Administrative Document track (Nghị định 30/2020/NĐ-CP), Corporate SOP & Employee Onboarding track, and Rhetorical Speech Analysis track.
+- Bundled complete verified sample documents and prompts for Vietnamese administrative drafting and onboarding policies.
+- Retains 100% strict SwiftLint compliance, native AppKit architecture, and zero subscription overhead.
 
 Apple Silicon, macOS 13+. Sparkle-signed update; development ad-hoc app signing, not Apple-notarized.
+

@@ -1,6 +1,30 @@
 # Current: Pass Passage By! 1.9.2 (Track Expansion & Modifier Isolation) — 17 September 2026
 
-Antigravity session continuation before Codex resumes at 8:25 PM:
+## Product Vision & Core Philosophy (From User)
+Pass Passage By! is evolving from an IELTS writing assistant into a **world-class Close Reading & Structured Document Studio**:
+1. **Beyond IELTS — Structured Semantic Blocks**:
+   - Eliminate Microsoft Word formatting friction (fighting tab stops, margins, indentation). Documents are composed of structured semantic blocks with native margin notes and interactive commentary.
+   - **Vietnamese Administrative Documents (Nghị định 30/2020/NĐ-CP)**:
+     - Structured drafting for government, municipal, and educational contexts.
+     - Semantic components: Quốc hiệu & Tiêu ngữ, Số ký hiệu, Trích yếu nội dung, Căn cứ pháp lý còn hiệu lực, Các điều khoản quy định, Nơi nhận.
+     - Eliminates Word layout headaches for teachers lecturing administrative drafting and officers preparing official decisions.
+   - **Corporate SOP & Employee Onboarding**:
+     - Internal policies, financial thresholds (Lead vs. CFO vs. CEO), and multi-step operational workflows.
+     - Tailor-made for recording **Loom walkthrough videos** to onboard new hires effortlessly with visual annotations and lead tips.
+   - **Rhetorical Political Speech & Literary Analysis**:
+     - Deep rhetorical dissection: Pathos (emotion), Logos (reasoning), Ethos (moral authority), Diction (style/cadence), and historical context.
+     - Record video commentary dissecting why speakers choose specific phrasing.
+2. **Dedicated Hotkey & Ergonomic Gesture System**:
+   - **Strict Modifier Isolation**: Holding `fn` isolates sentence-level hover highlighting (`pointerMode == "Hold fn"`), strictly separated from `Option`.
+   - **Direct-to-Definition Zoom**: Jumping directly between essay overview and Apple Dictionary-formatted lexical definitions.
+   - **Responsive Liquid Glass Annotations**: Compact 3-line margin notes with scrollable popover previews and `Option-Command-M` quick comments.
+3. **Low-Cost / Zero Recurring Subscription Bridge**:
+   - Users already subscribe to ChatGPT Plus or Gemini Advanced ($20/month); they will not pay another $20/month for a standalone AI reader.
+   - PPB acts as the intermediate visual canvas, skill & MCP harness, leveraging on-device Apple Intelligence, native Apple dictionaries, and BYO AI agents via local stdio MCP at $0 developer server cost and $0 user subscription.
+
+---
+
+## 1.9.2 Implementation Details
 - **Modifier Isolation (`PointerPolicy.isModifierActive`)**:
   - Fixed modifier conflict where holding `Option` triggered sentence hover highlight even when the user selected `pointerMode == "Hold fn"`.
   - In `ReadingControls.swift`: Added `PointerPolicy.isModifierActive(mode:flags:)` with strict mapping: `"Hold fn"` requires `flags.contains(.function)`, `"Hold Option"` requires `flags.contains(.option)`.
