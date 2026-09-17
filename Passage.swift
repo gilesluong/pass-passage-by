@@ -690,6 +690,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let fileItem = NSMenuItem(title: "File", action: nil, keyEquivalent: "")
         let fileMenu = NSMenu(title: "File")
         fileMenu.addItem(withTitle: "New Essay", action: #selector(newEssay), keyEquivalent: "n").target = self
+        fileMenu.addItem(withTitle: "New Administrative Document…", action: #selector(newAdministrativeDocument), keyEquivalent: "").target = self
+        fileMenu.addItem(withTitle: "New SOP Onboarding Document…", action: #selector(newOnboardingDocument), keyEquivalent: "").target = self
         fileMenu.addItem(withTitle: "Open…", action: #selector(importFile), keyEquivalent: "o").target = self
         fileMenu.addItem(withTitle: "Save Draft", action: #selector(saveVersion), keyEquivalent: "s").target = self
         let scanItem = fileMenu.addItem(withTitle:"Scan Photo or PDF…",action:#selector(captureDocument),keyEquivalent:"C");scanItem.target = self
@@ -811,6 +813,18 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
         let menu = NSMenu(title: "New Document")
 
+        let adminItem = NSMenuItem(title: "Văn bản hành chính (NĐ 30)", action: #selector(newAdministrativeDocument), keyEquivalent: "")
+        adminItem.target = self
+        adminItem.image = NSImage(systemSymbolName: "building.columns", accessibilityDescription: "Administrative")
+        menu.addItem(adminItem)
+
+        let onboardingItem = NSMenuItem(title: "Quy chế & SOP Onboarding", action: #selector(newOnboardingDocument), keyEquivalent: "")
+        onboardingItem.target = self
+        onboardingItem.image = NSImage(systemSymbolName: "person.badge.shield.checkmark", accessibilityDescription: "Onboarding")
+        menu.addItem(onboardingItem)
+
+        menu.addItem(NSMenuItem.separator())
+
         let ieltsItem = NSMenuItem(title: "IELTS Essay", action: #selector(newIELTSEssay), keyEquivalent: "")
         ieltsItem.target = self
         ieltsItem.image = NSImage(systemSymbolName: "graduationcap", accessibilityDescription: "IELTS")
@@ -843,6 +857,25 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         data.document.taskType = type
         past = [];future = []
         openWorkspace()
+    }
+    private func loadTemplateOrBlank(filename: String, fallbackTitle: String, type: String) {
+        if opened { saveDraft() }; writingLibrary?.close()
+        let kitURL = Bundle.main.resourceURL?.appendingPathComponent("AgentKit/" + filename) ?? URL(fileURLWithPath: "AgentKit/" + filename)
+        if let dataBytes = try? Data(contentsOf: kitURL),
+           let sample = try? JSONDecoder().decode(Breakdown.self, from: dataBytes) {
+            data = sample
+            data.document.id = "\(type)-" + UUID().uuidString.prefix(8).lowercased()
+        } else {
+            createBlankDocument(title: fallbackTitle, type: type)
+        }
+        past = []; future = []
+        openWorkspace()
+    }
+    @objc func newAdministrativeDocument() {
+        loadTemplateOrBlank(filename: "administrative_sample.json", fallbackTitle: "Quyết định hành chính mới", type: "administrative")
+    }
+    @objc func newOnboardingDocument() {
+        loadTemplateOrBlank(filename: "onboarding_sample.json", fallbackTitle: "Quy chế & SOP Onboarding", type: "onboarding")
     }
     @objc func newIELTSEssay() {createBlankDocument(title:"Untitled IELTS Essay",type:"task2")}
     @objc func newResearchPaper() {createBlankDocument(title:"Untitled Research",type:"research")}

@@ -1,7 +1,16 @@
 import Cocoa
 
 func readingType(_ raw:String)->String {
-    switch raw {case "task1":return "IELTS · Task 1";case "task2":return "IELTS · Task 2";case "research":return "Research";case "discursive":return "Essay";default:return "Writing"}
+    switch raw {
+    case "task1": return "IELTS · Task 1"
+    case "task2": return "IELTS · Task 2"
+    case "research": return "Research"
+    case "discursive": return "Essay"
+    case "administrative": return "Văn bản hành chính"
+    case "onboarding": return "SOP & Onboarding"
+    case "speech": return "Diễn thuyết"
+    default: return "Writing"
+    }
 }
 import UniformTypeIdentifiers
 
@@ -1509,11 +1518,15 @@ extension Passage {
         let localDocs = LibraryStore.records(in:saveURL.deletingLastPathComponent().appendingPathComponent("Library")).map{($0.document,$0.url)}
         let readingURLs = ((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("Reading"),includingPropertiesForKeys:nil)) ?? []).filter{$0.pathExtension == "json" && $0.lastPathComponent != "manifest.json"}.sorted{$0.lastPathComponent < $1.lastPathComponent}
         let readings = readingURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes = try? Data(contentsOf:url),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
+        let agentURLs = ((try? FileManager.default.contentsOfDirectory(at:resourceDirectory.appendingPathComponent("AgentKit"),includingPropertiesForKeys:nil)) ?? []).filter{$0.lastPathComponent.hasSuffix("_sample.json")}.sorted{$0.lastPathComponent < $1.lastPathComponent}
+        let agentDocs = agentURLs.compactMap {url -> (Breakdown,URL)? in guard let bytes = try? Data(contentsOf:url),let doc = try? JSONDecoder().decode(Breakdown.self,from:bytes) else{return nil};return (doc,url)}
+        let studioDocs = agentDocs + localDocs.filter{$0.0.document.taskType == "administrative" || $0.0.document.taskType == "onboarding" || $0.0.document.taskType == "speech"}
         let groups:[(String,String,String,[(Breakdown,URL)])] = [
+            ("essays","Structured Documents & SOP Studio","Nghị định 30/2020/NĐ-CP · Quy chế doanh nghiệp & Loom Onboarding",studioDocs),
             ("research","Research, close up","Open-access selections · credited authors · CC BY",readings.filter{$0.0.document.taskType == "research"} + localDocs.filter{$0.0.document.taskType == "research"}),
             ("essays","The craft of writing","Read the original advice, explore the margin notes",readings.filter{$0.0.document.taskType == "discursive"}),
             ("ielts","IELTS Writing","20 original practice essays · Task 1 and Task 2",sampleDocs),
-            ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research"})]
+            ("essays","Your writing","Continue reading and revising",localDocs.filter{$0.0.document.taskType != "research" && $0.0.document.taskType != "administrative" && $0.0.document.taskType != "onboarding" && $0.0.document.taskType != "speech"})]
         for (key,title,subtitle,documents) in groups where !documents.isEmpty {
             let header = HomeSectionHeader(badge:"\(documents.count) DOCUMENTS",title:title,subtitle:subtitle,accentColor:.controlAccentColor)
             dashboard.main.addSubview(header)
@@ -1523,8 +1536,14 @@ extension Passage {
                 let credits = (try? Data(contentsOf: creditsURL)).flatMap { try? JSONDecoder().decode([ReadingCardCredit].self, from: $0) } ?? []
                 let credit = credits.first { $0.title == doc.document.title }
                 let topic = doc.document.title.components(separatedBy: "·").last?.components(separatedBy: "—").first?.trimmingCharacters(in: .whitespaces) ?? "Writing"
-                let author = credit?.authors ?? (key == "ielts" ? "Pass Passage By! · Original practice" : "Personal document")
-                let tags = credit?.tags ?? (key == "ielts" ? [topic, readingType(doc.document.taskType)] : [readingType(doc.document.taskType)])
+                let author: String = {
+                    if let a = credit?.authors { return a }
+                    if doc.document.taskType == "administrative" { return "Nghị định 30/2020/NĐ-CP · Thể thức chuẩn" }
+                    if doc.document.taskType == "onboarding" { return "SOP Hướng dẫn · Onboarding nhân sự mới" }
+                    if key == "ielts" { return "Pass Passage By! · Original practice" }
+                    return "Personal document"
+                }()
+                let tags = credit?.tags ?? (doc.document.taskType == "administrative" ? ["Văn bản hành chính", "Nghị định 30"] : (doc.document.taskType == "onboarding" ? ["SOP Quy trình", "Onboarding"] : (key == "ielts" ? [topic, readingType(doc.document.taskType)] : [readingType(doc.document.taskType)])))
                 let card = HomeCard(title:doc.document.title,excerpt:truncateWords(readingPreview(doc.document.text),maxChars:140),annotation:author + "\n" + tags.joined(separator: "  ·  "),categoryTag:readingType(doc.document.taskType),categoryType:key,target:self,action:#selector(loadExample(_:)),path:url.path)
                 card.searchableText = doc.document.title + " " + doc.document.text + " " + (doc.document.prompt ?? "") + " " + doc.annotations.map{$0.label + " " + $0.body}.joined(separator:" ")
                 cards.append(card);dashboard.allCards.append((card:card,category:key))

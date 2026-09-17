@@ -1,4 +1,4 @@
-# Current: Pass Passage By! 1.9.2 (Track Expansion & Modifier Isolation) — 17 September 2026
+# Current: Pass Passage By! 1.9.3 (Structured Studio Shelves & Native Templates) — 17 September 2026
 
 ## Product Vision & Core Philosophy (From User)
 Pass Passage By! is evolving from an IELTS writing assistant into a **world-class Close Reading & Structured Document Studio**:
@@ -21,6 +21,17 @@ Pass Passage By! is evolving from an IELTS writing assistant into a **world-clas
 3. **Low-Cost / Zero Recurring Subscription Bridge**:
    - Users already subscribe to ChatGPT Plus or Gemini Advanced ($20/month); they will not pay another $20/month for a standalone AI reader.
    - PPB acts as the intermediate visual canvas, skill & MCP harness, leveraging on-device Apple Intelligence, native Apple dictionaries, and BYO AI agents via local stdio MCP at $0 developer server cost and $0 user subscription.
+
+---
+
+## 1.9.3 Implementation Details
+- **Structured Documents & SOP Studio Shelf on Home**:
+  - `Home.swift` loads `AgentKit/*_sample.json` and renders a dedicated top showcase shelf: **"Structured Documents & SOP Studio"** ("Nghị định 30/2020/NĐ-CP · Quy chế doanh nghiệp & Loom Onboarding").
+  - Includes clickable cards for "Quyết định hành chính (Nghị định 30)" and "Quy chế Chi tiêu & SOP Onboarding".
+- **Direct Template Creation in App UI**:
+  - Added "Văn bản hành chính (NĐ 30)" and "Quy chế & SOP Onboarding" to sidebar "New document…" menu and File menu in `Passage.swift`.
+  - Instantiates complete pre-filled documents with standard statutory/SOP blocks, guided margin notes, and prompts.
+- **Reading Types**: Added native labels: "Văn bản hành chính", "SOP & Onboarding", and "Diễn thuyết".
 
 ---
 
