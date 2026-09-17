@@ -3,6 +3,7 @@ import PDFKit
 final class TestPassage:Passage {
     override var resourceDirectory:URL {URL(fileURLWithPath:FileManager.default.currentDirectoryPath)}
     override func saveDraft() {} // Never write the user's draft during layout tests.
+    override func showAlert(_ text: String) {} // Never block layout tests with modal sheets.
 }
 @main struct NativeLayoutTests {
     static func render(_ view:NSView,to path:String)throws {
@@ -75,6 +76,20 @@ final class TestPassage:Passage {
         precondition(app.briefEditButton?.title=="Add task")
         let agentBtn = app.topBar?.subviews.compactMap{$0 as? NSStackView}.flatMap{$0.arrangedSubviews}.compactMap{$0 as? NSButton}.first{$0.action == #selector(app.agentHarnessMenu(_:))}
         precondition(agentBtn != nil && agentBtn?.toolTip == "AI Agent", "AI Agent harness button must be present in editor top bar")
+        app.copyMCPSetup()
+        let copied = NSPasteboard.general.string(forType: .string) ?? ""
+        precondition(copied.contains("mcpServers") && copied.contains("pass-passage-by"), "MCP configuration must be on pasteboard")
+        app.data = .plain("Public transport helps reduce urban emissions. Furthermore, high speed rail connects regional economies efficiently.", title: "AI Test")
+        app.openWorkspace()
+        app.generateAIFeedback()
+        precondition(!app.data.annotations.isEmpty, "Generate AI notes must add annotations to document")
+        app.shareAgentContext()
+        let sharedFolder = app.exchangeFolder.appendingPathComponent("Shared")
+        let sharedFiles = (try? FileManager.default.contentsOfDirectory(at: sharedFolder, includingPropertiesForKeys: nil)) ?? []
+        precondition(!sharedFiles.isEmpty, "Shared snapshot file must exist")
+        app.clearAgentContext()
+        let clearedFiles = (try? FileManager.default.contentsOfDirectory(at: sharedFolder, includingPropertiesForKeys: nil)) ?? []
+        precondition(clearedFiles.isEmpty, "Shared snapshot file must be cleared")
         let settings=app.makePreferencesWindow()
         for button in app.preferencesNavigation {
             app.selectPreferencesSection(button);settings.contentView!.layoutSubtreeIfNeeded()

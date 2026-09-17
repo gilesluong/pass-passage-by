@@ -763,6 +763,22 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         viewItem.submenu = viewMenu
         m.addItem(viewItem)
 
+        let agentItem = NSMenuItem(title: "Agent", action: nil, keyEquivalent: "")
+        let agentMenu = NSMenu(title: "Agent")
+        agentMenu.autoenablesItems = false
+        let aiNote = agentMenu.addItem(withTitle: "Generate AI Notes & Outline", action: #selector(generateAIFeedback), keyEquivalent: "j")
+        aiNote.target = self
+        aiNote.keyEquivalentModifierMask = [.command]
+        agentMenu.addItem(NSMenuItem.separator())
+        agentMenu.addItem(withTitle: "Share Snapshot to Antigravity (MCP)", action: #selector(shareAgentContext), keyEquivalent: "").target = self
+        agentMenu.addItem(withTitle: "Open Agent Inbox…", action: #selector(openAgentInbox), keyEquivalent: "").target = self
+        agentMenu.addItem(withTitle: "Reveal Local Folder in Finder", action: #selector(revealExchangeFolder), keyEquivalent: "").target = self
+        agentMenu.addItem(NSMenuItem.separator())
+        agentMenu.addItem(withTitle: "Copy MCP Configuration", action: #selector(copyMCPSetup), keyEquivalent: "").target = self
+        agentMenu.addItem(withTitle: "Clear Shared Snapshots", action: #selector(clearAgentContext), keyEquivalent: "").target = self
+        agentItem.submenu = agentMenu
+        m.addItem(agentItem)
+
         NSApp.mainMenu = m
     }
 
