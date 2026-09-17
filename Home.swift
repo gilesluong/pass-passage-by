@@ -982,7 +982,6 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
     override var isFlipped: Bool { true }
     var sidebar = MarginCanvas(), main = MarginCanvas()
     var header: [NSView] = [], cards: [HomeCard] = [], footer: [NSView] = []
-    var backgroundImageView = NSImageView()
     var carousel: PartnerShowcaseCarousel?
     var categoryBar: WritingCategoryBar?
     let searchField = NSSearchField()
@@ -1267,23 +1266,10 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         let totalH = max(clip.bounds.height-40, curMainY + 120)
         main.frame = NSRect(x: side + 24, y: 20, width: contentWidth, height: totalH)
         frame.size.height = totalH + 40
-        backgroundImageView.frame = bounds
     }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        // Home screen background image
-        backgroundImageView.imageScaling = .scaleProportionallyUpOrDown
-        backgroundImageView.imageAlignment = .alignCenter
-        backgroundImageView.alphaValue = 0.18
-        if let resDir = Bundle.main.resourceURL ?? (ProcessInfo.processInfo.environment["PPB_RESOURCES"].flatMap { URL(fileURLWithPath: $0) }) {
-            let bgPath = resDir.appendingPathComponent("Assets/home-background.jpg")
-            if let img = NSImage(contentsOf: bgPath) { backgroundImageView.image = img }
-        }
-        if backgroundImageView.image == nil {
-            let devPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("Assets/home-background.jpg")
-            if let img = NSImage(contentsOf: devPath) { backgroundImageView.image = img }
-        }
         main.addSubview(emptyResults);emptyResults.font = .systemFont(ofSize:15);emptyResults.textColor = .secondaryLabelColor
         searchField.placeholderString = "Search writing..."
         searchField.font = .systemFont(ofSize: 13)
@@ -1295,8 +1281,6 @@ final class HomeDashboard: NSView, NSSearchFieldDelegate {
         sidebar.addSubview(searchField)
         addSubview(main)
         addSubview(sidebar)
-        backgroundImageView.autoresizingMask = [.width, .height]
-        addSubview(backgroundImageView, positioned: .below, relativeTo: main)
     }
     required init?(coder: NSCoder) { fatalError() }
 }
@@ -1315,10 +1299,24 @@ extension Passage {
         scroll.horizontalScrollElasticity = .none
         scroll.hasHorizontalScroller=false
         scroll.drawsBackground = false
+        scroll.contentView.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.documentView = dashboard
         attach(scroll, to: root)
         dashboard.autoresizingMask = [.width]
+
+        // Fixed background image drawn directly on PaperBackdrop root
+        if let backdrop = root as? PaperBackdrop {
+            let bgPath = resourceDirectory.appendingPathComponent("Assets/home-background.jpg")
+            if let img = NSImage(contentsOf: bgPath) {
+                backdrop.backgroundImage = img
+            } else {
+                let devPath = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("Assets/home-background.jpg")
+                if let img = NSImage(contentsOf: devPath) {
+                    backdrop.backgroundImage = img
+                }
+            }
+        }
 
         func label(_ text: String, _ size: CGFloat, _ bold: Bool = false) -> NSTextField {
             let v = NSTextField(wrappingLabelWithString: text)

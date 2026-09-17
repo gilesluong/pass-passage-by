@@ -139,12 +139,24 @@ final class PaperBackdrop:NSView {
   receiveFiles?(urls);return true
  }
  var decorated=false {didSet{needsDisplay=true}}
+ var backgroundImage: NSImage? {didSet{needsDisplay=true}}
  override func draw(_ dirtyRect:NSRect){
   let dark=LiquidGlass.isDark(for: self)
   let bg = dark ? NSColor(calibratedRed:0.11,green:0.12,blue:0.15,alpha:1) : NSColor(calibratedRed:0.96,green:0.96,blue:0.97,alpha:1)
   bg.setFill()
   dirtyRect.fill()
   super.draw(dirtyRect)
+  if let img = backgroundImage {
+   let imgSize = img.size
+   if imgSize.width > 0 && imgSize.height > 0 {
+    let scale = max(bounds.width / imgSize.width, bounds.height / imgSize.height)
+    let w = imgSize.width * scale
+    let h = imgSize.height * scale
+    let drawRect = NSRect(x: (bounds.width - w) / 2, y: (bounds.height - h) / 2, width: w, height: h)
+    let alpha: CGFloat = dark ? 0.18 : 0.14
+    img.draw(in: drawRect, from: .zero, operation: .sourceOver, fraction: alpha, respectFlipped: true, hints: nil)
+   }
+  }
   guard decorated else{return}
   (dark ? NSColor.white : NSColor(calibratedRed:0.12,green:0.35,blue:0.33,alpha:1)).withAlphaComponent(0.045).setStroke()
   for index in 0..<6 {
