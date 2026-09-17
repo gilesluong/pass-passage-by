@@ -47,6 +47,16 @@ Pass Passage By! is evolving from an IELTS writing assistant into a **world-clas
 
 ---
 
+## Next Roadmap for Codex (8:25 PM Session)
+1. **Template Chooser on Home / File Menu**:
+   - In addition to Blank Document, add quick templates for **"Văn bản hành chính (NĐ 30)"** and **"Quy chế & SOP Onboarding"** to populate initial structured blocks.
+2. **Tag Palette Presets for Tracks D & F**:
+   - Under Settings $\rightarrow$ Tags, provide preconfigured tag palettes for Administrative (`Thể thức`, `Căn cứ pháp lý`, `Văn phong`, `Hiệu lực`) and Onboarding (`Quy định`, `Quy trình`, `Lưu ý`).
+3. **Loom Video Recording Optimizations**:
+   - Ensure hover contrast and annotation popovers remain crisp under screen recording capture rates.
+
+---
+
 # Current: Pass Passage By! 1.9.1 (15) — 17 September 2026
 
 Continues Antigravity 1.9.0. Full-title clickable reading cards, authors and topical tags from Reading/manifest.json (no Essay schema changes). Centered task disclosure collapses to zero height; simplified editor toolbar; bounded margin cards and scrollable full-note previews. Preserve user-provided home background and existing dictionary/gesture behavior.
