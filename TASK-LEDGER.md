@@ -27,6 +27,11 @@ Read this file first when resuming. Long-term vision: PRODUCT-VISION.md. Stable 
    - Pure Ulysses 3/4-Column Studio Architecture: Library Sidebar (All, Inbox, Getting Started, Projects), Sheet List with snippet cards and date, Editor Canvas with bottom markup bar (`# Title`, `- List`, `> Quote`, `(img) Image`, `...`), and Inspector Dashboard (Progress, Outline, Annotations). Direct launch to studio workspace.
    - Full Ulysses keyboard shortcuts support: `⌘1` Library Sidebar, `⌘2` Sheet List, `⌘3` Editor, `⌘4` Inspector Dashboard, `⌃⌘5` Annotations, `⌃⌘3` Outline, `⌃⌘2` Progress, `⌘L` Add Annotation.
    - Quality checks: `bash lint.sh` (0 warnings, 0 errors); `bash test.sh` (100% pass across all suites); `bash test-layout.sh` (100% pass across offscreen AppKit layout suites); `bash build.sh` built and signed.
+10. DONE — Official Release 1.9.7 (build 21) & Sparkle Auto-Update Verified:
+    - Bumped CFBundleShortVersionString to 1.9.7 and CFBundleVersion to 21 in Info.plist; prepared release notes in release/notes.md.
+    - Packaged, signed with Ed25519 Keychain key via Sparkle 2.10.0 bin/generate_appcast, and independently verified with release/verify-update.py.
+    - Published official GitHub Release v1.9.7 with signed app archive (Pass-Passage-By-1.9.7.zip) and appcast.xml.
+    - Verified Sparkle in-app update: triggered Check for Updates, downloaded release from GitHub feed, extracted, installed to ~/Applications/Pass Passage By!.app, and relaunched successfully. Verified version 1.9.7 (21) active and running.
 
 ## Guardrails
 Update this ledger after each completed task with files, checks and next action. Never describe future collaboration or the full Notion-level roadmap as finished. Remote collaboration, Developer ID/notarization and real external MCP host validation have dependencies beyond this UI batch. No AI model downloads. Do not erase legacy notes or infer their purpose from `kind=comment`.
