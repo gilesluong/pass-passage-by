@@ -203,3 +203,164 @@ final class PaperBackdrop:NSView {
   }
  }
 }
+
+// MARK: - Apple Liquid Glass Button Kit (macOS HIG)
+
+class GlassCircleButton: NSButton {
+    var isActive: Bool = false {
+        didSet {
+            updateAppearance()
+        }
+    }
+
+    private var isHovered: Bool = false {
+        didSet {
+            updateAppearance()
+        }
+    }
+
+    private var trackingAreaRef: NSTrackingArea?
+
+    init(symbolName: String, target: AnyObject?, action: Selector?, size: CGFloat = 28, accessibilityDescription: String? = nil) {
+        super.init(frame: NSRect(x: 0, y: 0, width: size, height: size))
+        self.target = target
+        self.action = action
+        let img = NSImage(systemSymbolName: symbolName, accessibilityDescription: accessibilityDescription ?? symbolName)
+        self.image = img
+        self.imagePosition = .imageOnly
+        self.isBordered = false
+        self.wantsLayer = true
+        if let l = self.layer {
+            l.cornerCurve = .continuous
+            l.cornerRadius = size / 2.0
+            l.masksToBounds = false
+        }
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            widthAnchor.constraint(equalToConstant: size),
+            heightAnchor.constraint(equalToConstant: size)
+        ])
+        updateAppearance()
+    }
+
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let existing = trackingAreaRef { removeTrackingArea(existing) }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        trackingAreaRef = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovered = true
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovered = false
+    }
+
+    func updateAppearance() {
+        let isDark = LiquidGlass.isDark(for: self)
+        if isActive {
+            contentTintColor = .white
+        } else {
+            contentTintColor = isHovered ? (isDark ? .white : .black) : .secondaryLabelColor
+        }
+        needsDisplay = true
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let isDark = LiquidGlass.isDark(for: self)
+        let rect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let radius = rect.width / 2.0
+        let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
+
+        if isActive {
+            NSColor.systemBlue.setFill()
+            path.fill()
+            LiquidGlass.drawSpecularRim(in: rect, isDark: isDark, radius: radius)
+        } else {
+            let bg = isHovered ? LiquidGlass.hoverFill(isDark: isDark) : LiquidGlass.pillInactiveFill(isDark: isDark)
+            bg.setFill()
+            path.fill()
+            LiquidGlass.drawSpecularRim(in: rect, isDark: isDark, radius: radius)
+        }
+        super.draw(dirtyRect)
+    }
+}
+
+class GlassCapsuleSegment: NSView {
+    let leftButton: NSButton
+    let rightButton: NSButton
+
+    init(leftSymbol: String, leftAction: Selector?, rightSymbol: String, rightAction: Selector?, target: AnyObject?) {
+        leftButton = NSButton()
+        rightButton = NSButton()
+        super.init(frame: NSRect(x: 0, y: 0, width: 56, height: 28))
+        wantsLayer = true
+        if let l = layer {
+            l.cornerCurve = .continuous
+            l.cornerRadius = LiquidGlass.pillCornerRadius
+        }
+
+        leftButton.image = NSImage(systemSymbolName: leftSymbol, accessibilityDescription: "Back")
+        leftButton.target = target
+        leftButton.action = leftAction
+        leftButton.isBordered = false
+        leftButton.imagePosition = .imageOnly
+        leftButton.contentTintColor = .secondaryLabelColor
+
+        rightButton.image = NSImage(systemSymbolName: rightSymbol, accessibilityDescription: "Forward")
+        rightButton.target = target
+        rightButton.action = rightAction
+        rightButton.isBordered = false
+        rightButton.imagePosition = .imageOnly
+        rightButton.contentTintColor = .secondaryLabelColor
+
+        leftButton.translatesAutoresizingMaskIntoConstraints = false
+        rightButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(leftButton)
+        addSubview(rightButton)
+
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            widthAnchor.constraint(equalToConstant: 56),
+            heightAnchor.constraint(equalToConstant: 28),
+
+            leftButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            leftButton.topAnchor.constraint(equalTo: topAnchor),
+            leftButton.bottomAnchor.constraint(equalTo: bottomAnchor),
+            leftButton.widthAnchor.constraint(equalToConstant: 28),
+
+            rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            rightButton.topAnchor.constraint(equalTo: topAnchor),
+            rightButton.bottomAnchor.constraint(equalTo: bottomAnchor),
+            rightButton.widthAnchor.constraint(equalToConstant: 28)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        leftButton = NSButton()
+        rightButton = NSButton()
+        super.init(coder: coder)
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let isDark = LiquidGlass.isDark(for: self)
+        let rect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let radius = LiquidGlass.pillCornerRadius
+        let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
+        LiquidGlass.pillInactiveFill(isDark: isDark).setFill()
+        path.fill()
+        LiquidGlass.drawSpecularRim(in: rect, isDark: isDark, radius: radius)
+
+        // Center Divider
+        let divider = NSRect(x: bounds.midX - 0.5, y: 4, width: 1, height: bounds.height - 8)
+        (isDark ? NSColor.white.withAlphaComponent(0.12) : NSColor.black.withAlphaComponent(0.08)).setFill()
+        divider.fill()
+    }
+}

@@ -1503,7 +1503,7 @@ extension Passage {
 
         let p1Path = resourceDirectory.appendingPathComponent("Reading/workplace.json").path
         let p2Path = resourceDirectory.appendingPathComponent("Reading/structure.json").path
-        let p3Path = resourceDirectory.appendingPathComponent("Samples/000-task2-1.json").path
+        let p3Path = resourceDirectory.appendingPathComponent("Samples/001-career-preparation.json").path
 
         let pinned = showcaseDocuments()
         let defaults = [p1Path,p2Path,p3Path].compactMap {path -> (Breakdown,String)? in

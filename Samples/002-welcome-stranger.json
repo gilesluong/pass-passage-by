@@ -1,0 +1,25 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "welcome-stranger-002",
+    "title": "Hello, stranger!",
+    "text": "# Hello, stranger!\n\nNice to have you here. We know you just want to write, but please bear with us for a brief moment.\n\nPassage is designed as a focused writing and close-reading environment. It combines the distraction-free purity of a minimalist editor with powerful structural markup, inline annotations, and an AI agent harness.\n\n### Getting Started\n\n- **Writing**: Just start typing. Everything is saved automatically into your library.\n- **Markup**: Use `#` for headings, `>` for blockquotes, and `-` for bullet lists.\n- **Annotations**: Select any phrase and press `⌘L` or type {anchor|your comment} to add an inline annotation.\n- **Suggestions & Agent**: Click the ✦ button in the toolbar to inspect spelling, grammar, and dispatch instructions to your Antigravity agent.\n\nBefore typing your first sentence, word, character, or idea, take a moment to explore the workspace. You can toggle the library sidebar with ⌘1, inspect sheet snippets with ⌘2, focus exclusively on the editor with ⌘3, or monitor word counts, outlines, and suggestions with ⌘4.\n\nWhether you are drafting an academic treatise, reviewing an official administrative report, or collaborating with autonomous agents, Passage keeps your mind centered on what matters most: your prose. Enjoy writing with clarity and focus.",
+    "taskType": "guide",
+    "prompt": "Welcome to Passage. Focused writing and close-reading environment.",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "welcome-stranger-ann-1",
+      "start": 585,
+      "end": 606,
+      "quote": "{anchor|your comment}",
+      "kind": "annotation",
+      "level": "sentence",
+      "label": "Markup Note",
+      "body": "Syntax format: {anchor|comment}. Inline notes are highlighted and displayed in the Inspector.",
+      "side": "right"
+    }
+  ]
+}

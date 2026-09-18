@@ -173,26 +173,24 @@ final class UlyssesSidebar: NSView, NSTableViewDataSource, NSTableViewDelegate {
         topBar.translatesAutoresizingMaskIntoConstraints = false
         addSubview(topBar)
 
-        let newGroupImg = NSImage(systemSymbolName: "folder.badge.plus", accessibilityDescription: "New Group") ?? NSImage()
-        let newGroupBtn = NSButton(
-            image: newGroupImg,
+        let newGroupBtn = GlassCircleButton(
+            symbolName: "folder.badge.plus",
             target: self,
-            action: #selector(newGroupAction)
+            action: #selector(newGroupAction),
+            size: 28,
+            accessibilityDescription: "New Group"
         )
-        newGroupBtn.isBordered = false
-        newGroupBtn.contentTintColor = .secondaryLabelColor
 
-        let toggleImg = NSImage(systemSymbolName: "sidebar.left", accessibilityDescription: "Toggle Sidebar") ?? NSImage()
-        let toggleBtn = NSButton(
-            image: toggleImg,
+        let toggleBtn = GlassCircleButton(
+            symbolName: "sidebar.left",
             target: self,
-            action: #selector(toggleAction)
+            action: #selector(toggleAction),
+            size: 28,
+            accessibilityDescription: "Toggle Sidebar"
         )
-        toggleBtn.isBordered = false
-        toggleBtn.contentTintColor = .secondaryLabelColor
 
         let headerStack = NSStackView(views: [newGroupBtn, toggleBtn])
-        headerStack.spacing = 10
+        headerStack.spacing = 8
         headerStack.translatesAutoresizingMaskIntoConstraints = false
         topBar.addSubview(headerStack)
 
@@ -306,6 +304,7 @@ final class UlyssesSheetList: NSView, NSTableViewDataSource, NSTableViewDelegate
     private let titleLabel = NSTextField(labelWithString: "All")
     private let table = NSTableView()
     private let scrollView = NSScrollView()
+    private var sortBtn: GlassCircleButton?
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -325,25 +324,24 @@ final class UlyssesSheetList: NSView, NSTableViewDataSource, NSTableViewDelegate
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         topBar.addSubview(titleLabel)
 
-        let sortImg = NSImage(systemSymbolName: "slider.horizontal.3", accessibilityDescription: "Filter") ?? NSImage()
-        let sortBtn = NSButton(
-            image: sortImg,
+        let sBtn = GlassCircleButton(
+            symbolName: "slider.horizontal.3",
             target: self,
-            action: nil
+            action: #selector(filterToggleAction(_:)),
+            size: 28,
+            accessibilityDescription: "Filter"
         )
-        sortBtn.isBordered = false
-        sortBtn.contentTintColor = .secondaryLabelColor
+        sortBtn = sBtn
 
-        let newImg = NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: "New Sheet") ?? NSImage()
-        let newBtn = NSButton(
-            image: newImg,
+        let newBtn = GlassCircleButton(
+            symbolName: "square.and.pencil",
             target: self,
-            action: #selector(newSheetAction)
+            action: #selector(newSheetAction),
+            size: 28,
+            accessibilityDescription: "New Sheet"
         )
-        newBtn.isBordered = false
-        newBtn.contentTintColor = .secondaryLabelColor
 
-        let trailingStack = NSStackView(views: [sortBtn, newBtn])
+        let trailingStack = NSStackView(views: [sBtn, newBtn])
         trailingStack.spacing = 8
         trailingStack.translatesAutoresizingMaskIntoConstraints = false
         topBar.addSubview(trailingStack)
@@ -383,6 +381,7 @@ final class UlyssesSheetList: NSView, NSTableViewDataSource, NSTableViewDelegate
     }
 
     @objc private func newSheetAction() { onNewSheet?() }
+    @objc private func filterToggleAction(_ sender: GlassCircleButton) { sender.isActive.toggle() }
 
     func reloadData(with sheets: [UlyssesSheetItem]) {
         self.sheets = sheets
@@ -460,6 +459,254 @@ final class UlyssesSheetList: NSView, NSTableViewDataSource, NSTableViewDelegate
     }
 }
 
+// MARK: - Ulysses Suggestions View (Screenshot 2)
+
+struct SpellingSuggestionItem {
+    let word: String
+    let range: NSRange
+    let category: String
+    let guesses: [String]
+}
+
+final class UlyssesSuggestionsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
+    var allSuggestions: [SpellingSuggestionItem] = []
+    var filteredSuggestions: [SpellingSuggestionItem] = []
+    var selectedCategory: String = "All"
+
+    var onSelectSuggestion: ((SpellingSuggestionItem) -> Void)?
+    var onCopyAgentPrompt: (() -> Void)?
+    var onRevealFolder: (() -> Void)?
+
+    private let table = NSTableView()
+    private let scrollView = NSScrollView()
+    private let catAllBtn = NSButton()
+    private let catSpellingBtn = NSButton()
+    private let catCapBtn = NSButton()
+    private let sectionTitle = NSTextField(labelWithString: "All")
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        wantsLayer = true
+        setupView()
+    }
+
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+
+    private func setupView() {
+        let titleLabel = NSTextField(labelWithString: "Suggestions")
+        titleLabel.font = .systemFont(ofSize: 15, weight: .bold)
+        titleLabel.textColor = .labelColor
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(titleLabel)
+
+        // Filter Category Buttons (All, Spelling, Capitalization)
+        let filterStack = NSStackView()
+        filterStack.orientation = .vertical
+        filterStack.spacing = 3
+        filterStack.alignment = .leading
+        filterStack.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(filterStack)
+
+        setupCategoryBtn(catAllBtn, title: "All", category: "All")
+        setupCategoryBtn(catSpellingBtn, title: "Spelling", category: "Spelling")
+        setupCategoryBtn(catCapBtn, title: "Capitalization", category: "Capitalization")
+
+        filterStack.addArrangedSubview(catAllBtn)
+        filterStack.addArrangedSubview(catSpellingBtn)
+        filterStack.addArrangedSubview(catCapBtn)
+        updateCategoryButtons()
+
+        // Section Title
+        sectionTitle.font = .systemFont(ofSize: 11, weight: .semibold)
+        sectionTitle.textColor = .secondaryLabelColor
+        sectionTitle.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(sectionTitle)
+
+        // Suggestions Table
+        let col = NSTableColumn(identifier: .init("suggestion"))
+        table.addTableColumn(col)
+        table.headerView = nil
+        table.rowHeight = 28
+        table.backgroundColor = .clear
+        table.dataSource = self
+        table.delegate = self
+        table.selectionHighlightStyle = .regular
+
+        scrollView.documentView = table
+        scrollView.drawsBackground = false
+        scrollView.hasVerticalScroller = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
+
+        // AI Agent Harness Card
+        let agentCard = NSView()
+        agentCard.wantsLayer = true
+        if let l = agentCard.layer {
+            l.cornerCurve = .continuous
+            l.cornerRadius = LiquidGlass.smallCornerRadius
+        }
+        agentCard.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(agentCard)
+
+        let agentHeader = NSTextField(labelWithString: "✦ AI Agent Assistant")
+        agentHeader.font = .systemFont(ofSize: 12, weight: .bold)
+        agentHeader.textColor = .labelColor
+        agentHeader.translatesAutoresizingMaskIntoConstraints = false
+        agentCard.addSubview(agentHeader)
+
+        let agentDesc = NSTextField(wrappingLabelWithString: "Guide Antigravity or local agent to read the active file and generate inline annotations.")
+        agentDesc.font = .systemFont(ofSize: 11, weight: .regular)
+        agentDesc.textColor = .secondaryLabelColor
+        agentDesc.translatesAutoresizingMaskIntoConstraints = false
+        agentCard.addSubview(agentDesc)
+
+        let copyBtn = NSButton(title: "Copy Prompt & Guide Agent", target: self, action: #selector(handleCopyPrompt))
+        copyBtn.bezelStyle = .rounded
+        copyBtn.font = .systemFont(ofSize: 11, weight: .medium)
+        copyBtn.contentTintColor = .systemBlue
+        copyBtn.translatesAutoresizingMaskIntoConstraints = false
+        agentCard.addSubview(copyBtn)
+
+        let revealBtn = NSButton(title: "Reveal in Finder", target: self, action: #selector(handleRevealFolder))
+        revealBtn.bezelStyle = .rounded
+        revealBtn.font = .systemFont(ofSize: 11, weight: .regular)
+        revealBtn.contentTintColor = .secondaryLabelColor
+        revealBtn.translatesAutoresizingMaskIntoConstraints = false
+        agentCard.addSubview(revealBtn)
+
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 14),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+
+            filterStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            filterStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            filterStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+
+            sectionTitle.topAnchor.constraint(equalTo: filterStack.bottomAnchor, constant: 14),
+            sectionTitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            sectionTitle.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+
+            scrollView.topAnchor.constraint(equalTo: sectionTitle.bottomAnchor, constant: 6),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            scrollView.bottomAnchor.constraint(equalTo: agentCard.topAnchor, constant: -10),
+
+            agentCard.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            agentCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            agentCard.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+
+            agentHeader.topAnchor.constraint(equalTo: agentCard.topAnchor, constant: 10),
+            agentHeader.leadingAnchor.constraint(equalTo: agentCard.leadingAnchor, constant: 10),
+            agentHeader.trailingAnchor.constraint(equalTo: agentCard.trailingAnchor, constant: -10),
+
+            agentDesc.topAnchor.constraint(equalTo: agentHeader.bottomAnchor, constant: 4),
+            agentDesc.leadingAnchor.constraint(equalTo: agentCard.leadingAnchor, constant: 10),
+            agentDesc.trailingAnchor.constraint(equalTo: agentCard.trailingAnchor, constant: -10),
+
+            copyBtn.topAnchor.constraint(equalTo: agentDesc.bottomAnchor, constant: 8),
+            copyBtn.leadingAnchor.constraint(equalTo: agentCard.leadingAnchor, constant: 10),
+            copyBtn.trailingAnchor.constraint(equalTo: agentCard.trailingAnchor, constant: -10),
+            copyBtn.heightAnchor.constraint(equalToConstant: 26),
+
+            revealBtn.topAnchor.constraint(equalTo: copyBtn.bottomAnchor, constant: 6),
+            revealBtn.leadingAnchor.constraint(equalTo: agentCard.leadingAnchor, constant: 10),
+            revealBtn.trailingAnchor.constraint(equalTo: agentCard.trailingAnchor, constant: -10),
+            revealBtn.bottomAnchor.constraint(equalTo: agentCard.bottomAnchor, constant: -10),
+            revealBtn.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+
+    private func setupCategoryBtn(_ btn: NSButton, title: String, category: String) {
+        btn.title = "  ○  \(title)"
+        btn.target = self
+        btn.action = #selector(categoryClicked(_:))
+        btn.identifier = NSUserInterfaceItemIdentifier(category)
+        btn.isBordered = false
+        btn.alignment = .left
+        btn.font = .systemFont(ofSize: 12, weight: .regular)
+        btn.wantsLayer = true
+        if let l = btn.layer {
+            l.cornerCurve = .continuous
+            l.cornerRadius = 6
+        }
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.heightAnchor.constraint(equalToConstant: 22).isActive = true
+    }
+
+    private func updateCategoryButtons() {
+        for btn in [catAllBtn, catSpellingBtn, catCapBtn] {
+            let cat = btn.identifier?.rawValue ?? ""
+            let isSelected = cat == selectedCategory
+            btn.title = isSelected ? "  ●  \(cat)" : "  ○  \(cat)"
+            btn.contentTintColor = isSelected ? .systemBlue : .secondaryLabelColor
+            btn.layer?.backgroundColor = isSelected ? NSColor.systemBlue.withAlphaComponent(0.12).cgColor : NSColor.clear.cgColor
+        }
+    }
+
+    func updateSuggestions(_ list: [SpellingSuggestionItem]) {
+        allSuggestions = list
+        applyFilter()
+    }
+
+    private func applyFilter() {
+        if selectedCategory == "All" {
+            filteredSuggestions = allSuggestions
+        } else {
+            filteredSuggestions = allSuggestions.filter { $0.category == selectedCategory }
+        }
+        sectionTitle.stringValue = selectedCategory
+        table.reloadData()
+    }
+
+    @objc private func handleCopyPrompt() { onCopyAgentPrompt?() }
+    @objc private func handleRevealFolder() { onRevealFolder?() }
+
+    @objc private func categoryClicked(_ sender: NSButton) {
+        if let cat = sender.identifier?.rawValue {
+            selectedCategory = cat
+            updateCategoryButtons()
+            applyFilter()
+        }
+    }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { filteredSuggestions.count }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard row < filteredSuggestions.count else { return nil }
+        let item = filteredSuggestions[row]
+        let cell = NSView()
+        cell.wantsLayer = true
+
+        let badge = NSTextField(labelWithString: "{\(item.word)}")
+        badge.font = .systemFont(ofSize: 12, weight: .medium)
+        badge.textColor = .systemBlue
+        badge.translatesAutoresizingMaskIntoConstraints = false
+        cell.addSubview(badge)
+
+        let catTag = NSTextField(labelWithString: item.category)
+        catTag.font = .systemFont(ofSize: 10, weight: .regular)
+        catTag.textColor = .tertiaryLabelColor
+        catTag.translatesAutoresizingMaskIntoConstraints = false
+        cell.addSubview(catTag)
+
+        NSLayoutConstraint.activate([
+            badge.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 8),
+            badge.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+
+            catTag.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -8),
+            catTag.centerYAnchor.constraint(equalTo: cell.centerYAnchor)
+        ])
+        return cell
+    }
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let row = table.selectedRow
+        guard row >= 0 && row < filteredSuggestions.count else { return }
+        onSelectSuggestion?(filteredSuggestions[row])
+    }
+}
+
 // MARK: - Ulysses Inspector Dashboard (Column 4)
 
 final class UlyssesInspector: NSView, NSTableViewDataSource, NSTableViewDelegate {
@@ -471,6 +718,15 @@ final class UlyssesInspector: NSView, NSTableViewDataSource, NSTableViewDelegate
 
     var onSelectHeading: ((Int) -> Void)?
     var onSelectAnnotation: ((Note) -> Void)?
+    var onSelectSuggestion: ((SpellingSuggestionItem) -> Void)?
+    var onCopyAgentPrompt: (() -> Void)?
+    var onRevealFolder: (() -> Void)?
+
+    private var tabButtons: [GlassCircleButton] = []
+    private var selectedTabIndex: Int = 0
+
+    private let dashboardStack = NSStackView()
+    let suggestionsView = UlyssesSuggestionsView()
 
     private let outlineTable = NSTableView()
     private let annotationsTable = NSTableView()
@@ -488,12 +744,42 @@ final class UlyssesInspector: NSView, NSTableViewDataSource, NSTableViewDelegate
     required init?(coder: NSCoder) { super.init(coder: coder) }
 
     private func setupView() {
-        let stack = NSStackView()
-        stack.orientation = .vertical
-        stack.spacing = 16
-        stack.alignment = .width
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stack)
+        // Top Icon Tab Bar (Screenshot 1 & 2)
+        let tabStack = NSStackView()
+        tabStack.orientation = .horizontal
+        tabStack.spacing = 6
+        tabStack.alignment = .centerY
+        tabStack.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(tabStack)
+
+        let tabIcons = [
+            ("square.grid.2x2", "Dashboard"),
+            ("chart.line.uptrend.xyaxis", "Progress"),
+            ("list.bullet.indent", "Outline"),
+            ("tag", "Annotations"),
+            ("bubble.left.and.bubble.right", "Comments"),
+            ("sparkles", "Suggestions")
+        ]
+
+        for (idx, (icon, desc)) in tabIcons.enumerated() {
+            let btn = GlassCircleButton(symbolName: icon, target: self, action: #selector(tabClicked(_:)), size: 26, accessibilityDescription: desc)
+            btn.tag = idx
+            tabButtons.append(btn)
+            tabStack.addArrangedSubview(btn)
+        }
+        tabButtons.first?.isActive = true
+
+        let tabDivider = NSBox()
+        tabDivider.boxType = .separator
+        tabDivider.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(tabDivider)
+
+        // Dashboard Elements Container
+        dashboardStack.orientation = .vertical
+        dashboardStack.spacing = 16
+        dashboardStack.alignment = .width
+        dashboardStack.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(dashboardStack)
 
         // Progress Box
         let progHeader = makeSectionHeader("Progress")
@@ -570,21 +856,107 @@ final class UlyssesInspector: NSView, NSTableViewDataSource, NSTableViewDelegate
         annotationsTable.delegate = self
         annScroll.documentView = annotationsTable
 
-        stack.addArrangedSubview(progHeader)
-        stack.addArrangedSubview(progBox)
-        stack.addArrangedSubview(kwHeader)
-        stack.addArrangedSubview(addKwBtn)
-        stack.addArrangedSubview(outlineHeader)
-        stack.addArrangedSubview(outlineScroll)
-        stack.addArrangedSubview(annHeader)
-        stack.addArrangedSubview(annScroll)
+        dashboardStack.addArrangedSubview(progHeader)
+        dashboardStack.addArrangedSubview(progBox)
+        dashboardStack.addArrangedSubview(kwHeader)
+        dashboardStack.addArrangedSubview(addKwBtn)
+        dashboardStack.addArrangedSubview(outlineHeader)
+        dashboardStack.addArrangedSubview(outlineScroll)
+        dashboardStack.addArrangedSubview(annHeader)
+        dashboardStack.addArrangedSubview(annScroll)
+
+        // Suggestions View
+        suggestionsView.translatesAutoresizingMaskIntoConstraints = false
+        suggestionsView.isHidden = true
+        addSubview(suggestionsView)
+
+        suggestionsView.onSelectSuggestion = { [weak self] item in
+            self?.onSelectSuggestion?(item)
+        }
+        suggestionsView.onCopyAgentPrompt = { [weak self] in
+            self?.onCopyAgentPrompt?()
+        }
+        suggestionsView.onRevealFolder = { [weak self] in
+            self?.onRevealFolder?()
+        }
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -16)
+            tabStack.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            tabStack.centerXAnchor.constraint(equalTo: centerXAnchor),
+            tabStack.heightAnchor.constraint(equalToConstant: 32),
+
+            tabDivider.topAnchor.constraint(equalTo: tabStack.bottomAnchor, constant: 8),
+            tabDivider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            tabDivider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            tabDivider.heightAnchor.constraint(equalToConstant: 1),
+
+            dashboardStack.topAnchor.constraint(equalTo: tabDivider.bottomAnchor, constant: 12),
+            dashboardStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dashboardStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dashboardStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -16),
+
+            suggestionsView.topAnchor.constraint(equalTo: tabDivider.bottomAnchor),
+            suggestionsView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            suggestionsView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            suggestionsView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+    @objc private func tabClicked(_ sender: GlassCircleButton) {
+        selectTab(sender.tag)
+    }
+
+    func selectTab(_ index: Int) {
+        selectedTabIndex = index
+        for (i, btn) in tabButtons.enumerated() {
+            btn.isActive = (i == index)
+        }
+        if index == 5 {
+            suggestionsView.isHidden = false
+            dashboardStack.isHidden = true
+        } else {
+            suggestionsView.isHidden = true
+            dashboardStack.isHidden = false
+        }
+    }
+
+    func scanDocumentText(_ text: String) {
+        let spellChecker = NSSpellChecker.shared
+        let nsText = text as NSString
+        var offset = 0
+        var items: [SpellingSuggestionItem] = []
+
+        // Check text with NSSpellChecker
+        var count = 0
+        while offset < nsText.length && count < 50 {
+            let misspelledRange = spellChecker.checkSpelling(of: text, startingAt: offset)
+            if misspelledRange.location == NSNotFound || misspelledRange.length == 0 {
+                break
+            }
+            let word = nsText.substring(with: misspelledRange)
+            let isCap = word.first?.isLowercase == true && (misspelledRange.location == 0 || nsText.substring(with: NSRange(location: max(0, misspelledRange.location - 2), length: min(2, misspelledRange.location))).contains("."))
+            let cat = isCap ? "Capitalization" : "Spelling"
+            items.append(SpellingSuggestionItem(word: word, range: misspelledRange, category: cat, guesses: []))
+            offset = misspelledRange.location + misspelledRange.length
+            count += 1
+        }
+
+        // Also detect curly-brace annotations like {âss} or {âss|...}
+        let pattern = #"\{([^{}|\n]+)(?:\|[^{}\n]*)?\}"#
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let matches = regex.matches(in: text, range: NSRange(location: 0, length: nsText.length))
+            for match in matches {
+                let wordRange = match.range(at: 1)
+                if wordRange.location != NSNotFound {
+                    let rawWord = nsText.substring(with: wordRange)
+                    if !items.contains(where: { $0.word == rawWord }) {
+                        items.append(SpellingSuggestionItem(word: rawWord, range: match.range, category: "Spelling", guesses: []))
+                    }
+                }
+            }
+        }
+
+        suggestionsView.updateSuggestions(items)
     }
 
     private func makeSectionHeader(_ title: String) -> NSTextField {

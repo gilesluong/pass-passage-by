@@ -1,0 +1,36 @@
+{
+  "format": "ielts-semantic-breakdown",
+  "version": 1,
+  "document": {
+    "id": "career-prep-001",
+    "title": "Career preparation: Gaining real-world experience",
+    "text": "### Career preparation: Gaining real-world experience can take different forms. Contrast part-time jobs with internships as ways to build career skills. Which one gives students a stronger advantage after graduation?\n\n{âss|Spelling suggestion: Did you mean 'as'? Review spelling or word choice for formal academic style.}\n\nGaining real-world experience during university has become a decisive factor in graduate employability. While both part-time employment and structured internships offer exposure to professional environments, they cultivate distinct skill sets and career trajectories.\n\nPart-time jobs typically emphasize practical responsibility, time management, and resilience. Students working in retail, hospitality, or administrative roles develop strong interpersonal communication and financial discipline. However, such roles frequently lack direct alignment with a student's long-term academic specialization.\n\nIn contrast, structured internships immerse undergraduates directly into industry-specific workflows, mentorship networks, and project cycles. Interns engage with specialized tooling and institutional workflows, building demonstrable domain expertise. Consequently, internships often yield stronger advantages upon graduation by bridging theoretical coursework and direct industry recruitment channels.\n\nUltimately, balancing foundational work ethic with targeted professional training equips graduates with the versatile adaptability demanded by modern employers.",
+    "taskType": "discursive",
+    "prompt": "Contrast part-time jobs with internships as ways to build career skills. Which one gives students a stronger advantage after graduation?",
+    "language": "en"
+  },
+  "annotations": [
+    {
+      "id": "career-prep-ann-0",
+      "start": 4,
+      "end": 22,
+      "quote": "Career preparation",
+      "kind": "structure",
+      "level": "sentence",
+      "label": "Topic focus",
+      "body": "Establishes the central theme of professional growth and post-graduate readiness.",
+      "side": "left"
+    },
+    {
+      "id": "career-prep-ann-1",
+      "start": 218,
+      "end": 321,
+      "quote": "{âss|Spelling suggestion: Did you mean 'as'? Review spelling or word choice for formal academic style.}",
+      "kind": "annotation",
+      "level": "sentence",
+      "label": "âss",
+      "body": "Spelling suggestion: Did you mean 'as'? Review spelling or word choice for formal academic style.",
+      "side": "right"
+    }
+  ]
+}

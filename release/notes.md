@@ -1,3 +1,20 @@
+## Pass Passage By! 1.9.8
+
+- Apple HIG Liquid Glass Button Kit:
+  - Custom `GlassCircleButton` and `GlassCapsuleSegment` with continuous squircle/circular curvature (`cornerCurve = .continuous`).
+  - Specular gradient rims, translucent glass materials, hover refraction brightening, and active macOS system blue states.
+- Permanent Column Toggles:
+  - `sidebar.left` and `sidebar.right` toggle buttons remain permanently accessible in the top bar even when sidebars are collapsed.
+- Ulysses Suggestions & Grammar Inspector (✦ Tab):
+  - Direct ✦ Suggestions inspector panel with category radio filters: All, Spelling, Capitalization.
+  - Apple Intelligence / `NSSpellChecker` integration detecting issues (e.g. `{âss}`) with on-demand guess popups and one-click replacement.
+  - AI Agent Harness Card: "Copy Prompt & Guide Agent" generates full instructions guiding AI agents to find, read, and annotate the exact document file, plus "Reveal in Finder".
+- Hover Popover & Margin Deduplication:
+  - Hover popover strictly requires `fn` (or `Option`) held down; casual mouse movement never triggers popovers. Single click on text opens popover.
+  - Cleaned margin note cards duplication, leaving writing canvas clean and minimal like Ulysses.
+- New Standardized Sample Fixtures:
+  - 2 new pristine sample documents matching Ulysses screenshots: `001-career-preparation.json` and `002-welcome-stranger.json`.
+
 ## Pass Passage By! 1.9.7
 
 - Minimalist Ulysses Studio Architecture:

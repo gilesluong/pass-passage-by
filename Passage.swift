@@ -605,7 +605,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             "spacing": 1.65,
             "dark": false,
             "canvas": "Plain paper",
-            "notes": true,
+            "notes": false,
             "theme": "Paper", "briefSize": 21.0,
             "onboarded": false, "zoomPreset": "Student", "zoomParagraph": false, "zoomSentence": false, "paragraphSpacing": 36.0, "lineWidth": 820.0, "indent": 0.0
         ])
@@ -1011,8 +1011,6 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         titleField.action = #selector(renameTitle)
 
         let homeBtn = button("Home", #selector(showHome), symbol: "house")
-        let importBtn = button("Import", #selector(importFile), symbol: "square.and.arrow.down")
-        let exportBtn = button("Share", #selector(showSharePreview), symbol: "square.and.arrow.up")
 
         let leftNavImg = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Back") ?? NSImage()
         let rightNavImg = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Forward") ?? NSImage()
@@ -1022,22 +1020,73 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         levels = NSSegmentedControl(labels: ["Document", "Paragraph", "Sentence", "Word"], trackingMode: .selectOne, target: self, action: #selector(levelChanged))
         levels.selectedSegment = 0
 
-        // Apple-style clean formatting capsule (Requirement 2 & 4)
-        let topLeading = stack([navSegment, homeBtn, titleField])
+        // Apple Liquid Glass Controls & Permanent Column Toggles
+        let sidebarToggleBtn = GlassCircleButton(
+            symbolName: "sidebar.left",
+            target: self,
+            action: #selector(toggleLibrarySidebar),
+            size: 28,
+            accessibilityDescription: "Toggle Sidebar"
+        )
+        sidebarToggleBtn.toolTip = "Toggle Sidebar"
+
+        let topLeading = stack([sidebarToggleBtn, navSegment, homeBtn, titleField])
         topLeading.spacing = 10
-        let briefEdit = button("Add task",#selector(editTaskBrief));briefEditButton = briefEdit
+        let briefEdit = button("Add task", #selector(editTaskBrief)); briefEditButton = briefEdit
         let briefToggle = button("Task Prompt", #selector(toggleTaskBrief), symbol: briefHidden ? "chevron.down" : "chevron.up")
         briefToggleButton = briefToggle
-        let scanBtn = button("Scan",#selector(captureDocument),symbol:"camera")
-        let noteBtn = button("Comments",#selector(toggleComments),symbol:"bubble.left.and.bubble.right")
-        let notesBtn = button("Library",#selector(showWritingLibrary),symbol:"folder")
+
+        let shareBtn = GlassCircleButton(
+            symbolName: "square.and.arrow.up",
+            target: self,
+            action: #selector(showSharePreview),
+            size: 28,
+            accessibilityDescription: "Share"
+        )
+        shareBtn.toolTip = "Share"
+
+        let searchBtn = GlassCircleButton(
+            symbolName: "magnifyingglass",
+            target: self,
+            action: #selector(editorActions(_:)),
+            size: 28,
+            accessibilityDescription: "Search"
+        )
+        searchBtn.toolTip = "Search"
+
+        let agentBtn = GlassCircleButton(
+            symbolName: "sparkles",
+            target: self,
+            action: #selector(agentHarnessMenu(_:)),
+            size: 28,
+            accessibilityDescription: "AI Agent"
+        )
+        agentBtn.toolTip = "AI Agent"
+
+        let inspectorToggleBtn = GlassCircleButton(
+            symbolName: "sidebar.right",
+            target: self,
+            action: #selector(toggleInspectorDashboard),
+            size: 28,
+            accessibilityDescription: "Toggle Inspector"
+        )
+        inspectorToggleBtn.toolTip = "Toggle Inspector"
+
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
-        let agentBtn = button("AI Agent", #selector(agentHarnessMenu(_:)), symbol: "sparkles")
+
         ulyssesWordCountLabel.font = .systemFont(ofSize: 13, weight: .regular)
         ulyssesWordCountLabel.textColor = .secondaryLabelColor
-        let topTrailing = stack([ulyssesWordCountLabel, briefEdit, agentBtn, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
-        _ = [scanBtn, notesBtn, importBtn]
-        for control in topTrailing.arrangedSubviews.compactMap({ $0 as? NSButton }) + [homeBtn, briefToggle] {
+
+        let topTrailing = stack([
+            ulyssesWordCountLabel,
+            briefEdit,
+            shareBtn,
+            searchBtn,
+            agentBtn,
+            inspectorToggleBtn,
+            moreBtn
+        ])
+        for control in [briefEdit, homeBtn, briefToggle] {
             control.isBordered = false
             control.contentTintColor = .secondaryLabelColor
             control.heightAnchor.constraint(equalToConstant: 30).isActive = true
@@ -1052,7 +1101,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             briefToggle.heightAnchor.constraint(equalToConstant: 30)
         ])
         taskToggleRow = taskControl
-        topTrailing.spacing = 10
+        topTrailing.spacing = 8
 
         let top = NSStackView(views: [topLeading, topTrailing])
         top.orientation = .horizontal
@@ -1550,6 +1599,12 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         for v in rightNotes.arrangedSubviews { rightNotes.removeArrangedSubview(v); v.removeFromSuperview() }
 
         renderComments()
+        if leftScroll.isHidden && rightScroll.isHidden {
+            DispatchQueue.main.async { [weak self] in
+                self?.updateConnectors()
+            }
+            return
+        }
         let visibleList = displayedNotes.filter {
             !isDiscussion($0) && !$0.body.isEmpty && $0.start < NSMaxRange(visible) && $0.end > visible.location
         }
@@ -2164,11 +2219,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                     lastHoverNoteId = note.id
                     showUlyssesAnnotationPopover(for: note, at: point, isHover: true)
                 }
-            } else if !isDiscussion(note) {
-                if lastHoverNoteId != note.id {
-                    lastHoverNoteId = note.id
-                    showHoverPreview(for: note, at: point)
+            } else {
+                if ulyssesAnnotationPopoverIsHover {
+                    ulyssesAnnotationPopover?.close()
+                    ulyssesAnnotationPopover = nil
+                    ulyssesAnnotationPopoverIsHover = false
                 }
+                hoverSourcePopover?.close()
+                lastHoverNoteId = nil
             }
         } else {
             if ulyssesAnnotationPopoverIsHover {
@@ -3254,18 +3312,27 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
     }
 
+    @objc func openSuggestionsAction() {
+        ulyssesInspector.isHidden = false
+        ulyssesInspector.selectTab(5)
+        updateUlyssesInspector()
+    }
+
     @objc func showInspectorAnnotations() {
         ulyssesInspector.isHidden = false
+        ulyssesInspector.selectTab(3)
         updateUlyssesInspector()
     }
 
     @objc func showInspectorOutline() {
         ulyssesInspector.isHidden = false
+        ulyssesInspector.selectTab(2)
         updateUlyssesInspector()
     }
 
     @objc func showInspectorProgress() {
         ulyssesInspector.isHidden = false
+        ulyssesInspector.selectTab(1)
         updateUlyssesInspector()
     }
 
@@ -3310,17 +3377,100 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
                 self.showUlyssesAnnotationPopover(for: note, at: targetRect.origin, isHover: false)
             }
         }
+        ulyssesInspector.onSelectSuggestion = { [weak self] item in
+            guard let self = self, self.opened else { return }
+            self.editor.setSelectedRange(item.range)
+            self.editor.scrollRangeToVisible(item.range)
+            if !item.guesses.isEmpty {
+                self.showSpellingGuessesMenu(for: item)
+            }
+        }
+        ulyssesInspector.onCopyAgentPrompt = { [weak self] in
+            self?.copyAgentPrompt()
+        }
+        ulyssesInspector.onRevealFolder = { [weak self] in
+            self?.revealExchangeFolder()
+        }
 
         ulyssesMarkupBar.onMarkup = { [weak self] action in
             self?.applyUlyssesMarkup(action)
         }
     }
 
+    func showSpellingGuessesMenu(for item: SpellingSuggestionItem) {
+        guard let tc = editor.textContainer, let lm = editor.layoutManager else { return }
+        let targetRect = lm.boundingRect(forGlyphRange: NSRange(location: item.range.location, length: min(1, item.range.length)), in: tc)
+        let menu = NSMenu(title: "Spelling Suggestions")
+        var guesses = item.guesses
+        if guesses.isEmpty {
+            guesses = NSSpellChecker.shared.guesses(forWordRange: item.range, in: editor.string, language: "en_US", inSpellDocumentWithTag: 0) ?? []
+        }
+        for guess in guesses.prefix(5) {
+            let mi = NSMenuItem(title: "Replace with '\(guess)'", action: #selector(applySpellingReplacement(_:)), keyEquivalent: "")
+            mi.representedObject = [item.range.location, item.range.length, guess] as [Any]
+            mi.target = self
+            menu.addItem(mi)
+        }
+        if guesses.isEmpty {
+            let emptyItem = NSMenuItem(title: "No suggestions available", action: nil, keyEquivalent: "")
+            emptyItem.isEnabled = false
+            menu.addItem(emptyItem)
+        }
+        menu.addItem(NSMenuItem.separator())
+        let ignoreItem = NSMenuItem(title: "Ignore", action: nil, keyEquivalent: "")
+        menu.addItem(ignoreItem)
+        menu.popUp(positioning: nil, at: NSPoint(x: targetRect.midX, y: targetRect.maxY + 4), in: editor)
+    }
+
+    @objc func applySpellingReplacement(_ sender: NSMenuItem) {
+        guard let arr = sender.representedObject as? [Any],
+              arr.count >= 3,
+              let loc = arr[0] as? Int,
+              let len = arr[1] as? Int,
+              let replacement = arr[2] as? String,
+              opened else { return }
+        let range = NSRange(location: loc, length: len)
+        let currentText = data.document.text as NSString
+        guard range.location + range.length <= currentText.length else { return }
+        let newText = currentText.replacingCharacters(in: range, with: replacement)
+        data.document.text = newText
+        styleText()
+        updateUlyssesInspector()
+    }
+
+    @objc func copyAgentPrompt() {
+        guard opened else { return }
+        let inbox = exchangeFolder.appendingPathComponent("Inbox")
+        try? FileManager.default.createDirectory(at: inbox, withIntermediateDirectories: true)
+        let cleanName = data.document.title.replacingOccurrences(of: "/", with: "-")
+        let fileURL = inbox.appendingPathComponent("\(cleanName.isEmpty ? "Untitled" : cleanName).json")
+        if let encoded = try? JSONEncoder().encode(data) {
+            try? encoded.write(to: fileURL)
+        }
+        let words = data.document.text.split(whereSeparator: { $0.isWhitespace || $0.isNewline }).count
+        let prompt = """
+        You are acting as the AI close-reading assistant for Pass Passage By! / Ulysses Studio.
+        Please inspect the active document at:
+        Path: \(fileURL.path)
+        Title: \(data.document.title)
+        Word Count: \(words)
+
+        Instructions:
+        1. Read the document carefully for clarity, argument structure, style, and vocabulary precision.
+        2. Provide inline annotations using Ulysses syntax:
+           {anchor text|Your detailed feedback or critique}
+        3. Save the modified document or provide the annotated text for instant review.
+        """
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(prompt, forType: .string)
+        showAlert("Prompt Copied for AI Agent\n\nInstructions and file path have been copied to your clipboard. Paste directly into your Antigravity agent.")
+    }
+
     func refreshUlyssesGroups() {
         let inboxFolder = exchangeFolder.appendingPathComponent("Inbox")
         let inboxCount = (try? FileManager.default.contentsOfDirectory(at: inboxFolder, includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" || $0.pathExtension == "pdf" }.count) ?? 0
 
-        let sampleFiles = (try? FileManager.default.contentsOfDirectory(at: resourceDirectory.appendingPathComponent("Samples"), includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" }.count) ?? 20
+        let sampleFiles = (try? FileManager.default.contentsOfDirectory(at: resourceDirectory.appendingPathComponent("Samples"), includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" }.count) ?? 2
 
         let groups: [UlyssesGroupItem] = [
             UlyssesGroupItem(id: "all", name: "All", icon: "tray.full", type: .all, badgeCount: sampleFiles + inboxCount),
@@ -3420,6 +3570,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         }
         ulyssesInspector.updateHeadings(headings)
         ulyssesInspector.updateAnnotations(displayedNotes)
+        ulyssesInspector.scanDocumentText(text)
     }
 
     func applyUlyssesMarkup(_ action: String) {

@@ -9,11 +9,11 @@ python3 - <<'PY'
 from pathlib import Path
 import json
 Path('/tmp/PPBPDFCore.swift').write_text(Path('NotePresentation.swift').read_text()+Path('Share.swift').read_text().split('extension Passage')[0])
-files=list(Path('Samples').glob('*.json'));assert len(files)==20
+files=list(Path('Samples').glob('*.json'));assert len(files)==2
 for file in files:
  d=json.loads(file.read_text());text=d['document']['text'];assert len(text.split()) >= (250 if d["document"]["taskType"]=="task2" else 150)
  for note in d['annotations']:assert text[note['start']:note['end']]==note['quote']
-print('PASS: 20 sample documents and annotation anchors')
+print('PASS: 2 sample documents and annotation anchors')
 PY
 swiftc -module-cache-path /tmp/passage-swift-cache Model.swift Markup.swift /tmp/PPBPDFCore.swift PDFTests.swift -framework Cocoa -framework PDFKit -o /tmp/ppb-pdf-tests
 /tmp/ppb-pdf-tests example.breakdown.json
