@@ -32,7 +32,7 @@ final class ZoomPathPicker:NSView {
     override init(frame:NSRect) {
         super.init(frame:frame);wantsLayer = true
         for label in [active,available] {label.font = .systemFont(ofSize:10,weight:.semibold);label.textColor = .secondaryLabelColor;addSubview(label)}
-        for (i,title) in ["Essay","Paragraph","Sentence","Word"].enumerated() {
+        for (i,title) in ["Document","Paragraph","Sentence","Word"].enumerated() {
             let button = NSButton(title:title,target:self,action:#selector(choose(_:)));button.tag = i;button.bezelStyle = .rounded;button.setButtonType(.toggle);button.wantsLayer = true;button.setAccessibilityLabel(title + ((i == 0 || i == 3) ? ", required step" : "; click to include or exclude"));addSubview(button);chips.append(button)
         }
     }

@@ -39,12 +39,12 @@ final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewD
         searchField.widthAnchor.constraint(equalToConstant:150).isActive = true
         let open = NSButton(title:"Open writing",target:self,action:#selector(openSelected));open.bezelStyle = .rounded
         let del = NSButton(title:"Delete",target:self,action:#selector(deleteSelected));del.bezelStyle = .rounded
-        let new = passage.button("New essay",#selector(Passage.newEssay)),scan = passage.button("Scan document…",#selector(Passage.captureDocument))
+        let new = passage.button("New Sheet",#selector(Passage.newEssay)),scan = passage.button("Scan document…",#selector(Passage.captureDocument))
         pin.title = "Pin to Home";pin.target = self;pin.action = #selector(pinSelected(_:));pin.bezelStyle = .rounded
         let bar = passage.stack([new,scan,del,open,pin,searchField]);root.addSubview(bar);root.addSubview(split);bar.translatesAutoresizingMaskIntoConstraints = false;split.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([bar.leadingAnchor.constraint(equalTo:root.leadingAnchor,constant:16),bar.topAnchor.constraint(equalTo:root.topAnchor,constant:12),bar.trailingAnchor.constraint(lessThanOrEqualTo:root.trailingAnchor,constant:-16),split.topAnchor.constraint(equalTo:bar.bottomAnchor,constant:12),split.leadingAnchor.constraint(equalTo:root.leadingAnchor),split.trailingAnchor.constraint(equalTo:root.trailingAnchor),split.bottomAnchor.constraint(equalTo:root.bottomAnchor)])
         split.setPosition(300,ofDividerAt:0);table.reloadData()
-        if records.isEmpty {preview.string = "Your writing lives here.\n\nCreate an essay or scan a page to begin. Changes are saved automatically on this Mac."}else{table.selectRowIndexes(IndexSet(integer:0),byExtendingSelection:false);updatePreview()}
+        if records.isEmpty {preview.string = "Your writing lives here.\n\nCreate a sheet or scan a page to begin. Changes are saved automatically on this Mac."}else{table.selectRowIndexes(IndexSet(integer:0),byExtendingSelection:false);updatePreview()}
     }
     @available(*, unavailable)
     required init?(coder:NSCoder){fatalError("This view is created programmatically")}
@@ -86,7 +86,7 @@ final class WritingLibrary:NSWindowController,NSTableViewDataSource,NSTableViewD
     func updatePreview(){
         pin.isEnabled = records.indices.contains(table.selectedRow)
         guard records.indices.contains(table.selectedRow) else{
-            preview.string = allRecords.isEmpty ? "Your writing lives here.\n\nCreate an essay or scan a page to begin. Changes are saved automatically on this Mac." : "No note selected."
+            preview.string = allRecords.isEmpty ? "Your writing lives here.\n\nCreate a sheet or scan a page to begin. Changes are saved automatically on this Mac." : "No note selected."
             return
         }
         let d = records[table.selectedRow].document

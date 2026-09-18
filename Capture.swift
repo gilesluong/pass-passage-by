@@ -215,7 +215,7 @@ final class ScanReview:NSWindowController,NSWindowDelegate,NSTextViewDelegate {
         image.setContentCompressionResistancePriority(.init(1),for:.horizontal);image.setContentCompressionResistancePriority(.init(1),for:.vertical);image.image = pages.first?.image;image.imageScaling = .scaleProportionallyUpOrDown;passage.attach(image,to:left,inset:16)
         split.addArrangedSubview(left);split.addArrangedSubview(right)
         for i in pages.indices{pagePicker.addItem(withTitle:"Page \(i + 1)")};pagePicker.target = self;pagePicker.action = #selector(changePage)
-        destination.addItems(withTitles:["New essay","Append to essay","Task prompt","Curriculum prompt & essay"]);destination.item(at:1)?.isEnabled = passage.opened;destination.item(at:2)?.isEnabled = passage.opened
+        destination.addItems(withTitles:["New sheet","Append to sheet","Task prompt","Curriculum prompt & text"]);destination.item(at:1)?.isEnabled = passage.opened;destination.item(at:2)?.isEnabled = passage.opened
         keep.state = .on;language.addItems(withTitles:["English feedback","Vietnamese feedback"])
         ai.title = "Suggest annotations";ai.bezelStyle = .rounded;ai.target = self;ai.action = #selector(suggest);ai.isEnabled = true;ai.toolTip = LocalFeedback.appleReady ? "Suggest annotations using on-device Apple Intelligence" : "Suggest annotations using on-device Writing Analyzer (Offline)"
         insert.title = "Use text";insert.bezelStyle = .rounded;insert.target = self;insert.action = #selector(commit);insert.isEnabled = false

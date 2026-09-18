@@ -32,7 +32,18 @@ enum PassageMarkup {
         let source = text as NSString
         return spans(text).filter {$0.kind == "annotation"}.enumerated().map { i,span in
             let quote = source.substring(with:span.range)
-            return Note(id:"inline-\(span.range.location)",start:span.range.location,end:NSMaxRange(span.range),quote:quote,kind:"comment",level:"sentence",label:"Annotation",body:String(quote.dropFirst().dropLast()),side:i % 2 == 0 ? "left" : "right")
+            let inner = String(quote.dropFirst().dropLast())
+            let noteBody: String
+            let noteLabel: String
+            if inner.contains("|") {
+                let parts = inner.split(separator: "|", maxSplits: 1, omittingEmptySubsequences: false)
+                noteLabel = String(parts[0])
+                noteBody = String(parts[1])
+            } else {
+                noteLabel = "Annotation"
+                noteBody = inner
+            }
+            return Note(id:"inline-\(span.range.location)",start:span.range.location,end:NSMaxRange(span.range),quote:quote,kind:"comment",level:"sentence",label:noteLabel,body:noteBody,side:i % 2 == 0 ? "left" : "right")
         }
     }
     static func orderedNotes(_ text: String, existing: [Note]) -> [Note] {

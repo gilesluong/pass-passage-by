@@ -249,7 +249,7 @@ class WritingView: NSTextView {
     var onHoverIndex: ((Int?, NSPoint) -> Void)?
     var pointerMode: () -> String = { UserDefaults.standard.string(forKey:"pointerMode") ?? "Hold Option" }
     var showsPointerHighlight: Bool {
-        PointerPolicy.isModifierActive(mode: pointerMode(), flags: NSEvent.modifierFlags)
+        PointerPolicy.isModifierActive(mode: pointerMode(), flags: NSEvent.modifierFlags) || NSEvent.modifierFlags.contains(.function)
     }
     private var hover: NSRange?
     var pointerIndex: Int?
@@ -260,7 +260,8 @@ class WritingView: NSTextView {
 
     override func mouseDown(with event:NSEvent) {
         let point = convert(event.locationInWindow,from:nil)
-        if event.clickCount == 2, editAnnotation?(characterIndexForInsertion(at:point),point) == true {clearPointer();return}
+        let idx = characterIndexForInsertion(at:point)
+        if editAnnotation?(idx,point) == true {clearPointer();return}
         super.mouseDown(with:event)
     }
     override func updateTrackingAreas() {
@@ -508,7 +509,17 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var titleField = NSTextField()
     var levels = NSSegmentedControl()
 
-    var data = Breakdown.plain("", title: "Untitled Essay")
+    // Ulysses Workspace Components
+    var ulyssesSidebar = UlyssesSidebar()
+    var ulyssesSheetList = UlyssesSheetList()
+    var ulyssesInspector = UlyssesInspector()
+    var ulyssesMarkupBar = UlyssesMarkupBar()
+    var ulyssesWordCountLabel = NSTextField(labelWithString: "0 Words")
+    var ulyssesWorkspaceStack = NSStackView()
+    var currentUlyssesGroup: UlyssesGroupType = .all
+    var ulyssesAnnotationPopover: UlyssesAnnotationPopover?
+
+    var data = Breakdown.plain("", title: "Untitled Sheet")
     var level = 0
     var visible = NSRange(location: 0, length: 0)
     var focus = 0
@@ -638,7 +649,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         window.setFrameAutosaveName("PassageNative")
         window.center()
         applyAppearance()
-        showHome()
+        openWorkspace()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
 
@@ -709,7 +720,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         // File Menu
         let fileItem = NSMenuItem(title: "File", action: nil, keyEquivalent: "")
         let fileMenu = NSMenu(title: "File")
-        fileMenu.addItem(withTitle: "New Essay", action: #selector(newEssay), keyEquivalent: "n").target = self
+        fileMenu.addItem(withTitle: "New Sheet", action: #selector(newSheet), keyEquivalent: "n").target = self
         fileMenu.addItem(withTitle: "New Administrative Document…", action: #selector(newAdministrativeDocument), keyEquivalent: "").target = self
         fileMenu.addItem(withTitle: "New SOP Onboarding Document…", action: #selector(newOnboardingDocument), keyEquivalent: "").target = self
         fileMenu.addItem(withTitle: "Open…", action: #selector(importFile), keyEquivalent: "o").target = self
@@ -750,10 +761,22 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         editItem.submenu = editMenu
         m.addItem(editItem)
 
-        // View Menu (Zoom levels with Cmd+1..4)
+        // View Menu (Zoom levels with Cmd+1..4 and Ulysses Views)
         let viewItem = NSMenuItem(title: "View", action: nil, keyEquivalent: "")
         let viewMenu = NSMenu(title: "View")
-        viewMenu.addItem(withTitle: "Zoom: Essay Level", action: #selector(zoomEssay), keyEquivalent: "").target = self
+        viewMenu.addItem(withTitle: "Toggle Library Sidebar", action: #selector(toggleLibrarySidebar), keyEquivalent: "1").target = self
+        viewMenu.addItem(withTitle: "Toggle Sheet List", action: #selector(toggleSheetList), keyEquivalent: "2").target = self
+        viewMenu.addItem(withTitle: "Focus Editor", action: #selector(focusEditor), keyEquivalent: "3").target = self
+        viewMenu.addItem(withTitle: "Toggle Inspector Dashboard", action: #selector(toggleInspectorDashboard), keyEquivalent: "4").target = self
+        viewMenu.addItem(.separator())
+        let annView = viewMenu.addItem(withTitle: "Annotations View", action: #selector(showInspectorAnnotations), keyEquivalent: "5")
+        annView.target = self; annView.keyEquivalentModifierMask = [.control, .command]
+        let outView = viewMenu.addItem(withTitle: "Outline View", action: #selector(showInspectorOutline), keyEquivalent: "3")
+        outView.target = self; outView.keyEquivalentModifierMask = [.control, .command]
+        let prgView = viewMenu.addItem(withTitle: "Progress View", action: #selector(showInspectorProgress), keyEquivalent: "2")
+        prgView.target = self; prgView.keyEquivalentModifierMask = [.control, .command]
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(withTitle: "Zoom: Document Level", action: #selector(zoomEssay), keyEquivalent: "").target = self
         viewMenu.addItem(withTitle: "Zoom: Paragraph Level", action: #selector(zoomParagraph), keyEquivalent: "").target = self
         viewMenu.addItem(withTitle: "Zoom: Sentence Level", action: #selector(zoomSentence), keyEquivalent: "").target = self
         viewMenu.addItem(withTitle: "Zoom: Word Level", action: #selector(zoomWord), keyEquivalent: "").target = self
@@ -764,9 +787,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let fullscreen = viewMenu.addItem(withTitle:"Toggle Full Screen",action:#selector(toggleFullScreen),keyEquivalent:"f");fullscreen.target = self;fullscreen.keyEquivalentModifierMask = [.control,.command]
         viewMenu.addItem(withTitle:"Reset Text Size",action:#selector(fontReset),keyEquivalent:"0").target = self
         viewMenu.addItem(withTitle:"Hide Interface / Present",action:#selector(togglePresentation),keyEquivalent:".").target = self
-        viewMenu.addItem(withTitle:"Focus Editor",action:#selector(focusEditor),keyEquivalent:"3").target = self
         viewMenu.addItem(withTitle:"Pin / Unpin Current Writing on Home",action:#selector(toggleShowcasePin),keyEquivalent:"").target = self
-        viewMenu.addItem(withTitle:"Margin Annotations",action:#selector(toggleNotes),keyEquivalent:"4").target = self
+        viewMenu.addItem(withTitle:"Margin Annotations",action:#selector(toggleNotes),keyEquivalent:"").target = self
         viewMenu.addItem(withTitle:"Quick Export…",action:#selector(exportFile),keyEquivalent:"6").target = self
         for (title,action,key) in [("Semantic Zoom In",#selector(zoomIn),"="),("Semantic Zoom Out",#selector(zoomOut),"-"),("Dark Theme",#selector(toggleDark),"l")] {
             let item = viewMenu.addItem(withTitle:title,action:action,keyEquivalent:key);item.target = self;item.keyEquivalentModifierMask = [.option,.command]
@@ -981,7 +1003,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
         // 1. Unified Clean Top Bar (Requirement 4)
         titleField = NSTextField(string: data.document.title)
-        titleField.placeholderString = "Essay title"
+        titleField.placeholderString = "Sheet title"
         titleField.isBordered = false
         titleField.drawsBackground = false
         titleField.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -992,11 +1014,16 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let importBtn = button("Import", #selector(importFile), symbol: "square.and.arrow.down")
         let exportBtn = button("Share", #selector(showSharePreview), symbol: "square.and.arrow.up")
 
-        levels = NSSegmentedControl(labels: ["Essay", "Paragraph", "Sentence", "Word"], trackingMode: .selectOne, target: self, action: #selector(levelChanged))
+        let leftNavImg = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Back") ?? NSImage()
+        let rightNavImg = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Forward") ?? NSImage()
+        let navSegment = NSSegmentedControl(images: [leftNavImg, rightNavImg], trackingMode: .momentary, target: self, action: #selector(navigateHistory(_:)))
+        navSegment.segmentStyle = .rounded
+
+        levels = NSSegmentedControl(labels: ["Document", "Paragraph", "Sentence", "Word"], trackingMode: .selectOne, target: self, action: #selector(levelChanged))
         levels.selectedSegment = 0
 
         // Apple-style clean formatting capsule (Requirement 2 & 4)
-        let topLeading = stack([homeBtn, titleField])
+        let topLeading = stack([navSegment, homeBtn, titleField])
         topLeading.spacing = 10
         let briefEdit = button("Add task",#selector(editTaskBrief));briefEditButton = briefEdit
         let briefToggle = button("Task Prompt", #selector(toggleTaskBrief), symbol: briefHidden ? "chevron.down" : "chevron.up")
@@ -1006,7 +1033,9 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let notesBtn = button("Library",#selector(showWritingLibrary),symbol:"folder")
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
         let agentBtn = button("AI Agent", #selector(agentHarnessMenu(_:)), symbol: "sparkles")
-        let topTrailing = stack([briefEdit, agentBtn, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
+        ulyssesWordCountLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        ulyssesWordCountLabel.textColor = .secondaryLabelColor
+        let topTrailing = stack([ulyssesWordCountLabel, briefEdit, agentBtn, noteBtn, button("Attachments", #selector(attachmentMenu(_:)), symbol: "paperclip"), exportBtn, moreBtn])
         _ = [scanBtn, notesBtn, importBtn]
         for control in topTrailing.arrangedSubviews.compactMap({ $0 as? NSButton }) + [homeBtn, briefToggle] {
             control.isBordered = false
@@ -1018,7 +1047,6 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         briefToggle.translatesAutoresizingMaskIntoConstraints = false
         taskControl.addSubview(briefToggle)
         NSLayoutConstraint.activate([
-            briefToggle.centerXAnchor.constraint(equalTo: taskControl.centerXAnchor),
             briefToggle.centerYAnchor.constraint(equalTo: taskControl.centerYAnchor),
             briefToggle.widthAnchor.constraint(equalToConstant: 48),
             briefToggle.heightAnchor.constraint(equalToConstant: 30)
@@ -1033,7 +1061,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         topBar = top
 
         // Header level badge
-        header = NSTextField(labelWithString: "ESSAY LEVEL")
+        header = NSTextField(labelWithString: "DOCUMENT LEVEL")
         header.font = .systemFont(ofSize: 11, weight: .medium); header.alignment = .center
         header.textColor = .secondaryLabelColor
 
@@ -1062,7 +1090,8 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         editor.zoom = { [weak self] dir in self?.changeLevel(dir) }
         editor.editAnnotation = { [weak self] index, point in
             guard let self = self, let note = self.displayedNotes.first(where:{NSLocationInRange(self.visible.location + index,NSRange(location:$0.start,length:$0.end - $0.start))}) else{return false}
-            self.openCommentPopover(existing:note,targetRect:NSRect(origin:point,size:NSSize(width:1,height:20)),view:self.editor);return true
+            self.showUlyssesAnnotationPopover(for: note, at: point, isHover: false)
+            return true
         }
         editor.onHoverIndex = { [weak self] index, point in
             self?.handleTextHover(index: index, point: point)
@@ -1177,14 +1206,60 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         refreshTaskBrief()
         let all = stack([top, taskBrief, taskControl, header, center, definitionButton, exitPresentation], vertical: true)
         all.alignment = .width; all.spacing = 6
-        attach(all, to: root, inset: 24)
         header.widthAnchor.constraint(equalTo: all.widthAnchor).isActive = true
+
+        let editorArea = NSView()
+        editorArea.translatesAutoresizingMaskIntoConstraints = false
+        editorArea.addSubview(all)
+        editorArea.addSubview(ulyssesMarkupBar)
+        ulyssesMarkupBar.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            all.topAnchor.constraint(equalTo: editorArea.topAnchor, constant: 14),
+            all.leadingAnchor.constraint(equalTo: editorArea.leadingAnchor, constant: 14),
+            all.trailingAnchor.constraint(equalTo: editorArea.trailingAnchor, constant: -14),
+            all.bottomAnchor.constraint(equalTo: ulyssesMarkupBar.topAnchor, constant: -6),
+
+            ulyssesMarkupBar.leadingAnchor.constraint(equalTo: editorArea.leadingAnchor),
+            ulyssesMarkupBar.trailingAnchor.constraint(equalTo: editorArea.trailingAnchor),
+            ulyssesMarkupBar.bottomAnchor.constraint(equalTo: editorArea.bottomAnchor, constant: -6),
+            ulyssesMarkupBar.heightAnchor.constraint(equalToConstant: 28)
+        ])
+
+        ulyssesSidebar.translatesAutoresizingMaskIntoConstraints = false
+        ulyssesSheetList.translatesAutoresizingMaskIntoConstraints = false
+        ulyssesInspector.translatesAutoresizingMaskIntoConstraints = false
+
+        let sbWidth = ulyssesSidebar.widthAnchor.constraint(equalToConstant: 180)
+        let slWidth = ulyssesSheetList.widthAnchor.constraint(equalToConstant: 200)
+        let inspWidth = ulyssesInspector.widthAnchor.constraint(equalToConstant: 240)
+        sbWidth.priority = .defaultHigh
+        slWidth.priority = .defaultHigh
+        inspWidth.priority = .defaultHigh
+        sbWidth.isActive = true
+        slWidth.isActive = true
+        inspWidth.isActive = true
+
+        ulyssesInspector.isHidden = true
+
+        let workspace = stack([ulyssesSidebar, ulyssesSheetList, editorArea, ulyssesInspector], vertical: false)
+        workspace.spacing = 0
+        workspace.distribution = .fill
+        ulyssesWorkspaceStack = workspace
+        attach(workspace, to: root, inset: 0)
+        briefToggle.centerXAnchor.constraint(equalTo: root.centerXAnchor).isActive = true
+
+        setupUlyssesHandlers()
+        refreshUlyssesGroups()
+        loadUlyssesSheets(for: UlyssesGroupItem(id: "all", name: "All", icon: "tray.full", type: .all))
+
         if let token = scrollObserver { NotificationCenter.default.removeObserver(token) }
         scroll.contentView.postsBoundsChangedNotifications = true
         scrollObserver = NotificationCenter.default.addObserver(forName:NSView.boundsDidChangeNotification,object:scroll.contentView,queue:.main){[weak self] _ in self?.updateConnectors()}
 
         render()
         adaptLayout()
+        updateUlyssesInspector()
         saveDraft()
         if data.document.text.isEmpty { window.makeFirstResponder(editor) }
     }
@@ -1269,7 +1344,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     }
 
     func zoomPathDescription() -> String {
-        let names = ["Essay","Paragraph","Sentence","Word"]
+        let names = ["Document","Paragraph","Sentence","Word"]
         return PassageMarkup.route(prefs.string(forKey:"zoomPreset") ?? "Teacher",paragraph:prefs.bool(forKey:"zoomParagraph"),sentence:prefs.bool(forKey:"zoomSentence")).map {names[$0]}.joined(separator:" → ")
     }
     func nextZoomLevel(_ direction: Int) -> Int {
@@ -1300,12 +1375,13 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         updating = false
 
         levels.selectedSegment = level
-        header.stringValue = ["•  E S S A Y", "•  P A R A G R A P H", "•  S E N T E N C E", "•  W O R D"][level]
+        header.stringValue = ["•  D O C U M E N T", "•  P A R A G R A P H", "•  S E N T E N C E", "•  W O R D"][level]
         titleField.stringValue = data.document.title
 
         adaptLayout()
         styleText()
         renderNotes()
+        updateUlyssesInspector()
 
         let isWord = (level == 3)
         dictionaryPane.isHidden = !isWord
@@ -1430,7 +1506,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             case "redact": mark[.strikethroughStyle] = NSUnderlineStyle.single.rawValue; mark[.foregroundColor] = NSColor.secondaryLabelColor
             case "highlight": mark[.backgroundColor] = NSColor.systemYellow.withAlphaComponent(0.2)
             case "comment": mark[.foregroundColor] = NSColor.secondaryLabelColor
-            case "annotation": break
+            case "annotation":
+                mark[.backgroundColor] = NSColor.systemBlue.withAlphaComponent(0.25)
+                mark[.underlineStyle] = NSUnderlineStyle.single.rawValue
+                mark[.underlineColor] = NSColor.systemBlue
             case "link": mark[.foregroundColor] = NSColor.systemBlue
             case "quote", "divider": mark[.foregroundColor] = NSColor.secondaryLabelColor
             default: break
@@ -1451,14 +1530,13 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             case "underline":
                 mark[.underlineStyle] = NSUnderlineStyle.single.rawValue
             case "highlight":
-                // Apple-style soft pastel highlight (Requirement 2)
-                // Persistent annotation uses underline; hover owns background color.
+                mark[.backgroundColor] = NSColor.systemBlue.withAlphaComponent(0.25)
                 mark[.underlineStyle] = NSUnderlineStyle.single.rawValue
                 mark[.underlineColor] = NSColor.systemOrange
             default:
+                mark[.backgroundColor] = NSColor.systemBlue.withAlphaComponent(0.25)
                 mark[.underlineStyle] = NSUnderlineStyle.single.rawValue
                 mark[.underlineColor] = noteColor(note)
-
             }
             editor.textStorage?.addAttributes(mark, range: local)
         }
@@ -2071,16 +2149,34 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         guard opened, let idx = index, idx >= 0, idx < (data.document.text as NSString).length else {
             hoverSourcePopover?.close()
             lastHoverNoteId = nil
+            if ulyssesAnnotationPopoverIsHover {
+                ulyssesAnnotationPopover?.close()
+                ulyssesAnnotationPopover = nil
+                ulyssesAnnotationPopoverIsHover = false
+            }
             return
         }
+        let isFnActive = NSEvent.modifierFlags.contains(.function) || PointerPolicy.isModifierActive(mode: prefs.string(forKey: "pointerMode") ?? "Hold Option", flags: NSEvent.modifierFlags)
         let docOffset = visible.location + idx
-        if let note = displayedNotes.first(where: { !isDiscussion($0) && docOffset >= $0.start && docOffset < $0.end }) {
-            if lastHoverNoteId != note.id {
-                lastHoverNoteId = note.id
-                showHoverPreview(for: note, at: point)
+        if let note = displayedNotes.first(where: { docOffset >= $0.start && docOffset < $0.end }) {
+            if isFnActive {
+                if ulyssesAnnotationPopover == nil || lastHoverNoteId != note.id {
+                    lastHoverNoteId = note.id
+                    showUlyssesAnnotationPopover(for: note, at: point, isHover: true)
+                }
+            } else if !isDiscussion(note) {
+                if lastHoverNoteId != note.id {
+                    lastHoverNoteId = note.id
+                    showHoverPreview(for: note, at: point)
+                }
             }
         } else {
-            let mode = prefs.string(forKey: "pointerMode") ?? "Hold fn"
+            if ulyssesAnnotationPopoverIsHover {
+                ulyssesAnnotationPopover?.close()
+                ulyssesAnnotationPopover = nil
+                ulyssesAnnotationPopoverIsHover = false
+            }
+            let mode = prefs.string(forKey: "pointerMode") ?? "Hold Option"
             if PointerPolicy.isModifierActive(mode: mode, flags: NSEvent.modifierFlags) {
                 let sentRange = data.range(level: 2, offset: docOffset)
                 let sentId = "sent-\(sentRange.location)-\(sentRange.length)"
@@ -2450,13 +2546,24 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             snapshot();data.images = images;saveDraft();showImages()
         } catch {showAlert("Could not add image. Use up to 12 images, 8 MB each and 48 MB total.")}
     }
-    func updateBriefToggleIcon() {
+    func updateBriefToggleIcon(animated: Bool = false) {
         let sym = briefHidden ? "chevron.down" : "chevron.up"
+        guard let button = briefToggleButton else { return }
         if #available(macOS 11.0, *), let img = NSImage(systemSymbolName: sym, accessibilityDescription: briefHidden ? "Show task details" : "Hide task details") {
             let conf = NSImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
-            briefToggleButton?.image = img.withSymbolConfiguration(conf)
+            let styledImg = img.withSymbolConfiguration(conf)
+            if animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+                let transition = CATransition()
+                transition.duration = BrandMotion.disclosure
+                transition.timingFunction = BrandMotion.smoothOut
+                transition.type = .fade
+                button.layer?.add(transition, forKey: "chevronTransition")
+                button.image = styledImg
+            } else {
+                button.image = styledImg
+            }
         }
-        briefToggleButton?.toolTip = briefHidden ? "Show task prompt & images" : "Hide task prompt"
+        button.toolTip = briefHidden ? "Show task prompt & images" : "Hide task prompt"
     }
 
     @objc func toggleTaskBrief() {
@@ -2466,6 +2573,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         let transition = briefTransition
         briefAnimating = false
         briefHidden.toggle()
+        updateBriefToggleIcon(animated: true)
         refreshTaskBrief()
         let targetHeight = taskBriefHeight?.constant ?? 0
         let animate = window.isVisible && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
@@ -3128,6 +3236,263 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         panel.center()
         panel.makeKeyAndOrderFront(nil)
     }
+
+    // MARK: - Ulysses Integration & Handlers
+
+    @objc func toggleLibrarySidebar() {
+        ulyssesSidebar.isHidden.toggle()
+    }
+
+    @objc func toggleSheetList() {
+        ulyssesSheetList.isHidden.toggle()
+    }
+
+    @objc func toggleInspectorDashboard() {
+        ulyssesInspector.isHidden.toggle()
+        if !ulyssesInspector.isHidden {
+            updateUlyssesInspector()
+        }
+    }
+
+    @objc func showInspectorAnnotations() {
+        ulyssesInspector.isHidden = false
+        updateUlyssesInspector()
+    }
+
+    @objc func showInspectorOutline() {
+        ulyssesInspector.isHidden = false
+        updateUlyssesInspector()
+    }
+
+    @objc func showInspectorProgress() {
+        ulyssesInspector.isHidden = false
+        updateUlyssesInspector()
+    }
+
+    @objc func navigateHistory(_ sender: NSSegmentedControl) {
+        if sender.selectedSegment == 0 {
+            undoEdit()
+        } else {
+            redoEdit()
+        }
+    }
+
+    func setupUlyssesHandlers() {
+        ulyssesSidebar.onSelectGroup = { [weak self] group in
+            self?.currentUlyssesGroup = group.type
+            self?.loadUlyssesSheets(for: group)
+        }
+        ulyssesSidebar.onToggleSidebar = { [weak self] in
+            self?.toggleLibrarySidebar()
+        }
+        ulyssesSidebar.onNewGroup = { [weak self] in
+            self?.newGroup()
+        }
+
+        ulyssesSheetList.onSelectSheet = { [weak self] sheet in
+            self?.loadSheet(sheet)
+        }
+        ulyssesSheetList.onNewSheet = { [weak self] in
+            self?.newSheet()
+        }
+
+        ulyssesInspector.onSelectHeading = { [weak self] location in
+            guard let self = self, self.opened else { return }
+            self.focus = location
+            self.render()
+        }
+        ulyssesInspector.onSelectAnnotation = { [weak self] note in
+            guard let self = self, self.opened else { return }
+            self.focus = note.start
+            self.render()
+            if let tc = self.editor.textContainer, let lm = self.editor.layoutManager {
+                let targetRect = lm.boundingRect(forGlyphRange: NSRange(location: note.start, length: min(1, note.end - note.start)), in: tc)
+                self.showUlyssesAnnotationPopover(for: note, at: targetRect.origin, isHover: false)
+            }
+        }
+
+        ulyssesMarkupBar.onMarkup = { [weak self] action in
+            self?.applyUlyssesMarkup(action)
+        }
+    }
+
+    func refreshUlyssesGroups() {
+        let inboxFolder = exchangeFolder.appendingPathComponent("Inbox")
+        let inboxCount = (try? FileManager.default.contentsOfDirectory(at: inboxFolder, includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" || $0.pathExtension == "pdf" }.count) ?? 0
+
+        let sampleFiles = (try? FileManager.default.contentsOfDirectory(at: resourceDirectory.appendingPathComponent("Samples"), includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" }.count) ?? 20
+
+        let groups: [UlyssesGroupItem] = [
+            UlyssesGroupItem(id: "all", name: "All", icon: "tray.full", type: .all, badgeCount: sampleFiles + inboxCount),
+            UlyssesGroupItem(id: "inbox", name: "Inbox", icon: "tray.and.arrow.down", type: .inbox, badgeCount: inboxCount),
+            UlyssesGroupItem(id: "getting-started", name: "Getting Started", icon: "book", type: .gettingStarted, badgeCount: 0),
+            UlyssesGroupItem(id: "project", name: "Projects", icon: "folder", type: .project, badgeCount: 0)
+        ]
+        ulyssesSidebar.reloadData(with: groups)
+    }
+
+    func loadUlyssesSheets(for group: UlyssesGroupItem) {
+        ulyssesSheetList.groupTitle = group.name
+        var items: [UlyssesSheetItem] = []
+
+        let currentTitle = data.document.title.isEmpty ? "Untitled Sheet" : data.document.title
+        let currentSnippet = data.document.text.split(separator: "\n").prefix(2).joined(separator: " ")
+        items.append(UlyssesSheetItem(
+            id: data.document.id,
+            title: currentTitle,
+            snippet: currentSnippet,
+            dateString: "Today",
+            document: data
+        ))
+
+        let folder: URL
+        switch group.type {
+        case .inbox:
+            folder = exchangeFolder.appendingPathComponent("Inbox")
+        case .all, .gettingStarted, .project:
+            folder = resourceDirectory.appendingPathComponent("Samples")
+        }
+
+        if let files = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil) {
+            for file in files.filter({ $0.pathExtension == "json" }).prefix(15) {
+                if let fileData = try? Data(contentsOf: file), let doc = try? JSONDecoder().decode(Breakdown.self, from: fileData) {
+                    if doc.document.id != data.document.id {
+                        let snip = doc.document.text.split(separator: "\n").prefix(2).joined(separator: " ")
+                        items.append(UlyssesSheetItem(
+                            id: doc.document.id,
+                            title: doc.document.title,
+                            snippet: snip,
+                            dateString: "Recently",
+                            document: doc
+                        ))
+                    }
+                }
+            }
+        }
+        ulyssesSheetList.reloadData(with: items)
+    }
+
+    func loadSheet(_ sheet: UlyssesSheetItem) {
+        if opened { saveDraft() }
+        data = sheet.document
+        past = []
+        future = []
+        level = 0
+        focus = 0
+        render()
+        updateUlyssesInspector()
+    }
+
+    @objc func newSheet() {
+        if opened { saveDraft() }
+        data = .plain("", title: "Untitled")
+        past = []
+        future = []
+        level = 0
+        focus = 0
+        render()
+        updateUlyssesInspector()
+        focusEditor()
+    }
+
+    @objc func newGroup() {
+        refreshUlyssesGroups()
+    }
+
+    func updateUlyssesInspector() {
+        guard opened else { return }
+        let text = data.document.text
+        let chars = (text as NSString).length
+        let words = text.split(whereSeparator: { $0.isWhitespace || $0.isNewline }).count
+        ulyssesWordCountLabel.stringValue = "\(words) Words"
+        ulyssesInspector.updateMetrics(chars: chars, words: words)
+
+        var headings: [(level: Int, text: String, location: Int)] = []
+        let ns = text as NSString
+        let pattern = #"(?m)^(#{1,6})\s+(.+)$"#
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let matches = regex.matches(in: text, range: NSRange(location: 0, length: ns.length))
+            for m in matches {
+                let hLevel = m.range(at: 1).length
+                let hText = ns.substring(with: m.range(at: 2))
+                headings.append((level: hLevel, text: hText, location: m.range.location))
+            }
+        }
+        ulyssesInspector.updateHeadings(headings)
+        ulyssesInspector.updateAnnotations(displayedNotes)
+    }
+
+    func applyUlyssesMarkup(_ action: String) {
+        switch action {
+        case "heading": insertHeading()
+        case "list": wrapMarkup("- ", end: "")
+        case "quote": wrapMarkup("> ", end: "")
+        case "image": addImage()
+        case "more": showMarkup()
+        default: break
+        }
+    }
+
+    var ulyssesAnnotationPopoverIsHover = false
+    func showUlyssesAnnotationPopover(for note: Note, at point: NSPoint, isHover: Bool = false) {
+        ulyssesAnnotationPopover?.close()
+        ulyssesAnnotationPopoverIsHover = isHover
+        let targetRect = NSRect(origin: point, size: NSSize(width: 1, height: 20))
+        let pop = UlyssesAnnotationPopover.show(
+            for: note,
+            relativeTo: targetRect,
+            of: editor,
+            preferredEdge: .maxY,
+            isDark: isDarkMode(),
+            onRemove: { [weak self] in
+                self?.removeAnnotation(note)
+            },
+            onSave: { [weak self] newBody in
+                self?.updateAnnotationBody(note, newBody: newBody)
+            }
+        )
+        ulyssesAnnotationPopover = pop
+    }
+
+    func removeAnnotation(_ note: Note) {
+        snapshot()
+        if let idx = data.annotations.firstIndex(where: { $0.id == note.id || ($0.start == note.start && $0.end == note.end) }) {
+            data.annotations.remove(at: idx)
+        }
+        let source = data.document.text as NSString
+        if note.start < source.length && note.end <= source.length {
+            let sub = source.substring(with: NSRange(location: note.start, length: note.end - note.start))
+            if sub.hasPrefix("{") && sub.hasSuffix("}") {
+                let inner = String(sub.dropFirst().dropLast())
+                let plainText = inner.contains("|") ? String(inner.split(separator: "|", maxSplits: 1)[0]) : inner
+                data.replace(NSRange(location: note.start, length: note.end - note.start), with: plainText)
+            }
+        }
+        saveDraft()
+        render()
+        updateUlyssesInspector()
+    }
+
+    func updateAnnotationBody(_ note: Note, newBody: String) {
+        snapshot()
+        if let idx = data.annotations.firstIndex(where: { $0.id == note.id || ($0.start == note.start && $0.end == note.end) }) {
+            data.annotations[idx].body = newBody
+        }
+        let source = data.document.text as NSString
+        if note.start < source.length && note.end <= source.length {
+            let sub = source.substring(with: NSRange(location: note.start, length: note.end - note.start))
+            if sub.hasPrefix("{") && sub.hasSuffix("}") {
+                let inner = String(sub.dropFirst().dropLast())
+                let anchor = inner.contains("|") ? String(inner.split(separator: "|", maxSplits: 1)[0]) : inner
+                let replacement = "{\(anchor)|\(newBody)}"
+                data.replace(NSRange(location: note.start, length: note.end - note.start), with: replacement)
+            }
+        }
+        saveDraft()
+        render()
+        updateUlyssesInspector()
+    }
+
 
     func showAlert(_ text: String) {
         let a = NSAlert()
