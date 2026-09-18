@@ -145,10 +145,10 @@ final class TestPassage:Passage {
         precondition(pageClip.constrainBoundsRect(NSRect(x:240,y:100,width:pageClip.bounds.width,height:pageClip.bounds.height)).minX==0)
         pageClip.scroll(to:NSPoint(x:240,y:100));dashboardLight.repositionStickySidebar()
         precondition(dashboardLight.sidebar.convert(.zero,to:homeScrollLight).x>=0,"Horizontal swipe must never hide the sidebar")
-        dashboardLight.searchField.stringValue="food waste"
+        dashboardLight.searchField.stringValue="career"
         dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
         precondition(!dashboardLight.cards.isEmpty,"Search must find actual results")
-        precondition(dashboardLight.cards.allSatisfy{$0.heading.stringValue.localizedCaseInsensitiveContains("food") || $0.detail.stringValue.localizedCaseInsensitiveContains("food")})
+        precondition(dashboardLight.cards.allSatisfy{$0.heading.stringValue.localizedCaseInsensitiveContains("career") || $0.detail.stringValue.localizedCaseInsensitiveContains("career")})
         dashboardLight.searchField.stringValue="interpolated"
         dashboardLight.controlTextDidChange(Notification(name:NSControl.textDidChangeNotification,object:dashboardLight.searchField));dashboardLight.layoutSubtreeIfNeeded()
         precondition(dashboardLight.cards.contains{$0.heading.stringValue.contains("workplace")},"Search includes full document text, beyond card excerpts")

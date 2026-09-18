@@ -1,3 +1,14 @@
+## Pass Passage By! 1.9.9
+
+- Ultra-Minimalist Ulysses Canvas:
+  - Eliminated all toolbar clutter: removed redundant home button, title field, task prompts, more actions ellipsis, and centered document label.
+  - Left navigation has only `[ < | > ]` (and `sidebar.left` toggle dynamically visible only when library sidebar is collapsed).
+  - Right toolbar has only subtle word count and 4 Liquid Glass action buttons: Share, Search, AI Agent (✦), and Inspector Toggle.
+- Clean 2-Document Library & Ghost Card Fix:
+  - Fixed sheet list caching: completely purged old build sample cache and ghost "Untitled Sheet" cards.
+  - Library now displays cleanly with exact 2 Ulysses sample documents: `001-career-preparation.json` and `002-welcome-stranger.json`.
+  - Default startup loads directly into the clean `001-career-preparation` sample document.
+
 ## Pass Passage By! 1.9.8
 
 - Apple HIG Liquid Glass Button Kit:

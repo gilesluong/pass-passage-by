@@ -39,6 +39,11 @@ Read this file first when resuming. Long-term vision: PRODUCT-VISION.md. Stable 
     - Hover Popover & Margin Deduplication Fix: Enforced strict `fn` (or Option) requirement for hover popovers so normal mouse movement never triggers popovers; eliminated margin note cards duplication so annotations live strictly inline (`{...}`) and in the Inspector.
     - Standardized Samples Overhaul: Replaced all old samples with 2 pristine fixtures matching Ulysses screenshots (`001-career-preparation.json` with `{âss}` and topic annotation, `002-welcome-stranger.json`).
     - Quality Checks & Release: `bash lint.sh` (0 warnings, 0 errors); `bash test.sh` (100% PASS); `bash test-layout.sh` (100% PASS); `bash build.sh` compiled; Sparkle Ed25519 update prepared and verified for v1.9.8 (build 22).
+12. DONE — Complete De-Cluttering & Purge of Stale Sample Cache (Release 1.9.9, Build 23):
+    - Cleaned Top Bar: Removed title field from editor toolbar, removed home button, hidden task brief button and centered header label, removed `...` ellipsis button.
+    - Coordinated Sidebar Toggles: `sidebar.left` button in editor toolbar is hidden when sidebar is visible and only appears when sidebar is collapsed, eliminating duplicate buttons.
+    - Purged Stale Sample Cache & Ghost Cards: Fixed `build.sh` to remove old preview artifacts before `ditto`; cleared `~/Library/Application Support/Passage/Library` and `native-draft.json`; updated `loadUlyssesSheets` to match document ID and eliminate ghost "Untitled Sheet" card; app bundle now strictly contains 2 samples (`001-career-preparation.json` and `002-welcome-stranger.json`) and defaults directly to Career Preparation.
+    - Verified: `bash lint.sh` (0 warnings, 0 errors); `bash test.sh` (100% PASS); `bash test-layout.sh` (100% PASS); Sparkle Ed25519 update prepared and verified for v1.9.9 (build 23).
 
 ## Guardrails
 Update this ledger after each completed task with files, checks and next action. Never describe future collaboration or the full Notion-level roadmap as finished. Remote collaboration, Developer ID/notarization and real external MCP host validation have dependencies beyond this UI batch. No AI model downloads. Do not erase legacy notes or infer their purpose from `kind=comment`.

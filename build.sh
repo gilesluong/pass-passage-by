@@ -33,7 +33,8 @@ cp Info.plist "$PPB_APP/Contents/Info.plist"
 ditto --norsrc --noextattr "$PPB_SPARKLE/Sparkle.framework" "$PPB_APP/Contents/Frameworks/Sparkle.framework"
 codesign --force --deep --sign - "$PPB_APP"
 codesign --verify --deep --strict "$PPB_APP"
-mkdir -p /tmp/PPBPreview
+rm -rf '/tmp/PPBPreview/Pass Passage By!.app' 'dist/Pass Passage By!.app' dist/PPB-macOS.zip
+mkdir -p /tmp/PPBPreview dist
 ditto --norsrc --noextattr "$PPB_APP" '/tmp/PPBPreview/Pass Passage By!.app'
 ditto --norsrc --noextattr "$PPB_APP" 'dist/Pass Passage By!.app'
 ditto -c -k --norsrc --noextattr --keepParent "$PPB_APP" dist/PPB-macOS.zip

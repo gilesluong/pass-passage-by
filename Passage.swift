@@ -465,6 +465,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     var layoutRefresh:DispatchWorkItem?
     var briefEditButton:NSButton?
     var briefToggleButton:NSButton?
+    var sidebarToggleBtn:GlassCircleButton?
     var taskToggleRow:NSView?
     var preferencesTabs:NSTabView?
     var preferencesNavigation:[NSButton] = []
@@ -883,7 +884,13 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
     }
     @objc func openExample() {
         do {
-            guard let url = Bundle.main.url(forResource: "example.breakdown", withExtension: "json") else {return}
+            let sampleURL = resourceDirectory.appendingPathComponent("Samples/001-career-preparation.json")
+            if let d = try? Data(contentsOf: sampleURL) {
+                try loadJSON(d)
+                openWorkspace()
+                return
+            }
+            guard let url = Bundle.main.url(forResource: "example.breakdown", withExtension: "json") else { return }
             try loadJSON(Data(contentsOf: url))
             openWorkspace()
         } catch {
@@ -996,12 +1003,18 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     // MARK: - Workspace Layout (Requirements 1, 3, 4)
     func openWorkspace() {
+        if data.document.text.isEmpty && (data.document.title == "Untitled Sheet" || data.document.title.isEmpty) {
+            let sampleURL = resourceDirectory.appendingPathComponent("Samples/001-career-preparation.json")
+            if let sampleData = try? Data(contentsOf: sampleURL), let doc = try? JSONDecoder().decode(Breakdown.self, from: sampleData) {
+                data = doc
+            }
+        }
         opened = true
         level = 0
         focus = 0
         base()
 
-        // 1. Unified Clean Top Bar (Requirement 4)
+        // 1. Unified Clean Top Bar (Pure Ulysses Minimalist)
         titleField = NSTextField(string: data.document.title)
         titleField.placeholderString = "Sheet title"
         titleField.isBordered = false
@@ -1009,8 +1022,10 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         titleField.font = .systemFont(ofSize: 16, weight: .semibold)
         titleField.target = self
         titleField.action = #selector(renameTitle)
+        titleField.isHidden = true
 
         let homeBtn = button("Home", #selector(showHome), symbol: "house")
+        homeBtn.isHidden = true
 
         let leftNavImg = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Back") ?? NSImage()
         let rightNavImg = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Forward") ?? NSImage()
@@ -1029,10 +1044,14 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             accessibilityDescription: "Toggle Sidebar"
         )
         sidebarToggleBtn.toolTip = "Toggle Sidebar"
+        self.sidebarToggleBtn = sidebarToggleBtn
+        sidebarToggleBtn.isHidden = !ulyssesSidebar.isHidden
 
-        let topLeading = stack([sidebarToggleBtn, navSegment, homeBtn, titleField])
-        topLeading.spacing = 10
+        let topLeading = stack([sidebarToggleBtn, navSegment])
+        topLeading.spacing = 8
+
         let briefEdit = button("Add task", #selector(editTaskBrief)); briefEditButton = briefEdit
+        briefEdit.isHidden = true
         let briefToggle = button("Task Prompt", #selector(toggleTaskBrief), symbol: briefHidden ? "chevron.down" : "chevron.up")
         briefToggleButton = briefToggle
 
@@ -1073,18 +1092,17 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         inspectorToggleBtn.toolTip = "Toggle Inspector"
 
         let moreBtn = button("More actions", #selector(editorActions(_:)), symbol: "ellipsis")
+        moreBtn.isHidden = true
 
         ulyssesWordCountLabel.font = .systemFont(ofSize: 13, weight: .regular)
         ulyssesWordCountLabel.textColor = .secondaryLabelColor
 
         let topTrailing = stack([
             ulyssesWordCountLabel,
-            briefEdit,
             shareBtn,
             searchBtn,
             agentBtn,
-            inspectorToggleBtn,
-            moreBtn
+            inspectorToggleBtn
         ])
         for control in [briefEdit, homeBtn, briefToggle] {
             control.isBordered = false
@@ -1100,6 +1118,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             briefToggle.widthAnchor.constraint(equalToConstant: 48),
             briefToggle.heightAnchor.constraint(equalToConstant: 30)
         ])
+        taskControl.isHidden = (data.document.prompt == nil || data.document.prompt?.isEmpty == true)
         taskToggleRow = taskControl
         topTrailing.spacing = 8
 
@@ -1109,10 +1128,11 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         top.alignment = .centerY
         topBar = top
 
-        // Header level badge
-        header = NSTextField(labelWithString: "DOCUMENT LEVEL")
+        // Header level badge (hidden in Document level for ultra-clean canvas)
+        header = NSTextField(labelWithString: "")
         header.font = .systemFont(ofSize: 11, weight: .medium); header.alignment = .center
         header.textColor = .secondaryLabelColor
+        header.isHidden = true
 
         // 2. Editor & Sidebars (Requirement 3: Left & Right Notes)
         editor = WritingView(frame: NSRect(x: 0, y: 0, width: 680, height: 600))
@@ -3299,6 +3319,7 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
 
     @objc func toggleLibrarySidebar() {
         ulyssesSidebar.isHidden.toggle()
+        sidebarToggleBtn?.isHidden = !ulyssesSidebar.isHidden
     }
 
     @objc func toggleSheetList() {
@@ -3485,16 +3506,6 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
         ulyssesSheetList.groupTitle = group.name
         var items: [UlyssesSheetItem] = []
 
-        let currentTitle = data.document.title.isEmpty ? "Untitled Sheet" : data.document.title
-        let currentSnippet = data.document.text.split(separator: "\n").prefix(2).joined(separator: " ")
-        items.append(UlyssesSheetItem(
-            id: data.document.id,
-            title: currentTitle,
-            snippet: currentSnippet,
-            dateString: "Today",
-            document: data
-        ))
-
         let folder: URL
         switch group.type {
         case .inbox:
@@ -3503,22 +3514,38 @@ class Passage: NSObject, NSApplicationDelegate, NSTextViewDelegate, NSWindowDele
             folder = resourceDirectory.appendingPathComponent("Samples")
         }
 
+        var foundCurrent = false
         if let files = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil) {
-            for file in files.filter({ $0.pathExtension == "json" }).prefix(15) {
+            for file in files.filter({ $0.pathExtension == "json" }).sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
                 if let fileData = try? Data(contentsOf: file), let doc = try? JSONDecoder().decode(Breakdown.self, from: fileData) {
-                    if doc.document.id != data.document.id {
-                        let snip = doc.document.text.split(separator: "\n").prefix(2).joined(separator: " ")
-                        items.append(UlyssesSheetItem(
-                            id: doc.document.id,
-                            title: doc.document.title,
-                            snippet: snip,
-                            dateString: "Recently",
-                            document: doc
-                        ))
-                    }
+                    let firstLine = doc.document.text.split(separator: "\n").first.map(String.init) ?? doc.document.title
+                    let snip = doc.document.text.split(separator: "\n").dropFirst().prefix(2).joined(separator: " ")
+                    let isCurrent = doc.document.id == data.document.id
+                    if isCurrent { foundCurrent = true }
+                    let cleanTitle = firstLine.replacingOccurrences(of: "### ", with: "").replacingOccurrences(of: "# ", with: "")
+                    items.append(UlyssesSheetItem(
+                        id: doc.document.id,
+                        title: cleanTitle.isEmpty ? doc.document.title : cleanTitle,
+                        snippet: snip.isEmpty ? firstLine : snip,
+                        dateString: isCurrent ? "Today" : "Yesterday, 23:28",
+                        document: isCurrent ? data : doc
+                    ))
                 }
             }
         }
+
+        if !foundCurrent && (!data.document.text.isEmpty || !data.document.title.isEmpty) {
+            let currentTitle = data.document.title.isEmpty ? "Untitled Sheet" : data.document.title
+            let currentSnippet = data.document.text.split(separator: "\n").prefix(2).joined(separator: " ")
+            items.insert(UlyssesSheetItem(
+                id: data.document.id,
+                title: currentTitle,
+                snippet: currentSnippet,
+                dateString: "Today",
+                document: data
+            ), at: 0)
+        }
+
         ulyssesSheetList.reloadData(with: items)
     }
 
